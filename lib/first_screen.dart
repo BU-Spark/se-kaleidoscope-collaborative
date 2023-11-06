@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
+import "login_screen.dart";
+import 'signup_screen.dart';
 
 class FirstScreen extends StatefulWidget{
   const FirstScreen({super.key});
@@ -25,7 +27,7 @@ class _FirstScreenState extends State<FirstScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const Spacer(),
-              Image.asset("images/logo.jpg"), // Your logo asset
+              Image.asset("images/text_logo.jpg"), // Your logo asset
               SizedBox(height: 30),
               const Text(
                 'Discover Disability Inclusive\nServices Around You!',
@@ -37,7 +39,7 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  // Handle Sign Up
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
                 },
                 style: kButtonStyle,
                 child: const Text(
@@ -48,7 +50,7 @@ class _FirstScreenState extends State<FirstScreen> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  // Handle Sign Up
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 style: kButtonStyle,
                 child: const Text(
