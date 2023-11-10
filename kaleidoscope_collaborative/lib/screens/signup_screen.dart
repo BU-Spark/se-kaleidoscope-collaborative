@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 
 class SignupScreen extends StatefulWidget{
