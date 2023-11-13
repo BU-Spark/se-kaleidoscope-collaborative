@@ -224,7 +224,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     )),
                   ],
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
 
                 // Phone Number input
                 TextField(
@@ -255,6 +255,15 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _confirmPhoneNumberTextController,
                 ),
                 SizedBox(height: 32),
+
+                ElevatedButton(
+                child: Text('Submit'),
+                onPressed: () {
+                  // Submit the details filled
+                },
+                style: kButtonStyle,
+              ),
+              SizedBox(height: 32),
 
 
                 ],
