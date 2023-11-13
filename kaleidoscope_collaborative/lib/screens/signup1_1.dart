@@ -14,6 +14,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final FocusNode _usernameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final FocusNode _confirmpasswordFocus = FocusNode();
+
 
   @override
   void dispose() {
@@ -22,6 +24,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _usernameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
+    _confirmpasswordFocus.dispose();
     super.dispose();
   }
 
@@ -33,6 +36,8 @@ class _SignupScreenState extends State<SignupScreen> {
     _usernameFocus.addListener(() { setState(() {}); });
     _emailFocus.addListener(() { setState(() {}); });
     _passwordFocus.addListener(() { setState(() {}); });
+    _confirmpasswordFocus.addListener(() { setState(() {}); });
+
 
     return Scaffold(
       appBar: AppBar(
@@ -87,18 +92,29 @@ class _SignupScreenState extends State<SignupScreen> {
                   suffixIcon: Icon(Icons.close),
                 ),
               ),
+              SizedBox(height: 32),
+
+              // Password input
+              TextField(
+                focusNode: _passwordFocus,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  suffixIcon: Icon(Icons.close),
+                ),
+              ),
               SizedBox(height: 16),
 
-              // // Password input
-              // TextField(
-              //   focusNode: _passwordFocus,
-              //   obscureText: true,
-              //   decoration: const InputDecoration(
-              //     labelText: 'Password',
-              //     suffixIcon: Icon(Icons.close),
-              //   ),
-              // ),
-              // SizedBox(height: 32),
+              // Confirm Password input
+              TextField(
+                focusNode: _confirmpasswordFocus,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: ' Confirm Password',
+                  suffixIcon: Icon(Icons.close),
+                ),
+              ),
+              SizedBox(height: 32),
 
               
 
