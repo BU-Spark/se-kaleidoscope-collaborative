@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 import "login_screen.dart";
 import 'signup_screen.dart';
+import './finding_location_rating/ratings_card.dart';
 
 class FirstScreen extends StatefulWidget{
   const FirstScreen({super.key});
@@ -58,6 +59,23 @@ class _FirstScreenState extends State<FirstScreen> {
                   style: kButtonTextStyle,
                 ),
               ),
+
+              // HERE IS TESTING THE RATING CARD: 
+              SizedBox(height: 10),
+              Positioned( 
+                bottom: 0, 
+                child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RatingPage()));
+                },
+                style: kButtonStyle,
+                child: const Text(
+                  'Rating Card',
+                  style: kButtonTextStyle, 
+                )
+              ),
+            ),
+
               TextButton(
                 child: Text('Skip for now'),
                 onPressed: () {
