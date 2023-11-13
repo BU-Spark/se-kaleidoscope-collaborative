@@ -59,6 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
         elevation: 0,
       ),
       body: Scrollbar(
+        thumbVisibility: true,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
