@@ -19,6 +19,21 @@ class _SignupScreenState extends State<SignupScreen> {
   final FocusNode _phoneNumberFocus = FocusNode();
   final FocusNode _confirmPhoneNumberFocus = FocusNode();
 
+  final _fnameTextController = TextEditingController();
+  final _lnameTextController = TextEditingController();
+  final _usernameTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+  final _confirmPasswordTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+  final _confirmEmailTextController = TextEditingController();
+  final _phoneNumberTextController = TextEditingController();
+  final _confirmPhoneNumberTextController = TextEditingController();
+
+
+  void clearText(TextEditingController controller) {
+    controller.clear();
+  }
+
 
   @override
   void dispose() {
@@ -31,6 +46,15 @@ class _SignupScreenState extends State<SignupScreen> {
     _confirmEmailFocus.dispose();
     _phoneNumberFocus.dispose();
     _confirmPhoneNumberFocus.dispose();
+    _fnameTextController.dispose();
+    _lnameTextController.dispose();
+    _usernameTextController.dispose();
+    _passwordTextController.dispose();
+    _confirmPasswordTextController.dispose();
+    _emailTextController.dispose();
+    _confirmEmailTextController.dispose();
+    _phoneNumberTextController.dispose();
+    _confirmPhoneNumberTextController.dispose();
     super.dispose();
   }
 
@@ -80,20 +104,27 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'First Name',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_fnameTextController),
+                    ),
                   ),
+                  controller: _fnameTextController,
                 ),
                 SizedBox(height: 16),
 
                 // Last Name input
                 TextField(
                   focusNode: _lnameFocus,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Last Name',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_lnameTextController),
+                    ),
                   ),
+                  controller: _lnameTextController,
                 ),
                 SizedBox(height: 16),
 
@@ -103,8 +134,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Username',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_usernameTextController),
+                    ),
                   ),
+                  controller: _usernameTextController,
                 ),
                 SizedBox(height: 32),
 
@@ -112,11 +147,15 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _passwordFocus,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_passwordTextController),
+                    ),
                   ),
+                  controller: _passwordTextController,
                 ),
                 SizedBox(height: 16),
 
@@ -124,35 +163,45 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _confirmPasswordFocus,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Password',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_confirmPasswordTextController),
+                    ),
                   ),
+                  controller: _confirmPasswordTextController,
                 ),
                 SizedBox(height: 32),
 
                 // Email input
                 TextField(
                   focusNode: _emailFocus,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_emailTextController),
+                    ),
                   ),
+                  controller: _emailTextController,
                 ),
                 SizedBox(height: 16),
 
                 // Confirm Email input
                 TextField(
                   focusNode: _confirmEmailFocus,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Email',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_confirmEmailTextController),
+                    ),
                   ),
+                  controller: _confirmEmailTextController,
                 ),
                 SizedBox(height: 32),
 
@@ -180,24 +229,30 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Phone Number input
                 TextField(
                   focusNode: _phoneNumberFocus,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Phone Number',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_phoneNumberTextController),
+                    ),
                   ),
+                  controller: _phoneNumberTextController,
                 ),
                 SizedBox(height: 16),
 
                 // Confirm Phone Number input
                 TextField(
                   focusNode: _confirmPhoneNumberFocus,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Phone Number',
-                    suffixIcon: Icon(Icons.close),
+                    suffixIcon: IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: ()=> clearText(_confirmPhoneNumberTextController),
+                    ),
                   ),
+                  controller: _confirmPhoneNumberTextController,
                 ),
                 SizedBox(height: 32),
 
