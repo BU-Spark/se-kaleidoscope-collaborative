@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'login_screen.dart';
-import 'signup_screen.dart';
+import 'signupLandingPage.dart';
 
 class FirstScreen extends StatefulWidget{
   const FirstScreen({super.key});
@@ -39,7 +39,7 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupLandingPage()));
                 },
                 style: kButtonStyle,
                 child: const Text(

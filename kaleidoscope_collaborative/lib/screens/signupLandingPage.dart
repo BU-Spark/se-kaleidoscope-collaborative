@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'signup1_1.dart';
 
+// Implementing the 1.0 Sign Up Landing Page
 
-class SignupScreen extends StatefulWidget{
-  const SignupScreen({super.key});
+class SignupLandingPage extends StatefulWidget{
+  const SignupLandingPage({super.key});
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  _SignupLandingPageState createState() => _SignupLandingPageState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupLandingPageState extends State<SignupLandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('1.0 Sign up Landing Page'),
+        title: Text('Sign up Landing Page',style: TextStyle(color:Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Handle back button press
-          },
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
         ),
+        backgroundColor: Colors.white,
         elevation: 0, // Removes the shadow under the app bar
       ),
       body: Padding(
@@ -48,6 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
             ElevatedButton(
               onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
               },
               child: Text('Sign Up in App'),
               style: kButtonStyle
