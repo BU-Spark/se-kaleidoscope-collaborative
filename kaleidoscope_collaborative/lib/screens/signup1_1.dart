@@ -12,9 +12,12 @@ class _SignupScreenState extends State<SignupScreen> {
   final FocusNode _fnameFocus = FocusNode();
   final FocusNode _lnameFocus = FocusNode();
   final FocusNode _usernameFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
-  final FocusNode _confirmpasswordFocus = FocusNode();
+  final FocusNode _confirmPasswordFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _confirmEmailFocus = FocusNode();
+  final FocusNode _phoneNumberFocus = FocusNode();
+  final FocusNode _confirmPhoneNumberFocus = FocusNode();
 
 
   @override
@@ -22,9 +25,12 @@ class _SignupScreenState extends State<SignupScreen> {
     _fnameFocus.dispose();
     _lnameFocus.dispose();
     _usernameFocus.dispose();
-    _emailFocus.dispose();
     _passwordFocus.dispose();
-    _confirmpasswordFocus.dispose();
+    _confirmPasswordFocus.dispose();
+    _emailFocus.dispose();
+    _confirmEmailFocus.dispose();
+    _phoneNumberFocus.dispose();
+    _confirmPhoneNumberFocus.dispose();
     super.dispose();
   }
 
@@ -34,9 +40,12 @@ class _SignupScreenState extends State<SignupScreen> {
     _fnameFocus.addListener(() { setState(() {}); });
     _lnameFocus.addListener(() { setState(() {}); });
     _usernameFocus.addListener(() { setState(() {}); });
-    _emailFocus.addListener(() { setState(() {}); });
     _passwordFocus.addListener(() { setState(() {}); });
-    _confirmpasswordFocus.addListener(() { setState(() {}); });
+    _confirmPasswordFocus.addListener(() { setState(() {}); });
+    _emailFocus.addListener(() { setState(() {}); });
+    _confirmEmailFocus.addListener(() { setState(() {}); });
+    _phoneNumberFocus.addListener(() { setState(() {}); });
+    _confirmPhoneNumberFocus.addListener(() { setState(() {}); });
 
 
     return Scaffold(
@@ -107,10 +116,32 @@ class _SignupScreenState extends State<SignupScreen> {
 
               // Confirm Password input
               TextField(
-                focusNode: _confirmpasswordFocus,
+                focusNode: _confirmPasswordFocus,
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: ' Confirm Password',
+                  suffixIcon: Icon(Icons.close),
+                ),
+              ),
+              SizedBox(height: 32),
+
+              // Email input
+              TextField(
+                focusNode: _emailFocus,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  suffixIcon: Icon(Icons.close),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Confirm Email input
+              TextField(
+                focusNode: _confirmEmailFocus,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: ' Confirm Email',
                   suffixIcon: Icon(Icons.close),
                 ),
               ),
@@ -136,6 +167,29 @@ class _SignupScreenState extends State<SignupScreen> {
                 ],
               ),
               SizedBox(height: 16),
+
+              // Phone Number input
+              TextField(
+                focusNode: _phoneNumberFocus,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                  suffixIcon: Icon(Icons.close),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Confirm Phone Number input
+              TextField(
+                focusNode: _confirmPhoneNumberFocus,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: ' Confirm Phone Number',
+                  suffixIcon: Icon(Icons.close),
+                ),
+              ),
+              SizedBox(height: 32),
+
 
             ],
           ),
