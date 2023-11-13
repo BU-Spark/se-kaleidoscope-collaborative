@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
-
+// Implementing the 1.0 Sign Up Landing Page
 
 class SignupLandingPage extends StatefulWidget{
   const SignupLandingPage({super.key});
@@ -13,13 +13,12 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('1.0 Sign up Landing Page'),
+        title: Text('Sign up Landing Page',style: TextStyle(color:Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Handle back button press
-          },
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
         ),
+        backgroundColor: Colors.white,
         elevation: 0, // Removes the shadow under the app bar
       ),
       body: Padding(
