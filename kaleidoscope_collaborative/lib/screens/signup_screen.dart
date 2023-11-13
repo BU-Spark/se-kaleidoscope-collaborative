@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 
-class SignupScreen extends StatefulWidget{
-  const SignupScreen({super.key});
+class SignupLandingPage extends StatefulWidget{
+  const SignupLandingPage({super.key});
   @override
-  _SignupScreenState createState() => _SignupScreenState();
+  _SignupLandingPageState createState() => _SignupLandingPageState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupLandingPageState extends State<SignupLandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
