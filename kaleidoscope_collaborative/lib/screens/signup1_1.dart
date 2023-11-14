@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'identity_verification.dart';
 
 
 class SignupScreen extends StatefulWidget{
@@ -292,7 +293,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 ElevatedButton(
                 child: Text('Submit'),
                 onPressed: () {
-                  // Submit the details filled
+                  // go to the idenity verification page
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
                 },
                 style: kButtonStyle,
               ),
