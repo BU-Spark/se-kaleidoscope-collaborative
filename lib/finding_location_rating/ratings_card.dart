@@ -44,27 +44,14 @@ class _RatingPageState extends State<RatingPage> {
             const SizedBox(height: 10),
             // Pad the text to the right 
             const Padding(
-              padding: EdgeInsets.only(left: 20, right: 45),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // HERE, FOR BACKEND IMPLEMENTATION: this will be RETRIEVED from the database, the children are TEMP values 
-                children: [
-                  Text(
-                    'I’ve been going for a few weeks and my son loves it. He gets to try new things in a safe environment. It also allows him to spend some time wit...',
-                    style: TextStyle(fontSize: 22),
-                  ),
-                  SizedBox(height: 8), // Add spacing between the two text lines
-                  Text(
-                    'Read more',
-                    style: TextStyle(
-                      fontSize: 18,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ],
+              padding: EdgeInsets.only(left: 20, right: 45), // Adjust the horizontal padding as needed
+              child: ExpandableText(
+                initialText: 'I’ve been going for a few weeks and my son loves it. He gets to try new things in a safe environment.',
+                expandedText:
+                    'I’ve been going for a few weeks and my son loves it. He gets to try new things in a safe environment. It also allows him to spend some time with friends and learn important social skills.',
               ),
-            ),        
-            SizedBox(height: 20), // Add spacing between the existing content and the FeatureBoxes
+            ),       
+            const SizedBox(height: 20), // Add spacing between the existing content and the FeatureBoxes
             FeatureBoxes(),
           ],
           
@@ -74,16 +61,51 @@ class _RatingPageState extends State<RatingPage> {
   }
 }
 
-class RatingBar extends StatefulWidget
- 
-{
-  const RatingBar({super.key});
+
+// Expanding text: 
+
+class ExpandableText extends StatefulWidget {
+  final String initialText;
+  final String expandedText;
+
+  const ExpandableText({required this.initialText, required this.expandedText});
 
   @override
-  _RatingBarState createState() => _RatingBarState();
+  _ExpandableTextState createState() => _ExpandableTextState();
 }
 
+class _ExpandableTextState extends State<ExpandableText> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          isExpanded ? widget.expandedText : widget.initialText,
+          style: TextStyle(fontSize: 22),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+          child: Text(isExpanded ? 'Read Less' : 'Read More'),
+        ),
+      ],
+    );
+  }
+}
+
+
 // Rating bar: 
+class RatingBar extends StatefulWidget {
+  const RatingBar({super.key});
+  @override
+  _RatingBarState createState() => _RatingBarState(); 
+  }
 class _RatingBarState extends State<RatingBar> {
   int rating = 0;
 
