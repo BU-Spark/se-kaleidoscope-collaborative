@@ -76,6 +76,7 @@ class _FirstScreenState extends State<FirstScreen> {
               ),
             ),
 
+          
               TextButton(
                 child: Text('Skip for now'),
                 onPressed: () {
