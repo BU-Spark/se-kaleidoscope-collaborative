@@ -11,7 +11,6 @@ class FirstScreen extends StatefulWidget{
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,10 +39,13 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                  );
                 },
                 style: kButtonStyle,
-                child: const Text(
+                child: Text(
                   'Sign Up',
                   style: kButtonTextStyle,
                 ),
@@ -51,32 +53,34 @@ class _FirstScreenState extends State<FirstScreen> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
                 },
                 style: kButtonStyle,
-                child: const Text(
+                child: Text(
                   'Log In',
                   style: kButtonTextStyle,
                 ),
               ),
 
-              // HERE IS TESTING THE RATING CARD: 
+              // HERE IS TESTING THE RATING CARD:
               SizedBox(height: 10),
-              Positioned( 
-                bottom: 0, 
-                child: ElevatedButton(
+              ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => RatingPage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RatingPage()),
+                  );
                 },
                 style: kButtonStyle,
-                child: const Text(
+                child: Text(
                   'Rating Card',
-                  style: kButtonTextStyle, 
-                )
+                  style: kButtonTextStyle,
+                ),
               ),
-            ),
 
-          
               TextButton(
                 child: Text('Skip for now'),
                 onPressed: () {
