@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/constants.dart';
+import "first_screen.dart";
 
 
 class SignupScreen extends StatefulWidget{
@@ -18,6 +19,10 @@ class _SignupScreenState extends State<SignupScreen> {
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             // Handle back button press
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => FirstScreen()),
+          );
           },
         ),
         elevation: 0, // Removes the shadow under the app bar

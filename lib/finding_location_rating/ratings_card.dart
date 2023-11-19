@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
+import './search_page_1_0.dart';
 
 class RatingPage extends StatefulWidget
  
@@ -53,6 +54,16 @@ class _RatingPageState extends State<RatingPage> {
             ),       
             const SizedBox(height: 20), // Add spacing between the existing content and the FeatureBoxes
             FeatureBoxes(),
+            // an elevated button that navigates to the search page
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchPage()),
+                );
+              },
+              child: const Text('Search Page'),
+            ),
           ],
           
       ),
