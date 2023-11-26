@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
-// Implementing the 1.0 Sign Up Landing Page
+// Implementing the 1.1 Review Page
 
 class AddReviewPage extends StatefulWidget{
   const AddReviewPage({super.key});
@@ -37,60 +37,46 @@ class _AddReviewPageState extends State<AddReviewPage> {
 
             // Organization Title
             Text(
-              'Sign Up',
+              'Organization Name',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 48),
+            SizedBox(height: 10),
 
             Text(
-              'Sign Up',
+              'Organization Type',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
               ),
             ),
             SizedBox(height: 48),
 
-            // ElevatedButton(
-            //   onPressed: () {
-            //       Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
-            //   },
-            //   child: Text('Sign Up in App'),
-            //   style: kButtonStyle
-            // ),
-            // SizedBox(height: 16),
 
-            Row(
-              children: <Widget>[
-                Expanded(child: Divider(thickness: 1)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text('or'),
+            // Move to the next page
+            ElevatedButton(
+              onPressed: () {
+              },
+              child: Text('Next'),
+              style: kButtonStyle
+            ),
+            SizedBox(height: 16),
+
+            TextButton(
+              onPressed: () {
+                // TODO: need to link to the business page - where the add a review button is
+              },
+              child: Text(
+                  'Back to business page',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Color(0xFF6750A4),
+                  ),
                 ),
-                Expanded(child: Divider(thickness: 1)),
-              ],
-            ),
-            SizedBox(height: 16),
-
-            // Sign Up with Facebook Button
-            ElevatedButton(
-              onPressed: () {
-              },
-              child: Text('Sign Up with Facebook'),
-              style: kButtonStyle
-            ),
-            SizedBox(height: 16),
-
-            ElevatedButton(
-              onPressed: () {
-              },
-              child: Text('Sign Up with Google'),
-              style: kButtonStyle
             ),
           ],
         ),
