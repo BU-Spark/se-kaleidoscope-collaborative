@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// direct to the sample search result, TO BE UPDATED AFTER API IMPLEMENTATION
+import 'search_page_1_1.dart';
+
 
 class SearchPage extends StatefulWidget {
   @override
@@ -15,6 +18,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
+        // Back arrow bug, i just implemented another one to fix it 
         child: AppBar(
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -44,25 +48,32 @@ class _SearchPageState extends State<SearchPage> {
                 borderRadius: BorderRadius.circular(8),
               ),
               margin: EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                controller: _searchController,
-                focusNode: _searchFocus,
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                ),
-                onTap: () {
-                  FocusScope.of(context).requestFocus(_searchFocus);
-                },
-                onSubmitted: (query) {
-                  setState(() {
-                    _searchHistory.add(query);
-                    _searchController.clear();
-                  });
-                  // TODO: Perform search and display results
-                  // route this to firebase database and display results
-                },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocus,
+                      decoration: InputDecoration(
+                        hintText: 'Search',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(_searchFocus);
+                      },
+                      onSubmitted: (query) {
+                        _performSearch();
+                      },
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      _performSearch();
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -78,6 +89,25 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+
+void _performSearch() {
+  String query = _searchController.text;
+  if (query.isNotEmpty) {
+    setState(() {
+      _searchHistory.add(query);
+      _searchController.clear();
+    });
+
+    // Navigate to SearchPage1_1 with the query
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchPage1_1(),
+      ),
+    );
+  }
+}
+
 
   Widget _buildRecentSearches() {
     return _searchHistory.isNotEmpty
@@ -96,30 +126,33 @@ class _SearchPageState extends State<SearchPage> {
               ),
               SizedBox(height: 8),
               Container(
-                height: _searchHistory.length * 50.0, // Adjust the height based on the number of items
-                child: ListView.builder(
-                  itemCount: _searchHistory.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Chip(
-                            label: Text(_searchHistory[index]),
+                child: Column(
+                  children: List.generate(_searchHistory.length, (index) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Chip(
+                                label: Text(_searchHistory[index]),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.clear),
+                                onPressed: () {
+                                  setState(() {
+                                    _searchHistory.removeAt(index);
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              setState(() {
-                                _searchHistory.removeAt(index);
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        Divider(height: 1, color: Colors.grey),
+                      ],
                     );
-                  },
+                  }),
                 ),
               ),
             ],
