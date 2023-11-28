@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/login_complete.dart';
 
 
 class LoginScreen extends StatefulWidget{
@@ -12,6 +13,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final _passwordTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+
+  void clearText(TextEditingController controller) {
+    controller.clear();
+  }
 
   @override
   void dispose() {
@@ -53,21 +60,33 @@ class _LoginScreenState extends State<LoginScreen> {
               // Email input
               TextField(
                 focusNode: _emailFocus,
+                obscureText: false,
                 decoration: InputDecoration(
+                  border: OutlineInputBorder(),
                   labelText: 'Email',
-                  suffixIcon: Icon(Icons.close),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: ()=> clearText(_emailTextController),
+                  ),
                 ),
+                controller: _emailTextController,
               ),
+
               SizedBox(height: 16),
 
               // Password input
               TextField(
                 focusNode: _passwordFocus,
                 obscureText: true,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
                   labelText: 'Password',
-                  suffixIcon: Icon(Icons.close),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: ()=> clearText(_passwordTextController),
+                  ),
                 ),
+                controller: _passwordTextController,
               ),
               SizedBox(height: 32),
 
@@ -75,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 child: Text('Log In'),
                 onPressed: () {
-                  // Perform login
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage(username: 'Revathi',)));
                 },
                 style: kButtonStyle,
               ),
