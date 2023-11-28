@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/login_complete.dart';
+import 'package:kaleidoscope_collaborative/screens/forgot_password.dart';
 
 
 class LoginScreen extends StatefulWidget{
@@ -57,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: _emailFocus.hasFocus || _passwordFocus.hasFocus ? 20 : 48),
 
-              // Email input
               TextField(
                 focusNode: _emailFocus,
                 obscureText: false,
@@ -74,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
               SizedBox(height: 16),
 
-              // Password input
               TextField(
                 focusNode: _passwordFocus,
                 obscureText: true,
@@ -90,7 +89,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 32),
 
-              // Log In button
               ElevatedButton(
                 child: Text('Log In'),
                 onPressed: () {
@@ -101,12 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('Forgot password?'),
                 onPressed: () {
-                  // Forgot password
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
                 },
               ),
               SizedBox(height: 16),
 
-              // Divider with 'or'
               const Row(
                 children: <Widget>[
                   Expanded(child: Divider(
@@ -125,11 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 16),
 
-              // Social buttons
               ElevatedButton(
                 child: Text('Log In with Facebook'),
                 onPressed: () {
-                  // Facebook login
                 },
                 style: kButtonStyle,
               ),
@@ -137,17 +132,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 child: Text('Log In with Google'),
                 onPressed: () {
-                  // Google login
                 },
                 style: kButtonStyle,
               ),
               SizedBox(height: 32),
 
-              // Sign Up link
               TextButton(
                 child: Text('Don’t have an account? Sign Up'),
                 onPressed: () {
-                  // Forgot password
                 },
               ),
             ],
