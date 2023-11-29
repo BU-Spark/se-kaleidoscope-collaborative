@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/summaryReview_5_1.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class TextReviewPage extends StatefulWidget {
-  const TextReviewPage({Key? key}) : super(key: key);
+  final Map<String, int> parameterRatings;
+  const TextReviewPage({Key? key,required this.parameterRatings, }) : super(key: key);
 
   @override
   _TextReviewPageState createState() => _TextReviewPageState();
@@ -101,8 +103,17 @@ class _TextReviewPageState extends State<TextReviewPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Implement next logic
-                  },
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SummaryReviewPage(
+                        overallRating: 2,
+                        parameterRatings: widget.parameterRatings,
+                        writtenReview: _controller.text,
+                      ),
+                    ),
+                  );
+              },
                   child: Text('Submit'),
                   style: kSmallButtonStyle,
                 ),
