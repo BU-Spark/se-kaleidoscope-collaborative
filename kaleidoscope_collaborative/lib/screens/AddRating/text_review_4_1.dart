@@ -3,8 +3,9 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/summaryReview_5_1.d
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class TextReviewPage extends StatefulWidget {
+  final int overallRating;
   final Map<String, int> parameterRatings;
-  const TextReviewPage({Key? key,required this.parameterRatings, }) : super(key: key);
+  const TextReviewPage({Key? key,required this.overallRating,required this.parameterRatings, }) : super(key: key);
 
   @override
   _TextReviewPageState createState() => _TextReviewPageState();
@@ -95,9 +96,19 @@ class _TextReviewPageState extends State<TextReviewPage> {
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
-                    // Implement skip logic
-                     Navigator.pop(context, null); // Return null to indicate skipping
-                  },
+                   
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SummaryReviewPage(
+                            overallRating: widget.overallRating,
+                            parameterRatings: widget.parameterRatings,
+                            writtenReview: "[Skipped]",
+                          ),
+                        ),
+                      );
+      
+                   },
                   child: Text('Skip and Submit'),
                   style: kSmallButtonStyle,
                 ),
@@ -107,7 +118,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => SummaryReviewPage(
-                        overallRating: 2,
+                        overallRating: widget.overallRating,
                         parameterRatings: widget.parameterRatings,
                         writtenReview: _controller.text,
                       ),
