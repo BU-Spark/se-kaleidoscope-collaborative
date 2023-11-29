@@ -74,19 +74,105 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
             ),
             SizedBox(height: 48),
 
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChooseRatingParametersPage(),
+            Row(
+              children: < Widget>[
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChooseRatingParametersPage(),
+                        ),
+                      );
+                    },
+                    child: Text('Wheelchair Accessible'),
+                    style: kAccommodationButtonStyle,
                   ),
-                );
-              },
-              child: Text('Next'),
-              style: kSmallButtonStyle,
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChooseRatingParametersPage(),
+                        ),
+                      );
+                    },
+                    child: Text('ASL Available'),
+                    style: kAccommodationButtonStyle,
+                  ),
+                ),
+                SizedBox(width: 16),
+
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChooseRatingParametersPage(),
+                        ),
+                      );
+                    },
+                    child: Text('ASL Available'),
+                    style: kAccommodationButtonStyle,
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 16),
+
+            Row(
+              children: < Widget>[
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChooseRatingParametersPage(),
+                        ),
+                      );
+                    },
+                    child: Text('Skip'),
+                    style: kSmallButtonStyle,
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChooseRatingParametersPage(),
+                        ),
+                      );
+                    },
+                    child: Text('Next'),
+                    style: kSmallButtonStyle,
+                  ),
+                ),
+              ],
+            ),
+
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => ChooseRatingParametersPage(),
+            //       ),
+            //     );
+            //   },
+            //   child: Text('Next'),
+            //   style: kSmallButtonStyle,
+            // ),
+            // SizedBox(height: 16),
 
             Align(
                   alignment: Alignment.center,
