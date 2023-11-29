@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/password_reset_verification.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -75,7 +76,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ElevatedButton(
                 child: Text('Send Email'),
                 onPressed: () {
-
+                  String email = _emailTextController.text;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: email,  verification_type: 'email',)));
                 },
                 style: kButtonStyle,
               ),
@@ -104,6 +106,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ElevatedButton(
                 child: Text('Send to Phone'),
                 onPressed: () {
+                  String number = _phoneTextController.text;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: number, verification_type: "text",)));
                 },
                 style: kButtonStyle,
               ),
