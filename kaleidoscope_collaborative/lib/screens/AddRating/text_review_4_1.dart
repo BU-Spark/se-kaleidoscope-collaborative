@@ -71,6 +71,14 @@ class _TextReviewPageState extends State<TextReviewPage> {
               maxLines: 10,
               decoration: InputDecoration(
                 hintText: 'What did you like or dislike about your experience at this business?',
+                // Border when the TextField is not in focus
+                enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 1.0),
+              ),
+              // Border when the TextField is in focus
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF6750A4), width: 2.0),
+              ),
               ),
               onChanged: (text) {
                 setState(() {
@@ -80,18 +88,43 @@ class _TextReviewPageState extends State<TextReviewPage> {
             ),
             SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: _hasWrittenReview ? () {
-                // Implement submit logic with _controller.text
-              } : null,
-              child: Text('Submit'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement skip logic
+                     Navigator.pop(context, null); // Return null to indicate skipping
+                  },
+                  child: Text('Skip and Submit'),
+                  style: kSmallButtonStyle,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement next logic
+                  },
+                  child: Text('Submit'),
+                  style: kSmallButtonStyle,
+                ),
+
+              ],
+
             ),
-            TextButton(
-              onPressed: () {
-                // Implement skip and submit logic
-              },
-              child: Text('Skip and Submit'),
-            ),
+            SizedBox(height: 16),
+
+            Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      'Back to business page',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xFF6750A4),
+                      ),
+                    ),
+                  ),
+                ),
           ],
         ),
       ),
