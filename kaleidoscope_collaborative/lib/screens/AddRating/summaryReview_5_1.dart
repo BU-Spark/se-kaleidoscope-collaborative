@@ -25,7 +25,10 @@ class SummaryReviewPage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Padding(
+      body: Scrollbar(
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,6 +183,8 @@ class SummaryReviewPage extends StatelessWidget {
             SizedBox(height: 16),
 
           ],
+        ),
+      ),
         ),
       ),
     );
