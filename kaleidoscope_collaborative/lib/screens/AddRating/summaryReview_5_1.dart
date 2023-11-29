@@ -99,10 +99,11 @@ class SummaryReviewPage extends StatelessWidget {
                   onPressed: null,);
               }),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text('Accommodation Rating', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            
             // Display parameter ratings
-            // ...
             Column(
               children: parameterRatings.entries.map((entry) {
                 return Column(
