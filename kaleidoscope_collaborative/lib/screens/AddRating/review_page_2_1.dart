@@ -157,6 +157,10 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                 ElevatedButton(
                   onPressed: () {
                     // Implement skip logic
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,)), 
+                    );
                   },
                   child: Text('Skip'),
                   style: kSmallButtonStyle,
@@ -174,7 +178,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
 
                       // Handle the result here, e.g., save the rating for each parameter
                       // Store the rating; if the result is null, it indicates that the user skipped this parameter
-                      parameterRatings[parameter] = rating ?? -1;
+                      if (rating != null) {
+                      parameterRatings[parameter] = rating;}
                       // If result is null, the user may have skipped rating this parameter
                     }
                     // After rating all parameters, navigate to the TextReviewPage
