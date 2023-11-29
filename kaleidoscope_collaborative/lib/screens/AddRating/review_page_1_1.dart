@@ -88,16 +88,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
               style: kSmallButtonStyle,
             ),
             SizedBox(height: 16),
-            // TextButton(
-            //   onPressed: () => Navigator.of(context).pop(),
-            //   child: Text(
-            //     'Back to business page',
-            //     style: TextStyle(
-            //       decoration: TextDecoration.underline,
-            //       color: Color(0xFF6750A4),
-            //     ),
-            //   ),
-            // ),
+
             Align(
                   alignment: Alignment.center,
                   child: TextButton(
