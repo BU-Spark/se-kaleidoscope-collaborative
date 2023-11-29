@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'login_screen.dart';
 import 'signupLandingPage.dart';
-import 'AddRating/review_page_1_1.dart';
+import 'AddRating/review_page_1_1_overallRatingPage.dart';
 
 class FirstScreen extends StatefulWidget{
   const FirstScreen({super.key});
