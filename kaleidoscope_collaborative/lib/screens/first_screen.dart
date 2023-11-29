@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';
 import 'signupLandingPage.dart';
@@ -61,7 +62,6 @@ class _FirstScreenState extends State<FirstScreen> {
               TextButton(
                 child: Text('Skip for now'),
                 onPressed: () {
-                  // Handle Skip
                 },
               ),
               Spacer(),

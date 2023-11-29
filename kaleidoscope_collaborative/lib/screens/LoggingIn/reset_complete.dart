@@ -1,6 +1,26 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 
-class PasswordConfirmedScreen extends StatelessWidget {
+
+class PasswordConfirmedScreen extends StatefulWidget {
+  @override
+  _PasswordConfirmedScreenState createState() => _PasswordConfirmedScreenState();
+}
+
+class _PasswordConfirmedScreenState extends State<PasswordConfirmedScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,3 +45,4 @@ class PasswordConfirmedScreen extends StatelessWidget {
     );
   }
 }
+
