@@ -10,6 +10,26 @@ final kButtonStyle = ElevatedButton.styleFrom(
   ),
 );
 
+final kSmallButtonStyle = ElevatedButton.styleFrom(
+  primary: Color(0xFF6750A4),
+  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(100),
+  ),
+);
+
+final kAccommodationButtonStyle = OutlinedButton.styleFrom(
+  // primary: Color(,
+  // padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+  // shape: RoundedRectangleBorder(
+  //   borderRadius: BorderRadius.circular(100),
+  primary: Colors.black,
+            side: BorderSide(
+              color: Colors.black,
+            ),
+);
+
+
 const kButtonTextStyle = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w500,
