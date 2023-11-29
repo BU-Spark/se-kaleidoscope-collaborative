@@ -18,6 +18,10 @@ class SummaryReviewPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Review Summary', style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -67,10 +71,29 @@ class SummaryReviewPage extends StatelessWidget {
             // Display stars for overall rating
             Row(
               children: List.generate(5, (index) {
-                return Icon(
-                  index < overallRating ? Icons.star : Icons.star_border,
-                  color: index < overallRating ? Colors.amber : Colors.grey,
-                );
+                return IconButton(
+                  icon: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      // Circle icon as the background
+                      Icon(
+
+                        index < overallRating ? Icons.circle : Icons.circle,
+                        color: index < overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        size: 30, 
+                      ),
+                      // Star icon on top of the circle
+                      Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.star,
+                          color: Colors.white, // The color for the circle
+                          size: 28, // The size of the circle
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: null,);
               }),
             ),
             SizedBox(height: 20),
@@ -85,10 +108,29 @@ class SummaryReviewPage extends StatelessWidget {
                     Text(entry.key),
                     Row(
               children: List.generate(5, (index) {
-                return Icon(
-                  index < entry.value ? Icons.star : Icons.star_border,
-                  color: index < entry.value ? Colors.amber : Colors.grey,
-                );
+                return IconButton(
+                  icon: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      // Circle icon as the background
+                      Icon(
+
+                        index < overallRating ? Icons.circle : Icons.circle,
+                        color: index < overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        size: 30, 
+                      ),
+                      // Star icon on top of the circle
+                      Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.star,
+                          color: Colors.white, // The color for the circle
+                          size: 28, // The size of the circle
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: null,);
               }),
             ),
                     ],
