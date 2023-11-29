@@ -78,8 +78,6 @@ class _AddReviewPageState extends State<AddReviewPage> {
             
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              // mainAxisSize: MainAxisSize.max,
               children: 
               List.generate(5, (index) {
                 
