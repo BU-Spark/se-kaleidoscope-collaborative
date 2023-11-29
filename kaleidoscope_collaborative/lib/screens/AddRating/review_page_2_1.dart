@@ -11,6 +11,7 @@ class ChooseRatingParametersPage extends StatefulWidget {
 }
 
 class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage> {
+  final Map<String, int> parameterRatings = {};
   // Map to keep track of each category and its items
   Map<String, List<String>> categoryItems = {
     'Mobility accommodation': ['Accessible Washroom', 'Alternative Entrance', 'Handrails', 'Elevator', 'Lowered Counter', 'Ramp'],
@@ -163,7 +164,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                   onPressed: () async {
                     for (String parameter in selectedItems) {
                       // Wait for the ParameterRatingPage to pop before continuing to the next item
-                      final result = await Navigator.push(
+                      final int? rating = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ParameterRatingPage(parameterName: parameter),
@@ -171,12 +172,14 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                       );
 
                       // Handle the result here, e.g., save the rating for each parameter
+                      // Store the rating; if the result is null, it indicates that the user skipped this parameter
+                      parameterRatings[parameter] = rating ?? -1;
                       // If result is null, the user may have skipped rating this parameter
                     }
                     // After rating all parameters, navigate to the TextReviewPage
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TextReviewPage()), // Ensure TextReviewPage is defined and imported
+                      MaterialPageRoute(builder: (context) => TextReviewPage(parameterRatings: parameterRatings,)), 
                     );
                     
                     // After rating all parameters, you might navigate to a summary or review submission page
