@@ -118,7 +118,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChooseRatingParametersPage(),
+                    builder: (context) => ChooseRatingParametersPage(overallRating: overallRating),
                   ),
                 );
               },
