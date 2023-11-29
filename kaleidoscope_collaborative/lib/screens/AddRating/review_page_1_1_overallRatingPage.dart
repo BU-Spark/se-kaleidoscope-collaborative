@@ -10,6 +10,7 @@ class AddReviewPage extends StatefulWidget {
 }
 
 class _AddReviewPageState extends State<AddReviewPage> {
+  int overallRating = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,9 +70,48 @@ class _AddReviewPageState extends State<AddReviewPage> {
               'How would you rate this business?',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            SizedBox(height: 48),
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // mainAxisSize: MainAxisSize.max,
+              children: 
+              List.generate(5, (index) {
+                
+                return IconButton(
+                  icon: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      // Circle icon as the background
+                      Icon(
+
+                        index < overallRating ? Icons.circle : Icons.circle,
+                        color: index < overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        size: 60, 
+                      ),
+                      // Star icon on top of the circle
+                      Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.star,
+                          color: Colors.white, // The color for the circle
+                          size: 58, // The size of the circle
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      overallRating = index + 1;
+                    });
+                  },
+                );
+              }),
             ),
             SizedBox(height: 48),
 
