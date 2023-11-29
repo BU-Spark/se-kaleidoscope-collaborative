@@ -80,7 +80,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Life Ki Do Martial Arts'),
+        title: Text('Choose Rating Parameters Page', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
@@ -127,6 +127,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 20),
             Text(
               'What accommodation(s) have you observed here?',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
