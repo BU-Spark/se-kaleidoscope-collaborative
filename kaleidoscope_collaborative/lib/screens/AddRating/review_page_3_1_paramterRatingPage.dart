@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
 class ParameterRatingPage extends StatefulWidget {
   final String parameterName;
-
   const ParameterRatingPage({Key? key, required this.parameterName}) : super(key: key);
 
   @override
@@ -12,29 +12,73 @@ class ParameterRatingPage extends StatefulWidget {
 
 class _ParameterRatingPageState extends State<ParameterRatingPage> {
   int parameterRating = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Life Ki Do Martial Arts', style: TextStyle(color: Colors.black)),
+        title: Text('Accomodation Rating Page', style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 0, // Removes the shadow under the app bar
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Row(
+              children: <Widget>[
+                // Small Image on the top left corner
+                Image.asset(
+                  'images/dummy.jpg',
+                  width: 117.0, // Set the width to match your design
+                  height: 99.0, // Set the height to match your design
+                ),
+                SizedBox(width: 16.0), // Add some spacing between the image and text
+                // Organization Title and Type
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Organization Name',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Organization Type',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 48),
+                  ],
+                ),
+              ],
+            ),
+            Column( 
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 20),
             Text(
               'How would you rate ${widget.parameterName} at this business?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            // Star rating widget, similar to the OverallRatingPage
+            SizedBox(height: 48),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              // mainAxisSize: MainAxisSize.max,
               children: 
               List.generate(5, (index) {
                 
@@ -69,15 +113,14 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
               }),
             ),
             SizedBox(height: 48),
-            // ... (Reuse the star rating widget code here)
-            // Next button and back to business page
-            SizedBox(height: 20),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
                     // Implement skip logic
+                     Navigator.pop(context, null); // Return null to indicate skipping
                   },
                   child: Text('Skip'),
                   style: kSmallButtonStyle,
@@ -85,6 +128,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                 ElevatedButton(
                   onPressed: () {
                     // Implement next logic
+                    Navigator.pop(context, parameterRating); // Return the rating
                   },
                   child: Text('Next'),
                   style: kSmallButtonStyle,
@@ -94,6 +138,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
 
             ),
             SizedBox(height: 16),
+
             Align(
                   alignment: Alignment.center,
                   child: TextButton(
@@ -109,6 +154,8 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                 ),
           ],
         ),
+      ],
+      ),
       ),
     );
   }
