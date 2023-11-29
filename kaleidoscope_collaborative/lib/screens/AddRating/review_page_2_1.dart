@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class ChooseRatingParametersPage extends StatefulWidget {
@@ -172,6 +173,11 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                       // Handle the result here, e.g., save the rating for each parameter
                       // If result is null, the user may have skipped rating this parameter
                     }
+                    // After rating all parameters, navigate to the TextReviewPage
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TextReviewPage()), // Ensure TextReviewPage is defined and imported
+                    );
                     
                     // After rating all parameters, you might navigate to a summary or review submission page
                   },
