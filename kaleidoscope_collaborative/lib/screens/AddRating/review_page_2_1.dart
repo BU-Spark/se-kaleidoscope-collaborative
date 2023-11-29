@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class ChooseRatingParametersPage extends StatefulWidget {
@@ -158,8 +159,21 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                   style: kSmallButtonStyle,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // Implement next logic
+                  onPressed: () async {
+                    for (String parameter in selectedItems) {
+                      // Wait for the ParameterRatingPage to pop before continuing to the next item
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ParameterRatingPage(parameterName: parameter),
+                        ),
+                      );
+
+                      // Handle the result here, e.g., save the rating for each parameter
+                      // If result is null, the user may have skipped rating this parameter
+                    }
+                    
+                    // After rating all parameters, you might navigate to a summary or review submission page
                   },
                   child: Text('Next'),
                   style: kSmallButtonStyle,
