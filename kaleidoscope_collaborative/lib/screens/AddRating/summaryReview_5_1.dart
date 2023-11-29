@@ -26,6 +26,40 @@ class SummaryReviewPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Row(
+              children: <Widget>[
+                // Small Image on the top left corner
+                Image.asset(
+                  'images/dummy.jpg',
+                  width: 117.0, // Set the width to match your design
+                  height: 99.0, // Set the height to match your design
+                ),
+                SizedBox(width: 16.0), // Add some spacing between the image and text
+                // Organization Title and Type
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Organization Name',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Organization Type',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 48),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
             Text('Your review has been submitted successfully!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             Text('Here\'s a summary of your review:', style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
@@ -43,6 +77,24 @@ class SummaryReviewPage extends StatelessWidget {
             Text('Accommodation Rating', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             // Display parameter ratings
             // ...
+            Column(
+              children: parameterRatings.entries.map((entry) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(entry.key),
+                    Row(
+              children: List.generate(5, (index) {
+                return Icon(
+                  index < entry.value ? Icons.star : Icons.star_border,
+                  color: index < entry.value ? Colors.amber : Colors.grey,
+                );
+              }),
+            ),
+                    ],
+                );
+              }).toList(),
+            ),
             if (writtenReview != null) ...[
               SizedBox(height: 20),
               Text('Written Review', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
