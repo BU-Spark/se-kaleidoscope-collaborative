@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'login_screen.dart';
+import 'LoggingIn/constants.dart';
+import 'LoggingIn/login_screen.dart';
 import 'signupLandingPage.dart';
 
 class FirstScreen extends StatefulWidget{

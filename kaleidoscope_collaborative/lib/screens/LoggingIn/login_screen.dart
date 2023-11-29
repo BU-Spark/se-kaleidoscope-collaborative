@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
-import 'package:kaleidoscope_collaborative/screens/login_complete.dart';
-import 'package:kaleidoscope_collaborative/screens/forgot_password.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
 
 
 class LoginScreen extends StatefulWidget{

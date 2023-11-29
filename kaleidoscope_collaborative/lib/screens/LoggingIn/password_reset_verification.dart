@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/verification_complete.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/verification_complete.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
 
 class VerificationCodeScreen extends StatefulWidget {

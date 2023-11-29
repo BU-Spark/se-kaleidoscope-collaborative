@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
-import 'package:kaleidoscope_collaborative/screens/password_reset_verification.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/password_reset_verification.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/reset_complete.dart';
 
 class CreatePassword extends StatefulWidget {
   const CreatePassword({Key? key}) : super(key: key);
@@ -95,7 +96,7 @@ class _CreatePasswordState extends State<CreatePassword> {
               ElevatedButton(
                 child: Text('Reset Password'),
                 onPressed: () {
-                  // Implement password reset logic
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PasswordConfirmedScreen()));
                 },
                 style: kButtonStyle,
               ),
