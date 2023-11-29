@@ -147,20 +147,28 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
               buildCategoryChips(category),
             ],
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Implement skip logic
-              },
-              child: Text('Skip'),
-              style: kSmallButtonStyle,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement skip logic
+                  },
+                  child: Text('Skip'),
+                  style: kSmallButtonStyle,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Implement next logic
+                  },
+                  child: Text('Next'),
+                  style: kSmallButtonStyle,
+                ),
+
+              ],
+
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Implement next logic
-              },
-              child: Text('Next'),
-              style: kSmallButtonStyle,
-            ),
+            SizedBox(height: 16),
             Align(
                   alignment: Alignment.center,
                   child: TextButton(
@@ -174,8 +182,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     ),
                   ),
                 ),
-          ],
-        ),
+              ],
+            ),
           ],
         ),
       ),
