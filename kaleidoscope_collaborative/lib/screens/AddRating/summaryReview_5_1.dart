@@ -140,22 +140,45 @@ class SummaryReviewPage extends StatelessWidget {
             if (writtenReview != null) ...[
               SizedBox(height: 20),
               Text('Written Review', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text(writtenReview!, style: TextStyle(fontSize: 16)),
+             TextField(
+                controller: TextEditingController(text: writtenReview),
+                maxLines: 10,
+                enabled: false, // This makes the TextField non-editable
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                ),
+              ),
             ],
             SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: () {
-                // Go back to the business page or home page
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                   
+                   },
+                  child: Text('Back to Business'),
+                  style: kSmallButtonStyle,
+                ),
+                ElevatedButton(
+                  onPressed: () {
               },
-              child: Text('Back to Business'),
+                  child: Text('Homepage'),
+                  style: kSmallButtonStyle,
+                ),
+
+              ],
+
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Go to the home page
-              },
-              child: Text('Homepage'),
-            ),
+            SizedBox(height: 16),
+
           ],
         ),
       ),
