@@ -4,7 +4,8 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dar
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class ChooseRatingParametersPage extends StatefulWidget {
-  const ChooseRatingParametersPage({Key? key}) : super(key: key);
+  final int overallRating;
+  const ChooseRatingParametersPage({Key? key, required this.overallRating}) : super(key: key);
 
   @override
   _ChooseRatingParametersPageState createState() => _ChooseRatingParametersPageState();
@@ -179,7 +180,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     // After rating all parameters, navigate to the TextReviewPage
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TextReviewPage(parameterRatings: parameterRatings,)), 
+                      MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,)), 
                     );
                     
                     // After rating all parameters, you might navigate to a summary or review submission page
