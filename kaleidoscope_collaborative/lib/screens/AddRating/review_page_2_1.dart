@@ -59,7 +59,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Life Ki Do Martial Arts'),
+        title: Text('Choose Rating Parameter Page', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
@@ -68,7 +68,45 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                // Small Image on the top left corner
+                Image.asset(
+                  'images/dummy.jpg',
+                  width: 117.0, // Set the width to match your design
+                  height: 99.0, // Set the height to match your design
+                ),
+                SizedBox(width: 16.0), // Add some spacing between the image and text
+                // Organization Title and Type
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Organization Name',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Organization Type',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 48),
+                  ],
+                ),
+              ],
+            ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 20),
+
             Text(
               'What accommodation(s) have you observed here?',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -119,12 +157,22 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
               ],
             ),
             const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                // Back to business page logic
-              },
-              child: const Text('Back to business page'),
-            ),
+
+            Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      'Back to business page',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xFF6750A4),
+                      ),
+                    ),
+                  ),
+                ),
+          ],
+        ),
           ],
         ),
       ),
