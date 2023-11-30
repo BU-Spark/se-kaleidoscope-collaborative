@@ -55,7 +55,7 @@ class _SearchPageState extends State<SearchPage> {
                       controller: _searchController,
                       focusNode: _searchFocus,
                       decoration: InputDecoration(
-                        hintText: 'Search',
+                        hintText: 'Type business, address or name',
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 16),
                       ),
@@ -90,6 +90,8 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+// PERFORMS THE SEARCH BAR FUNCTION 
+
 void _performSearch() {
   String query = _searchController.text;
   if (query.isNotEmpty) {
@@ -102,35 +104,41 @@ void _performSearch() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchPage1_1(),
+        builder: (context) => SearchPage1_1(query: query),
       ),
     );
   }
 }
 
 
-  Widget _buildRecentSearches() {
-    return _searchHistory.isNotEmpty
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Recent Searches',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+
+// RECENT SEARCHES LOGIC 
+Widget _buildRecentSearches() {
+  return _searchHistory.isNotEmpty
+      ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Recent Searches',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
-              SizedBox(height: 8),
-              Container(
-                child: Column(
-                  children: List.generate(_searchHistory.length, (index) {
-                    return Column(
-                      children: [
-                        Padding(
+            ),
+            SizedBox(height: 8),
+            Container(
+              child: Column(
+                children: List.generate(_searchHistory.length, (index) {
+                  return Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _navigateToSearchPage1_1(_searchHistory[index]);
+                        },
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,14 +157,24 @@ void _performSearch() {
                             ],
                           ),
                         ),
-                        Divider(height: 1, color: Colors.grey),
-                      ],
-                    );
-                  }),
-                ),
+                      ),
+                      Divider(height: 1, color: Colors.grey),
+                    ],
+                  );
+                }),
               ),
-            ],
-          )
-        : Container();
+            ),
+          ],
+        )
+      : Container();
+}
+
+  void _navigateToSearchPage1_1(String query) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SearchPage1_1(query: query),
+      ),
+    );
   }
 }
