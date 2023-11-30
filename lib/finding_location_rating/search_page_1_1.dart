@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'search_page_1_2.dart';
 
 class SearchPage1_1 extends StatefulWidget {
   final String query;
@@ -83,8 +84,12 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Text("Filters", style: TextStyle(fontSize: 18)),
+                  SizedBox(height: 8),
+                  Text("Please select the accommodation you need. Pre-selected accommodations are based on your profile.", style: TextStyle(fontSize: 14)),
+                  SizedBox(height: 16),
                   _buildBoldedWordRowWithBoxes(
-                    "Filter",
+                    "Accomodation(s) Needed",
                     selectedFilters.isEmpty
                         ? []
                         : selectedFilters
@@ -135,70 +140,98 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            word,
-            style: TextStyle(fontWeight: FontWeight.bold),
+      
+     // Show Results Button
+      bottomNavigationBar: Container(
+        color: Colors.deepPurple,
+        child: TextButton(
+          onPressed: () {
+            _showResults();
+          },
+          child: Text(
+            "Show Results",
+            style: TextStyle(color: Colors.white),
           ),
-          SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
-          ),
-        ],
+        ),
       ),
     );
   }
+  // Send in both the initial query and the highlighted filters 
+void _showResults() {
+  // Navigate to search_page_1_2.dart with initial query and selected filters
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SearchPage1_2(
+        initialQuery: widget.query,
+        selectedFilters: selectedFilters,
+      ),
+    ),
+  );
+}
 
-  Widget _buildUniqueGrayBox(String word, String box) {
-    bool isSelected = selectedFilters.contains(box);
 
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (isSelected) {
-            selectedFilters.remove(box);
-          } else {
-            selectedFilters.add(box);
-          }
-        });
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 8, bottom: 8),
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.purple : Colors.grey,
-          borderRadius: BorderRadius.circular(4),
+Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          word,
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              box,
-              style: TextStyle(color: isSelected ? Colors.white : Colors.black),
-            ),
-            SizedBox(width: 4),
-            if (isSelected)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedFilters.remove(box);
-                  });
-                },
-                child: Icon(
-                  Icons.clear,
-                  color: Colors.white,
-                  size: 16,
-                ),
+        SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          children: boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildUniqueGrayBox(String word, String box) {
+  bool isSelected = selectedFilters.contains(box);
+
+  return GestureDetector(
+    onTap: () {
+      setState(() {
+        if (isSelected) {
+          selectedFilters.remove(box);
+        } else {
+          selectedFilters.add(box);
+        }
+      });
+    },
+    child: Container(
+      margin: EdgeInsets.only(right: 8, bottom: 8),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: isSelected ? Colors.purple : Colors.grey,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            box,
+            style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+          ),
+          SizedBox(width: 4),
+          if (isSelected)
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedFilters.remove(box);
+                });
+              },
+              child: Icon(
+                Icons.clear,
+                color: Colors.white,
+                size: 16,
               ),
+            ),
           ],
         ),
       ),

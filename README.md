@@ -26,3 +26,19 @@ source ~/.bash_profile
 
 
 ## Installing Flutter on Linux: see https://flutter.dev/docs/get-started/install/linux 
+
+
+
+## finding_location_rating folder: 
+This folder contains the code for the finding location and rating page. 
+
+1. Ratings_card.dart: 
+- This file contains the code for the rating card that is displayed on the finding location and rating page. 
+- Users can rate the location OR the a member from the organization by clicking on the stars. 
+- The rating is then displayed on the card. 
+
+TO BE COMPLETED:
+- The rating is not currently being saved to the database. 
+- The image of the member or business is not currently being displayed on the card. 
+
+2. search_page_1_0.dart: 
