@@ -39,22 +39,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 buildPage(
                   title: 'Welcome to\nKaleidoscope',
                   content: 'We are here to empower your experience with reviews from your community.',
-                  imagePath: 'images/logo.jpg', // Replace with your image path
+                  imagePath: 'images/welcome.jpg', // Replace with your image path
                 ),
                 buildPage(
                   title: 'Explore',
                   content: 'Read reviews about disability accommodations at locations around you',
-                  imagePath: 'images/logo.jpg', // Replace with your image path
+                  imagePath: 'images/explore.jpg', // Replace with your image path
                 ),
                 buildPage(
                   title: 'Share',
                   content: 'Share your experience and help others by writing reviews',
-                  imagePath: 'images/logo.jpg', // Replace with your image path
+                  imagePath: 'images/share.jpg', // Replace with your image path
                 ),
                 buildPage(
                   title: 'Personalize',
                   content: 'Customize your search settings for a more personalized experience',
-                  imagePath: 'images/logo.jpg', // Replace with your image path
+                  imagePath: 'images/personalize.jpg', // Replace with your image path
                 ),
               ],
             ),
