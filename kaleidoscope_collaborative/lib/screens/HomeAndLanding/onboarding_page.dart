@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -102,7 +103,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (_currentPage == _numPages - 1)
                   TextButton(
                     onPressed: () {
-                      // Do something when 'Finish' is pressed
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
                     },
                     child: Text('Finish'),
                     style: TextButton.styleFrom(
