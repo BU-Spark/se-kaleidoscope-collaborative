@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'login_screen.dart';
 import 'signupLandingPage.dart';
+import 'AddRating/review_page_1_1_overallRatingPage.dart';
 
 class FirstScreen extends StatefulWidget{
   const FirstScreen({super.key});
@@ -63,6 +64,21 @@ class _FirstScreenState extends State<FirstScreen> {
                 onPressed: () {
                   // Handle Skip
                 },
+              ),
+
+              // Temporary buttons for testing
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddReviewPage()),
+                  );
+                },
+                style: kButtonStyle,
+                child: Text(
+                  'Add a Rating',
+                  style: kButtonTextStyle,
+                ),
               ),
               Spacer(),
             ],

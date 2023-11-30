@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'identity_verification.dart';
 
 
 class SignupScreen extends StatefulWidget{
@@ -28,6 +29,23 @@ class _SignupScreenState extends State<SignupScreen> {
   final _confirmEmailTextController = TextEditingController();
   final _phoneNumberTextController = TextEditingController();
   final _confirmPhoneNumberTextController = TextEditingController();
+
+  bool isEmailActive = true;
+  bool isPhoneNumberActive = true;
+
+  void setEmailActive() {
+    setState(() {
+      isEmailActive = true;
+      isPhoneNumberActive = false;
+    });
+  }
+
+  void setPhoneNumberActive() {
+    setState(() {
+      isEmailActive = false;
+      isPhoneNumberActive = true;
+    });
+  }
 
 
   void clearText(TextEditingController controller) {
@@ -176,23 +194,30 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 32),
 
                 // Email input
-                TextField(
-                  focusNode: _emailFocus,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_emailTextController),
+                GestureDetector(
+                  child:
+                    TextField(
+                      focusNode: _emailFocus,
+                      enabled: isEmailActive,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email',
+                        suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: ()=> clearText(_emailTextController),
+                        ),
+                      ),
+                      controller: _emailTextController,
+                      onTap: () => setEmailActive(),
                     ),
-                  ),
-                  controller: _emailTextController,
+                    onTap: () => setEmailActive(),
                 ),
                 SizedBox(height: 16),
 
                 // Confirm Email input
                 TextField(
                   focusNode: _confirmEmailFocus,
+                  enabled: isEmailActive,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Email',
@@ -202,6 +227,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   controller: _confirmEmailTextController,
+                  onTap: () => setEmailActive(),
                 ),
                 SizedBox(height: 32),
 
@@ -227,23 +253,30 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 32),
 
                 // Phone Number input
-                TextField(
-                  focusNode: _phoneNumberFocus,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Phone Number',
-                    suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_phoneNumberTextController),
+                GestureDetector(
+                child:
+                  TextField(
+                    focusNode: _phoneNumberFocus,
+                    enabled: isPhoneNumberActive,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Phone Number',
+                      suffixIcon: IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: ()=> clearText(_phoneNumberTextController),
+                      ),
                     ),
+                    controller: _phoneNumberTextController,
+                    onTap: () => setPhoneNumberActive(),
                   ),
-                  controller: _phoneNumberTextController,
-                ),
-                SizedBox(height: 16),
+                  onTap: () => setPhoneNumberActive(),
+                  ),
+                  SizedBox(height: 16),
 
                 // Confirm Phone Number input
                 TextField(
                   focusNode: _confirmPhoneNumberFocus,
+                  enabled: isPhoneNumberActive,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Phone Number',
@@ -253,13 +286,15 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   controller: _confirmPhoneNumberTextController,
+                  onTap: () => setPhoneNumberActive(),
                 ),
                 SizedBox(height: 32),
 
                 ElevatedButton(
                 child: Text('Submit'),
                 onPressed: () {
-                  // Submit the details filled
+                  // go to the idenity verification page
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
                 },
                 style: kButtonStyle,
               ),
