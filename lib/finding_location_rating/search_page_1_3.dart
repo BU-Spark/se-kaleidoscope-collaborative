@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+// THIS PAGE DISPLAYS THE SELECTED SEARCH RESULT, say Dentist one 
+
+// TO BE COMPLETELY UPDATED AFTER API IMPLEMENTATION 
+
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, String> result;
 
