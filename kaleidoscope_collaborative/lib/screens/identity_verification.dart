@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
+import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
 
 // Implementing the Idenity Verification Page
 
@@ -11,18 +12,35 @@ class IdentityVerificationPage extends StatefulWidget{
 }
 
 class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
-  final FocusNode _fnameFocus = FocusNode();
-  // final TextEditingController _fnameTextController = TextEditingController();
+   List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
+  bool _isCodeIncorrect = false;
+
+  // Call this function when the 4th box is filled
+  void _verifyCode() {
+    String enteredCode = _controllers.map((controller) => controller.text).join();
+    if (enteredCode == '1234') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => IdentityVerifiedPage()),
+      );
+    } else {
+      setState(() {
+        _isCodeIncorrect = true;
+      });
+    }
+  }
+  
   @override
   void dispose() {
-    _fnameFocus.dispose();
+    // Dispose the controllers when the state is disposed
+    _controllers.forEach((controller) => controller.dispose());
     super.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    _fnameFocus.addListener(() { setState(() {}); });
+    // _fnameFocus.addListener(() { setState(() {}); });
     bool _onEditing = true;
     String? _code;
     return Scaffold(
@@ -46,60 +64,50 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               width: 117.0, // Set the width to match your design
               height: 99.0, // Set the height to match your design
             ),
-            SizedBox(height: 100),
+            SizedBox(height: 40),
+
+            Text(
+              'Enter Verification Code',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
+              SizedBox(height: 70),
 
             Text(
               'Verification Code sent to ',
-              textAlign: TextAlign.center,),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.0)),
               SizedBox(height: 16),
 
+              Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: List.generate(4, (index) {
+    return SizedBox(
+      width: 50,
+      child: TextField(
+        controller: _controllers[index],
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          errorText: _isCodeIncorrect ? 'Incorrect code' : null, // Show error on the last box only
+        ),
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        onChanged: (value) {
+          if (value.length == 1 && index < 3) {
+            // Move to the next field if the current one is filled
+            FocusScope.of(context).nextFocus();
+          }
+          if (value.length == 1 && index == 3) {
+            // If the last box is filled, verify the code
+            _verifyCode();
+          }
+        },
+      ),
+    );
+  }),
+),
 
-            VerificationCode(
-              textStyle: TextStyle(fontSize: 21.0, decoration: TextDecoration.underline, color: Color(0xff0074e0)),
-              underlineColor: Color(0xff0074e0),
-              keyboardType: TextInputType.number,
-              length: 6,
-              // clearAll is NOT required, you can delete it
-              // takes any widget, so you can implement your design
-              onCompleted: (String value) {
-                setState(() {
-                  _code = value;
-                });
-              },
-              onEditing: (bool value) {
-                setState(() {
-                  _onEditing = value;
-                });
-              },
-            ),
-
-            // Row(
-            //   children: 
-              
-            //   <Widget>[
-            //     // First Name input
-            //     TextField(
-            //       focusNode: _fnameFocus,
-            //       decoration: InputDecoration(
-            //         border: OutlineInputBorder(),
-            //         labelText: 'First Name',
-            //         suffixIcon: IconButton(
-            //               icon: const Icon(Icons.clear), onPressed: () {  },
-            //               // onPressed: ()=> clearText(_fnameTextController),
-            //         ),
-            //       ),
-            //       controller: _fnameTextController,
-            //     ),
-            //   //   // Expanded(child: Divider(thickness: 1)),
-            //   //   Padding(
-            //   //     padding: EdgeInsets.symmetric(horizontal: 8),
-            //   //     child: Text('or'),
-            //   //   ),
-            //   //   // Expanded(child: Divider(thickness: 1)),
-            //   ],
-            // ),
-            // SizedBox(height: 16),
-
+            SizedBox(height: 16),
             Text(
               'Did not receive the text?',
               textAlign: TextAlign.center,),
