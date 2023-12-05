@@ -4,7 +4,13 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dar
 
 class ParameterRatingPage extends StatefulWidget {
   final String parameterName;
-  const ParameterRatingPage({Key? key, required this.parameterName}) : super(key: key);
+  final String OrganizationName;
+  final String OrganizationType;
+  final String UserId;
+  final String OrganizationId;
+  final String OrgImgLink;
+  const ParameterRatingPage({Key? key, required this.parameterName,required this.OrganizationName, required this.OrganizationType, 
+  required this.UserId, required this.OrganizationId , required this.OrgImgLink}) : super(key: key);
 
   @override
   _ParameterRatingPageState createState() => _ParameterRatingPageState();
@@ -33,7 +39,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  'images/dummy.jpg',
+                  '${widget.OrgImgLink}',
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
@@ -43,7 +49,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Organization Name',
+                      '${widget.OrganizationName}',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
@@ -51,7 +57,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Organization Type',
+                      '${widget.OrganizationType}',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
