@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
@@ -14,11 +15,48 @@ class ChooseRatingParametersPage extends StatefulWidget {
 class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage> {
   final Map<String, int> parameterRatings = {};
   // Map to keep track of each category and its items
-  Map<String, List<String>> categoryItems = {
-    'Mobility accommodation': ['Accessible Washroom', 'Alternative Entrance', 'Handrails', 'Elevator', 'Lowered Counter', 'Ramp'],
-    'Stimuli accommodation': ['Outdoor Access Only', 'Reduced Crowd', 'Scent Free', 'Digital Menu'],
-    'Communication accommodation': ['Braille', 'Customer Service', 'Service Animal Friendly', 'Sign Language'],
-  };
+  // Map<String, List<String>> categoryItems = {
+  //   'Mobility accommodation': ['Accessible Washroom', 'Alternative Entrance', 'Handrails', 'Elevator', 'Lowered Counter', 'Ramp'],
+  //   'Stimuli accommodation': ['Outdoor Access Only', 'Reduced Crowd', 'Scent Free', 'Digital Menu'],
+  //   'Communication accommodation': ['Braille', 'Customer Service', 'Service Animal Friendly', 'Sign Language'],
+  // };
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Map<String, List<String>> categoryItems = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAccommodations();
+  }
+  Future<void> fetchAccommodations() async {
+  Map<String, List<String>> accommodationsMap = {};
+
+  // Fetch the collection
+  QuerySnapshot querySnapshot = await _firestore.collection('Accommodation').get();
+
+  // Iterate through the documents and group by 'accommodation_category'
+  for (var doc in querySnapshot.docs) {
+    var data = doc.data() as Map<String, dynamic>;
+    String category = data['accommodation_category'];
+    String name = data['name'];
+
+    // If the category is already in the map, add the name to the list
+    if (accommodationsMap.containsKey(category)) {
+      accommodationsMap[category]!.add(name);
+    } else {
+      // Otherwise, create a new list with the name
+      accommodationsMap[category] = [name];
+    }
+  }
+
+  // return accommodationsMap;
+  setState(() {
+      categoryItems = accommodationsMap;
+    });
+}
+
+
 
   // List to keep track of selected items
   List<String> selectedItems = [];
