@@ -17,21 +17,17 @@ class IdentityVerifiedPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-                icon: Icon(
-                    MaterialCommunityIcons.check_circle_outline,
-                    color: Colors.green,
-                    size: 80.0, // Adjust the size as needed
-                  ),
-                onPressed: () => 
-                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FirstScreen(),
-                    ),
-                  )
-                // Navigator.of(context).pop(),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FirstScreen()),
               ),
+              child: Icon(
+                MaterialCommunityIcons.check_circle_outline,
+                color: Colors.green,
+                size: 80.0, // Adjust the size as needed
+              ),
+            ),
             SizedBox(height: 24),
             Text(
               'Identity Verified',
