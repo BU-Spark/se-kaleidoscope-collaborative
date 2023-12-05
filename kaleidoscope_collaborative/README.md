@@ -14,7 +14,7 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 
 # Features
 
-- User registration
+- User Registration
 - User Verification
 - User Login
 - Landing Page
