@@ -370,7 +370,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                   // Add the user to the database
                   try {
-                    // await service?.addUserData(userData);
+                    await service?.addUserData(userData);
                     // Go to the identity verification page after adding the user
                     if (isEmailActive) {
                       // If email is the chosen method, validate emails.
