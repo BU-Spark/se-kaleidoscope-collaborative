@@ -18,9 +18,8 @@ class _FirstScreenState extends State<FirstScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Center(
-          child: Text("Kaleidoscope Collaborative"),
-        ),
+        title: Text('Kaleidoscope Collaborative', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Padding(
