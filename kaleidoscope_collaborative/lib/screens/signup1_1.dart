@@ -40,7 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _passwordsMatch = true;
   bool _emailMatch = true;
   bool _phoneNumberMatch = true;
-  bool _emailOrPhoneNumberMatch = true; // Set to true if this validation is optional
+  bool _emailOrPhoneNumberMatch = false; // Set to true if this validation is optional
 
 
   @override
@@ -56,6 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isPhoneNumberActive = false;
       clearText(_phoneNumberTextController);
       clearText(_confirmPhoneNumberTextController);
+      _emailOrPhoneNumberMatch = false;
     });
   }
 
@@ -65,6 +66,7 @@ class _SignupScreenState extends State<SignupScreen> {
       isPhoneNumberActive = true;
       clearText(_emailTextController);
       clearText(_confirmEmailTextController);
+      _emailOrPhoneNumberMatch = false;
     });
   }
 
@@ -100,13 +102,7 @@ class _SignupScreenState extends State<SignupScreen> {
   void _validatePasswords() {
   setState(() {
     _passwordsMatch = _passwordTextController.text == _confirmPasswordTextController.text;
-    if (isEmailActive) {
-      // If email is the chosen method, validate emails.
-      _emailOrPhoneNumberMatch = _emailTextController.text == _confirmEmailTextController.text;
-    } else {
-      // If phone number is the chosen method, validate phone numbers.
-      _emailOrPhoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
-    }
+
   });
 }
 
@@ -114,6 +110,8 @@ class _SignupScreenState extends State<SignupScreen> {
   setState(() {
     _emailMatch = _emailTextController.text == _confirmEmailTextController.text;
     _phoneNumberMatch = false;
+    _emailOrPhoneNumberMatch = _emailMatch; 
+
   });
 }
 
@@ -121,6 +119,7 @@ class _SignupScreenState extends State<SignupScreen> {
   setState(() {
     _phoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
     _emailMatch = false;
+    _emailOrPhoneNumberMatch = _phoneNumberMatch; 
   });
 }
 
@@ -358,7 +357,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ElevatedButton(
                 child: Text('Submit'),
                 
-                onPressed: (_passwordsMatch && (_emailMatch || _phoneNumberMatch)) ? ()  async {
+                onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch))) ? ()  async {
                   // Collect user data from the text controllers
                   Map<String, dynamic> userData = {
                     'first_name': _fnameTextController.text,
