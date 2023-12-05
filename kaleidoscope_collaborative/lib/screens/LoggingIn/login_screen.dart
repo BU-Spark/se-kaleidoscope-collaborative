@@ -12,6 +12,9 @@ class LoginScreen extends StatefulWidget{
 
 class _LoginScreenState extends State<LoginScreen> {
 
+  String email = '';
+  String password = '';
+
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final _passwordTextController = TextEditingController();
@@ -69,6 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: ()=> clearText(_emailTextController),
                   ),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    email = value; // Update email variable with the text field value
+                  });
+                },
                 controller: _emailTextController,
               ),
 
@@ -85,6 +93,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: ()=> clearText(_passwordTextController),
                   ),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    password = value; // Update email variable with the text field value
+                  });
+                },
                 controller: _passwordTextController,
               ),
               SizedBox(height: 32),
