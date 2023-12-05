@@ -31,7 +31,7 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
       if(user!=null){
         loggedInUser = user;
         print(loggedInUser.email);
-        Timer(Duration(seconds: 3), () {
+        Timer(Duration(seconds: 1), () {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => OnboardingScreen()),
