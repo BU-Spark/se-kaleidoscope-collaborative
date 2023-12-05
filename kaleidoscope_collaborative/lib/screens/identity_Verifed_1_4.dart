@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart'; // Make sure to add this package to your pubspec.yaml
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:kaleidoscope_collaborative/screens/first_screen.dart'; // Make sure to add this package to your pubspec.yaml
 
 class IdentityVerifiedPage extends StatelessWidget {
   @override
@@ -16,11 +17,21 @@ class IdentityVerifiedPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              MaterialCommunityIcons.check_circle_outline,
-              color: Colors.green,
-              size: 80.0, // Adjust the size as needed
-            ),
+            IconButton(
+                icon: Icon(
+                    MaterialCommunityIcons.check_circle_outline,
+                    color: Colors.green,
+                    size: 80.0, // Adjust the size as needed
+                  ),
+                onPressed: () => 
+                 Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FirstScreen(),
+                    ),
+                  )
+                // Navigator.of(context).pop(),
+              ),
             SizedBox(height: 24),
             Text(
               'Identity Verified',
