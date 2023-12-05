@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'identity_verification.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class SignupScreen extends StatefulWidget{
@@ -10,6 +12,8 @@ class SignupScreen extends StatefulWidget{
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+   CloudFirestoreService? service;
+
   final FocusNode _fnameFocus = FocusNode();
   final FocusNode _lnameFocus = FocusNode();
   final FocusNode _usernameFocus = FocusNode();
@@ -32,6 +36,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool isEmailActive = true;
   bool isPhoneNumberActive = true;
+
+  @override
+  void initState() {
+    // Initialize an instance of Cloud Firestore
+    service = CloudFirestoreService(FirebaseFirestore.instance);
+    super.initState();
+  }
 
   void setEmailActive() {
     setState(() {
@@ -292,10 +303,28 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 ElevatedButton(
                 child: Text('Submit'),
-                onPressed: () {
-                  // go to the idenity verification page
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
+                onPressed: () async {
+                  // Collect user data from the text controllers
+                  Map<String, dynamic> userData = {
+                    'first_name': _fnameTextController.text,
+                    'last_name': _lnameTextController.text,
+                    // Add other fields here as necessary
+                  };
+
+                  // Add the user to the database
+                  try {
+                    await service?.addUserData(userData);
+                    // Go to the identity verification page after adding the user
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
+                  } catch (e) {
+                    // Handle errors here, possibly show an error message to the user
+                    print(e); // Use a proper way to log errors or show a dialog to the user
+                  }
                 },
+                // onPressed: () {
+                //   // go to the idenity verification page
+                //   Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
+                // },
                 style: kButtonStyle,
               ),
               SizedBox(height: 32),
