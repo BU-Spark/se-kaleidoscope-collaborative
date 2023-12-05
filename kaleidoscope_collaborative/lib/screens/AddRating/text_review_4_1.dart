@@ -4,8 +4,13 @@ import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class TextReviewPage extends StatefulWidget {
   final int overallRating;
+  final String OrganizationName;
+  final String OrganizationType;
+  final String UserId;
+  final String OrganizationId;
   final Map<String, int> parameterRatings;
-  const TextReviewPage({Key? key,required this.overallRating,required this.parameterRatings, }) : super(key: key);
+  const TextReviewPage({Key? key,required this.overallRating,required this.parameterRatings, required this.OrganizationName, required this.OrganizationType, 
+  required this.UserId, required this.OrganizationId}) : super(key: key);
 
   @override
   _TextReviewPageState createState() => _TextReviewPageState();
@@ -104,6 +109,10 @@ class _TextReviewPageState extends State<TextReviewPage> {
                             overallRating: widget.overallRating,
                             parameterRatings: widget.parameterRatings,
                             writtenReview: "[Skipped]",
+                            OrganizationName: widget.OrganizationName,
+                            OrganizationType: widget.OrganizationType,
+                            UserId: widget.UserId,
+                            OrganizationId: widget.OrganizationId,
                           ),
                         ),
                       );
@@ -121,6 +130,10 @@ class _TextReviewPageState extends State<TextReviewPage> {
                         overallRating: widget.overallRating,
                         parameterRatings: widget.parameterRatings,
                         writtenReview: _controller.text,
+                        OrganizationName: widget.OrganizationName,
+                        OrganizationType: widget.OrganizationType,
+                        UserId: widget.UserId,
+                        OrganizationId: widget.OrganizationId,
                       ),
                     ),
                   );
