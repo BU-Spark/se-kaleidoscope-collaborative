@@ -10,10 +10,11 @@ class ChooseRatingParametersPage extends StatefulWidget {
   final String OrganizationType;
   final String UserId;
   final String OrganizationId;
+  final String OrgImgLink;
   final int overallRating;
   const ChooseRatingParametersPage({Key? key, required this.overallRating,
   required this.OrganizationName, required this.OrganizationType, 
-  required this.UserId, required this.OrganizationId }) : super(key: key);
+  required this.UserId, required this.OrganizationId , required this.OrgImgLink}) : super(key: key);
 
   @override
   _ChooseRatingParametersPageState createState() => _ChooseRatingParametersPageState();
@@ -143,7 +144,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  'images/dummy.jpg',
+                  '${widget.OrgImgLink}',
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
@@ -205,7 +206,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,
-                      OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId,)), 
+                      OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId, OrgImgLink: widget.OrgImgLink)), 
                     );
                   },
                   child: Text('Skip'),
@@ -218,7 +219,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                       final int? rating = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ParameterRatingPage(parameterName: parameter),
+                          builder: (context) => ParameterRatingPage(parameterName: parameter, 
+                          OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId, OrgImgLink: widget.OrgImgLink),
                         ),
                       );
 
@@ -232,7 +234,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,
-                      OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId,)), 
+                      OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId, OrgImgLink: widget.OrgImgLink)), 
                     );
                     
                     // After rating all parameters, you might navigate to a summary or review submission page
