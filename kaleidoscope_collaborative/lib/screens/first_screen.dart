@@ -66,20 +66,6 @@ class _FirstScreenState extends State<FirstScreen> {
                 },
               ),
 
-              // Temporary buttons for testing
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TemporaryRatingCard()),
-                  );
-                },
-                style: kButtonStyle,
-                child: Text(
-                  'Rating Card',
-                  style: kButtonTextStyle,
-                ),
-              ),
               Spacer(),
             ],
           ),
