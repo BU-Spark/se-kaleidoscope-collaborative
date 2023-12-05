@@ -6,7 +6,9 @@ import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
 // Implementing the Idenity Verification Page
 
 class IdentityVerificationPage extends StatefulWidget{
-  const IdentityVerificationPage({super.key});
+  final String verificationMethod;
+  final String resendCode;
+  const IdentityVerificationPage({super.key, required this.verificationMethod, required this.resendCode});
   @override
   _IdentityVerificationPageState createState() => _IdentityVerificationPageState();
 }
@@ -73,7 +75,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               SizedBox(height: 70),
 
             Text(
-              'Verification Code sent to ',
+              'Verification Code sent to ${widget.verificationMethod}',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16.0)),
               SizedBox(height: 16),
@@ -117,7 +119,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Resend SMS'),
+              child: Text('Resend ${widget.resendCode}'),
               style: kButtonStyle
             ),
             SizedBox(height: 16),
