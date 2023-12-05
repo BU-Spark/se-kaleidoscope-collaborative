@@ -7,6 +7,7 @@ class SummaryReviewPage extends StatefulWidget {
   final String OrganizationType;
   final String UserId;
   final String OrganizationId;
+  final String OrgImgLink;
   final int overallRating;
   final Map<String, int> parameterRatings;
   final String? writtenReview;
@@ -17,7 +18,7 @@ class SummaryReviewPage extends StatefulWidget {
     required this.OrganizationName,
     required this.OrganizationType,
     required this.UserId,
-    required this.OrganizationId, }) : super(key: key);
+    required this.OrganizationId, required this.OrgImgLink }) : super(key: key);
 
   @override
   _SummaryReviewPageState createState() => _SummaryReviewPageState();
@@ -48,7 +49,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  'images/dummy.jpg',
+                  '${widget.OrgImgLink}',
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
