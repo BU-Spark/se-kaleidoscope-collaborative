@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
-import 'constants.dart';
-import 'login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';

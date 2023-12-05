@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart'; 
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+
 
 class TemporaryRatingCard extends StatelessWidget {
   @override

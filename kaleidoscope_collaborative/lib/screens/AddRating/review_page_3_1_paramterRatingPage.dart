@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
 class ParameterRatingPage extends StatefulWidget {

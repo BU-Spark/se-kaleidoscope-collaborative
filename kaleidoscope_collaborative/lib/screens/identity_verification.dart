@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
 

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/summaryReview_5_1.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
 class TextReviewPage extends StatefulWidget {
   final int overallRating;
