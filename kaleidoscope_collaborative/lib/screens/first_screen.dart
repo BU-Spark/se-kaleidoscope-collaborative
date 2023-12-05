@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
 import 'constants.dart';
 import 'login_screen.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
+import 'LoggingIn/constants.dart';
+import 'LoggingIn/login_screen.dart';
 import 'signupLandingPage.dart';
 
 class FirstScreen extends StatefulWidget{
@@ -16,8 +19,10 @@ class _FirstScreenState extends State<FirstScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kaleidoscope Collaborative', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: const Center(
+          child: Text("Kaleidoscope Collaborative"),
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -61,7 +66,6 @@ class _FirstScreenState extends State<FirstScreen> {
               TextButton(
                 child: Text('Skip for now'),
                 onPressed: () {
-                  // Handle Skip
                 },
               ),
 

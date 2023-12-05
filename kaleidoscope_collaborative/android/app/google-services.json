@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "181675201017",
+    "project_id": "se-kaleidoscope-collaborative",
+    "storage_bucket": "se-kaleidoscope-collaborative.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181675201017:android:30eb779fb42a4dc25d2d28",
+        "android_client_info": {
+          "package_name": "com.example.kaleidoscope_collaborative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8P-O2mbaU4AsM05oQ7XRUwtz0MbrTGCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
