@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -318,20 +319,44 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: Image.asset(
-                              'images/restaurant.jpg',
-                              fit: BoxFit.cover,
+                      child: InkWell(
+                        onTap: () {
+                          // Navigate to the rating page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => TemporaryRatingCard(OrganizationId: "123", OrganizationName: category.name, OrganizationType: category.orgType,
+                            UserId: "32", OrgImgLink: 'images/dojo.jpg',)), // Replace RatingPage with your destination page
+                          );
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Image.asset(
+                                'images/dojo.jpg',
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          ListTile(
-                            title: Text(category.name),
-                          ),
-                        ],
+                            ListTile(
+                              title: Text(category.name),
+                            ),
+                          ],
+                        ),
                       ),
+                      // child: Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //   children: [
+                      //     Expanded(
+                      //       child: Image.asset(
+                      //         'images/restaurant.jpg',
+                      //         fit: BoxFit.cover,
+                      //       ),
+                      //     ),
+                      //     ListTile(
+                      //       title: Text(category.name),
+                      //     ),
+                      //   ],
+                      // ),
                     );
                   },
                 ),
