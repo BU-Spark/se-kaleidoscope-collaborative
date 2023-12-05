@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
-import 'package:kaleidoscope_collaborative/screens/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+
 
 class ChooseRatingParametersPage extends StatefulWidget {
   final String OrganizationName;
