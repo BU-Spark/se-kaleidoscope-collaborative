@@ -362,12 +362,15 @@ class _SignupScreenState extends State<SignupScreen> {
                   Map<String, dynamic> userData = {
                     'first_name': _fnameTextController.text,
                     'last_name': _lnameTextController.text,
-                    // Add other fields here as necessary
+                    'username': _usernameTextController.text,
+                    'password': _passwordTextController.text,
+                    'email': _emailTextController.text,
+                    'phone_number': _phoneNumberTextController.text,
                   };
 
                   // Add the user to the database
                   try {
-                    await service?.addUserData(userData);
+                    // await service?.addUserData(userData);
                     // Go to the identity verification page after adding the user
                     if (isEmailActive) {
                       // If email is the chosen method, validate emails.
