@@ -10,9 +10,10 @@ class TextReviewPage extends StatefulWidget {
   final String OrganizationType;
   final String UserId;
   final String OrganizationId;
+  final String OrgImgLink;
   final Map<String, int> parameterRatings;
   const TextReviewPage({Key? key,required this.overallRating,required this.parameterRatings, required this.OrganizationName, required this.OrganizationType, 
-  required this.UserId, required this.OrganizationId}) : super(key: key);
+  required this.UserId, required this.OrganizationId, required this.OrgImgLink}) : super(key: key);
 
   @override
   _TextReviewPageState createState() => _TextReviewPageState();
@@ -74,7 +75,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  'images/dummy.jpg',
+                  '${widget.OrgImgLink}',
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
@@ -84,7 +85,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Organization Name',
+                      '${widget.OrganizationName}',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
@@ -92,7 +93,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Organization Type',
+                      '${widget.OrganizationType}',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
@@ -145,6 +146,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                             OrganizationType: widget.OrganizationType,
                             UserId: widget.UserId,
                             OrganizationId: widget.OrganizationId,
+                            OrgImgLink: widget.OrgImgLink,
                           ),
                         ),
                       );
@@ -209,6 +211,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                         OrganizationType: widget.OrganizationType,
                         UserId: widget.UserId,
                         OrganizationId: widget.OrganizationId,
+                        OrgImgLink: widget.OrgImgLink,
                       ),
                     ),
                   );
