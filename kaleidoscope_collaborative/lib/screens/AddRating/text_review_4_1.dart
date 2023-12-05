@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/summaryReview_5_1.dart';
+import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class TextReviewPage extends StatefulWidget {
@@ -19,6 +21,36 @@ class TextReviewPage extends StatefulWidget {
 class _TextReviewPageState extends State<TextReviewPage> {
   final TextEditingController _controller = TextEditingController();
   bool _hasWrittenReview = false;
+   CloudFirestoreService? service;
+
+
+  @override
+  void initState() {
+    // Initialize an instance of Cloud Firestore
+    service = CloudFirestoreService(FirebaseFirestore.instance);
+    super.initState();
+  }
+
+ List<Map<String, dynamic>> prepareUserRatingData({
+  required String userId,
+  required String orgId,
+  required Map<String, int> ratings, // Assuming ratings will always be provided
+}) {
+  List<Map<String, dynamic>> data = [];
+
+  // Iterate through the ratings and create a map for each
+  ratings.forEach((accommodation, rating) {
+    Map<String, dynamic> entry = {
+      'user_id': userId,
+      'org_id': orgId,
+      'accommodation': accommodation,
+      'rating': rating,
+    };
+    data.add(entry);
+  });
+
+  return data;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +154,50 @@ class _TextReviewPageState extends State<TextReviewPage> {
                   style: kSmallButtonStyle,
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  // onPressed: () {
+                  onPressed: ()  async {
+                      Map<String, dynamic> userOverallRatingData = {
+                          'user_id': widget.UserId,
+                          'org_id': widget.OrganizationId,
+                          'accommodation': "Overall Rating", 
+                          'rating': widget.overallRating,
+                        };
+
+                      // Your existing text review data map
+                      Map<String, dynamic> userTextReviewData = {
+                        'user_id': widget.UserId,
+                        'org_id': widget.OrganizationId,
+                        'accommodation': "TextReview", 
+                        'review': _controller.text, // Changed 'rating' to 'review' for clarity
+                      };
+
+                      // List of all user data maps to add to the database
+                      List<Map<String, dynamic>> allUserData = [];
+
+                      // Add the overall rating and text review to the list
+                      allUserData.add(userOverallRatingData);
+                      allUserData.add(userTextReviewData);
+
+                      // Prepare the accommodation ratings and add them to the list
+                      List<Map<String, dynamic>> accommodationRatings = prepareUserRatingData(
+                        userId: widget.UserId, 
+                        orgId: widget.OrganizationId, 
+                        ratings: widget.parameterRatings
+                      );
+
+                      allUserData.addAll(accommodationRatings);
+                  
+                  // Add the user rating to the database
+                  try {
+                    for (var userData in allUserData) {
+                      await service?.addUserRating(userData);
+                    }
+                  } catch (e) {
+                    // Handle errors here, possibly show an error message to the user
+                  print(e); // Use a proper way to log errors or show a dialog to the user
+                  }
+                
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
