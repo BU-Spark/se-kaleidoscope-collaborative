@@ -7,8 +7,9 @@ class AddReviewPage extends StatefulWidget {
   final String OrganizationType;
   final String UserId;
   final String OrganizationId;
+  final String OrgImgLink;
   const AddReviewPage({Key? key, required this.OrganizationName, required this.OrganizationType, 
-  required this.UserId, required this.OrganizationId}) : super(key: key);
+  required this.UserId, required this.OrganizationId, required this.OrgImgLink}) : super(key: key);
 
   @override
   _AddReviewPageState createState() => _AddReviewPageState();
@@ -37,7 +38,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  'images/dummy.jpg',
+                  '$widget.OrgImgLink',
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
@@ -124,7 +125,9 @@ class _AddReviewPageState extends State<AddReviewPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChooseRatingParametersPage(overallRating: overallRating,
-                    OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId),
+                    OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, 
+                    UserId: widget.UserId, OrganizationId: widget.OrganizationId,
+                    OrgImgLink: widget.OrgImgLink),
                   ),
                 );
               },
