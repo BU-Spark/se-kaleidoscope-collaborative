@@ -4,7 +4,7 @@
 Kaleidoscope Collaborative aims to address the challenge faced by individuals with disabilities, as well as their caregivers and advocates, in finding and sharing information about nearby locations with appropriate disability accommodations, ultimately enhancing accessibility and inclusivity within their communities.
 
 ## Client
-- Patrinia Baksmaty ( Founder & CEO of Kaleidoscope Collaborative)
+- Patrinia Baksmaty (Founder & CEO of Kaleidoscope Collaborative)
 
 ## Developer Team
 - Anargh Sidhardhan (Boston University)
@@ -13,6 +13,16 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 
 
 # Features
+
+- User registration
+- User Verification
+- User Login
+- Landing Page
+- Explore Page
+- Rating Card
+- Add a Review
+- Accommodations Based Reviews
+- Search and Filter
 
 
 # Future Scope
