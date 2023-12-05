@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-// Replace with the actual import of your new page
-// import 'new_page.dart';
 
 class LoginCompletePage extends StatefulWidget {
-  final String username;
 
-  LoginCompletePage({Key? key, required this.username}) : super(key: key);
+  LoginCompletePage({Key? key,}) : super(key: key);
 
   @override
   _LoginCompletePageState createState() => _LoginCompletePageState();
@@ -17,15 +14,33 @@ class LoginCompletePage extends StatefulWidget {
 
 class _LoginCompletePageState extends State<LoginCompletePage> {
 
+  final _auth = FirebaseAuth.instance;
+  late User loggedInUser;
+
+
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => OnboardingScreen()),
       );
     });
+  }
+
+  void getCurrentUser() async{
+    try{
+      final user = _auth.currentUser;
+      if(user!=null){
+        loggedInUser = user;
+        print(loggedInUser.email);
+      }
+    }
+    catch(e){
+      print(e);
+    }
   }
 
   @override
@@ -50,8 +65,8 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
             ),
             SizedBox(height: 20),
             Text(
-              'Welcome ${widget.username}!',
-              style: TextStyle(
+              'Welcome ${loggedInUser.email}!',
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),

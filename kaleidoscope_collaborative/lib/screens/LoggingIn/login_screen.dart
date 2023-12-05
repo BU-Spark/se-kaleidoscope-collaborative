@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class LoginScreen extends StatefulWidget{
@@ -11,7 +12,7 @@ class LoginScreen extends StatefulWidget{
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
+  final _auth = FirebaseAuth.instance;
   String email = '';
   String password = '';
 
@@ -64,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 focusNode: _emailFocus,
                 obscureText: false,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
@@ -104,8 +106,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
               ElevatedButton(
                 child: Text('Log In'),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage(username: 'Revathi',)));
+                onPressed: () async {
+                  try{
+                    // For registration
+                    // final newUser = _auth.createUserWithEmailAndPassword(email: email, password: password);
+                    // if(newUser!=null){
+                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => RegCompletePage()));
+                    // }
+
+                    final existingUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                    if(existingUser!=null){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
+                    }
+
+
+                  }
+                  catch(e){
+                    print(e);
+                  }
                 },
                 style: kButtonStyle,
               ),
