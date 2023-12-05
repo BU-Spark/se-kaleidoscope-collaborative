@@ -37,6 +37,12 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isEmailActive = true;
   bool isPhoneNumberActive = true;
 
+  bool _passwordsMatch = true;
+  bool _emailMatch = false;
+  bool _phoneNumberMatch = false;
+  bool _emailOrPhoneNumberMatch = true; // Set to true if this validation is optional
+
+
   @override
   void initState() {
     // Initialize an instance of Cloud Firestore
@@ -86,6 +92,19 @@ class _SignupScreenState extends State<SignupScreen> {
     _confirmPhoneNumberTextController.dispose();
     super.dispose();
   }
+
+  void _validatePasswords() {
+  setState(() {
+    _passwordsMatch = _passwordTextController.text == _confirmPasswordTextController.text;
+    if (isEmailActive) {
+      // If email is the chosen method, validate emails.
+      _emailOrPhoneNumberMatch = _emailTextController.text == _confirmEmailTextController.text;
+    } else {
+      // If phone number is the chosen method, validate phone numbers.
+      _emailOrPhoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -184,6 +203,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           onPressed: ()=> clearText(_passwordTextController),
                     ),
                   ),
+                  // onChanged: (value) {
+                  //   _validatePasswords();
+                  // },
                   controller: _passwordTextController,
                 ),
                 SizedBox(height: 16),
@@ -195,12 +217,18 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Password',
+                  errorText: _passwordsMatch ? null : 'Passwords do not match',
+
                     suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: ()=> clearText(_confirmPasswordTextController),
+                          
                     ),
                   ),
                   controller: _confirmPasswordTextController,
+                  onChanged: (value) {
+                    _validatePasswords();
+                  },
                 ),
                 SizedBox(height: 32),
 
@@ -303,7 +331,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 ElevatedButton(
                 child: Text('Submit'),
-                onPressed: () async {
+                
+                onPressed: (_passwordsMatch && _emailOrPhoneNumberMatch) ? ()  async {
                   // Collect user data from the text controllers
                   Map<String, dynamic> userData = {
                     'first_name': _fnameTextController.text,
@@ -320,7 +349,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     // Handle errors here, possibly show an error message to the user
                     print(e); // Use a proper way to log errors or show a dialog to the user
                   }
-                },
+                } : null,
                 // onPressed: () {
                 //   // go to the idenity verification page
                 //   Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
