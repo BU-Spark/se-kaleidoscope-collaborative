@@ -38,8 +38,8 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isPhoneNumberActive = true;
 
   bool _passwordsMatch = true;
-  bool _emailMatch = false;
-  bool _phoneNumberMatch = false;
+  bool _emailMatch = true;
+  bool _phoneNumberMatch = true;
   bool _emailOrPhoneNumberMatch = true; // Set to true if this validation is optional
 
 
@@ -103,6 +103,18 @@ class _SignupScreenState extends State<SignupScreen> {
       // If phone number is the chosen method, validate phone numbers.
       _emailOrPhoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
     }
+  });
+}
+
+  void _validateEmailId() {
+  setState(() {
+    _emailMatch = _emailTextController.text == _confirmEmailTextController.text;
+  });
+}
+
+  void _validatePhoneNumber() {
+  setState(() {
+    _phoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
   });
 }
 
@@ -260,12 +272,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Email',
+                  errorText: _emailMatch ? null : 'Email ids do not match',
                     suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: ()=> clearText(_confirmEmailTextController),
                     ),
                   ),
                   controller: _confirmEmailTextController,
+                  onChanged: (value) {
+                    _validateEmailId();
+                  },
                   onTap: () => setEmailActive(),
                 ),
                 SizedBox(height: 32),
@@ -319,12 +335,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Phone Number',
+                  errorText: _phoneNumberMatch ? null : 'Phone numbers do not match',
                     suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: ()=> clearText(_confirmPhoneNumberTextController),
                     ),
                   ),
                   controller: _confirmPhoneNumberTextController,
+                  onChanged: (value) {
+                    _validatePhoneNumber();
+                  },
                   onTap: () => setPhoneNumberActive(),
                 ),
                 SizedBox(height: 32),
@@ -344,10 +364,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   try {
                     await service?.addUserData(userData);
                     // Go to the identity verification page after adding the user
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
+                    if (isEmailActive) {
+                      // If email is the chosen method, validate emails.
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod: _emailTextController.text, resendCode: 'Email')));
+                    } else {
+                      // If phone number is the chosen method, validate phone numbers.
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod:_phoneNumberTextController.text, resendCode: 'SMS')));
+                    }
                   } catch (e) {
                     // Handle errors here, possibly show an error message to the user
-                    print(e); // Use a proper way to log errors or show a dialog to the user
+                  print(e); // Use a proper way to log errors or show a dialog to the user
                   }
                 } : null,
                 // onPressed: () {
