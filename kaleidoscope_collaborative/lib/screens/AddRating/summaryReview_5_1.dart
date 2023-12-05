@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
-class SummaryReviewPage extends StatelessWidget {
+class SummaryReviewPage extends StatefulWidget {
+  final String OrganizationName;
+  final String OrganizationType;
+  final String UserId;
+  final String OrganizationId;
   final int overallRating;
   final Map<String, int> parameterRatings;
   final String? writtenReview;
-
-  const SummaryReviewPage({
-    Key? key,
+  const SummaryReviewPage({Key? key,
     required this.overallRating,
     required this.parameterRatings,
-    this.writtenReview,
-  }) : super(key: key);
+    required this.writtenReview,
+    required this.OrganizationName,
+    required this.OrganizationType,
+    required this.UserId,
+    required this.OrganizationId, }) : super(key: key);
 
+  @override
+  _SummaryReviewPageState createState() => _SummaryReviewPageState();
+}
+
+class _SummaryReviewPageState extends State<SummaryReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +57,7 @@ class SummaryReviewPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Organization Name',
+                      '${widget.OrganizationName}',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
@@ -55,7 +65,7 @@ class SummaryReviewPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Organization Type',
+                      '${widget.OrganizationType}',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
@@ -81,8 +91,8 @@ class SummaryReviewPage extends StatelessWidget {
                       // Circle icon as the background
                       Icon(
 
-                        index < overallRating ? Icons.circle : Icons.circle,
-                        color: index < overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        index < widget.overallRating ? Icons.circle : Icons.circle,
+                        color: index < widget.overallRating ? Color(0xFF6750A4) : Colors.grey,
                         size: 30, 
                       ),
                       // Star icon on top of the circle
@@ -105,7 +115,7 @@ class SummaryReviewPage extends StatelessWidget {
             
             // Display parameter ratings
             Column(
-              children: parameterRatings.entries.map((entry) {
+              children: widget.parameterRatings.entries.map((entry) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -119,8 +129,8 @@ class SummaryReviewPage extends StatelessWidget {
                       // Circle icon as the background
                       Icon(
 
-                        index < overallRating ? Icons.circle : Icons.circle,
-                        color: index < overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        index < entry.value ? Icons.circle : Icons.circle,
+                        color: index < entry.value ? Color(0xFF6750A4) : Colors.grey,
                         size: 30, 
                       ),
                       // Star icon on top of the circle
@@ -141,11 +151,11 @@ class SummaryReviewPage extends StatelessWidget {
                 );
               }).toList(),
             ),
-            if (writtenReview != null) ...[
+            if (widget.writtenReview != null) ...[
               SizedBox(height: 20),
               Text('Written Review', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
              TextField(
-                controller: TextEditingController(text: writtenReview),
+                controller: TextEditingController(text: widget.writtenReview),
                 maxLines: 10,
                 enabled: false, // This makes the TextField non-editable
                 decoration: InputDecoration(
