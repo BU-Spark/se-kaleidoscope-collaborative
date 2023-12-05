@@ -5,8 +5,14 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dar
 import 'package:kaleidoscope_collaborative/screens/constants.dart';
 
 class ChooseRatingParametersPage extends StatefulWidget {
+  final String OrganizationName;
+  final String OrganizationType;
+  final String UserId;
+  final String OrganizationId;
   final int overallRating;
-  const ChooseRatingParametersPage({Key? key, required this.overallRating}) : super(key: key);
+  const ChooseRatingParametersPage({Key? key, required this.overallRating,
+  required this.OrganizationName, required this.OrganizationType, 
+  required this.UserId, required this.OrganizationId }) : super(key: key);
 
   @override
   _ChooseRatingParametersPageState createState() => _ChooseRatingParametersPageState();
@@ -146,7 +152,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Organization Name',
+                      '${widget.OrganizationName}',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
@@ -154,7 +160,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Organization Type',
+                      '${widget.OrganizationType}',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
@@ -197,7 +203,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     // Implement skip logic
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,)), 
+                      MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,
+                      OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId,)), 
                     );
                   },
                   child: Text('Skip'),
@@ -223,7 +230,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                     // After rating all parameters, navigate to the TextReviewPage
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,)), 
+                      MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,
+                      OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId,)), 
                     );
                     
                     // After rating all parameters, you might navigate to a summary or review submission page
