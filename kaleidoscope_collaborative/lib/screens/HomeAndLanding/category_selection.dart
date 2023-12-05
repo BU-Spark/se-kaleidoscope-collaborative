@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
 
-
-
-
-class Category {
-  final String imagePath;
+class categoryItem {
   final String name;
+  final String orgType;
 
-  Category({required this.imagePath, required this.name});
+  categoryItem({required this.name, required this.orgType, required String imagePath});
 }
 
 
-class DashboardScreen extends StatefulWidget {
+class CategorySelection extends StatefulWidget {
+  final String category;
+
+  CategorySelection({Key? key, required this.category}) : super(key: key);
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  _CategorySelectionState createState() => _CategorySelectionState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
+class _CategorySelectionState extends State<CategorySelection> with SingleTickerProviderStateMixin {
   // Initialize the TabController here without late
   TabController? _tabController;
   int _selectedIndex = 1;
@@ -30,20 +30,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   late String first_name;
-
-  final List<Category> categories = [
-    Category(imagePath: 'images/restaurant.jpg', name: 'Restaurant'),
-    Category(imagePath: 'images/dojo.jpg', name: 'Dojo'),
-    Category(imagePath: 'images/library.jpg', name: 'Library'),
-    Category(imagePath: 'images/museum.jpg', name: 'Museum'),
-    Category(imagePath: 'images/dentist.jpg', name: 'Dentist'),
-    Category(imagePath: 'images/swimming.jpg', name: 'Swimming Pool'),
-  ];
+  List<categoryItem> category_items = [];
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+    getCategoryItems(widget.category);
     // getCurrentUser();
     // Initialize the TabController in initState
     _tabController = TabController(length: 2, vsync: this);
@@ -59,6 +52,33 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     }
     catch(e){
       print(e);
+    }
+  }
+
+  void getCategoryItems(String category) async {
+    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('Organization')
+          .where('org_type', isEqualTo: category) // Filter by the category
+          .get();
+
+      List<categoryItem> items = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return categoryItem(
+          name: data['name'] ?? '',
+          orgType: data['org_type'] ?? '',
+          // imagePath: data['imagePath'] ?? '', // Replace with the correct field name if different
+          imagePath: 'images/restaurant.jpg',
+        );
+      }).toList();
+
+      setState(() {
+        category_items = items;
+      });
+    } catch (e) {
+      print(e.toString());
+      // Handle any errors here
     }
   }
 
@@ -289,38 +309,31 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     mainAxisSpacing: 16,
                     childAspectRatio: 1 / 1,
                   ),
-                  itemCount: categories.length, // Number of items in your grid
-                    itemBuilder: (context, index) {
-                      var category = categories[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                              MaterialPageRoute(builder: (context) => CategorySelection(category: category.name,),),
-                          );
-                        },
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                  itemCount: category_items.length, // Number of items in your grid
+                  itemBuilder: (context, index) {
+                    // Replace with your actual data
+                    var category =  category_items[index];
+                    return Card(
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: Image.asset(
+                              'images/restaurant.jpg',
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: Image.asset(
-                                  category.imagePath,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              ListTile(
-                                title: Text(category.name),
-                              ),
-                            ],
+                          ListTile(
+                            title: Text(category.name),
                           ),
-                        ),
-                      );
-                    },
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -349,6 +362,12 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         onTap: (int index) {
           setState(() {
             _selectedIndex = index;
+            if(index == 1) { // assuming this is the index for 'Explore'
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DashboardScreen(),),
+              );
+            }
           });
         },
       ),
