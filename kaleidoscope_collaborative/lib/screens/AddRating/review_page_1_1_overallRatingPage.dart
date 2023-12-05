@@ -3,7 +3,12 @@ import 'package:kaleidoscope_collaborative/screens/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
 class AddReviewPage extends StatefulWidget {
-  const AddReviewPage({Key? key}) : super(key: key);
+  final String OrganizationName;
+  final String OrganizationType;
+  final String UserId;
+  final String OrganizationId;
+  const AddReviewPage({Key? key, required this.OrganizationName, required this.OrganizationType, 
+  required this.UserId, required this.OrganizationId}) : super(key: key);
 
   @override
   _AddReviewPageState createState() => _AddReviewPageState();
@@ -42,7 +47,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Organization Name',
+                      '${widget.OrganizationName}',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,
@@ -50,7 +55,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Organization Type',
+                      '${widget.OrganizationType}',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w400,
@@ -118,7 +123,8 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChooseRatingParametersPage(overallRating: overallRating),
+                    builder: (context) => ChooseRatingParametersPage(overallRating: overallRating,
+                    OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId),
                   ),
                 );
               },
