@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class Category {
@@ -10,6 +13,7 @@ class Category {
 
 
 class DashboardScreen extends StatefulWidget {
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -17,6 +21,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
   // Initialize the TabController here without late
   TabController? _tabController;
+  int _selectedIndex = 1;
+  final _auth = FirebaseAuth.instance;
+  late User loggedInUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  late String first_name;
 
   final List<Category> categories = [
     Category(imagePath: 'images/restaurant.jpg', name: 'Restaurants'),
@@ -30,9 +40,46 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
+    // getCurrentUser();
     // Initialize the TabController in initState
     _tabController = TabController(length: 2, vsync: this);
   }
+
+  void getCurrentUser() async{
+    try{
+      final user = _auth.currentUser;
+      if(user!=null){
+        loggedInUser = user;
+        print(loggedInUser.email);
+      }
+    }
+    catch(e){
+      print(e);
+    }
+  }
+
+  Future<String> getUserNameByEmail(String? email) async {
+    try {
+      // Assume 'User' is your collection where user data is stored
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('User')
+          .where('email', isEqualTo: loggedInUser.email) // Filter by email
+          .limit(1) // Limit to only one result
+          .get();
+
+      // Check if the query returned any documents
+      if (querySnapshot.docs.isNotEmpty) {
+        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>; // Cast to Map<String, dynamic>
+        first_name = userData['first_name']; // Now you can use the '[]' operator
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return first_name;
+  }
+
 
   @override
   void dispose() {
@@ -91,7 +138,17 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         ),
         centerTitle: true,
         backgroundColor: Color(0xFFFFFBFE),
-        leading: Icon(Icons.menu, color: Colors.black),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu, color: Colors.black),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
         // actions: [
         //   IconButton(
         //     icon: Icon(Icons.search, color: Colors.black),
@@ -130,6 +187,71 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               ],
             ),
           ),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            FutureBuilder<String>(
+              future: getUserNameByEmail(loggedInUser.email), // Future that returns the name
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // Check if the future is complete and has data
+                  if (snapshot.hasData) {
+                    return DrawerHeader(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF6750A4),
+                      ),
+                      child: Text(
+                        'Hi ${snapshot.data}', // Display the name from the snapshot
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF6750A4),
+                      ),
+                      child: Text(
+                        'Hi there!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    );
+                  }
+                } else {
+                  // While waiting for the future to complete, show a placeholder
+                  return const DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6750A4),
+                    ),
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Sign Out'),
+              onTap: () {
+                _auth.signOut().then((_) {
+                  // Close the drawer
+                  Navigator.of(context).pop();
+                  // Navigate to the sign-in screen, replacing all routes
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => FirstScreen()),
+                  );
+                });
+              },
+            ),
+          ],
         ),
       ),
       body: TabBarView(
@@ -199,6 +321,29 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           // Your widgets for the Review tab
           Center(child: Text('Review Content')),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorite',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore),
+            label: 'Explore',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: (int index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
       // Rest of your code...
     );

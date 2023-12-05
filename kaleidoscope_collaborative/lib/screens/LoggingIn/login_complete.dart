@@ -22,12 +22,7 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
   void initState() {
     super.initState();
     getCurrentUser();
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
-      );
-    });
+
   }
 
   void getCurrentUser() async{
@@ -36,6 +31,12 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
       if(user!=null){
         loggedInUser = user;
         print(loggedInUser.email);
+        Timer(Duration(seconds: 3), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => OnboardingScreen()),
+          );
+        });
       }
     }
     catch(e){
