@@ -21,7 +21,8 @@ class TemporaryRatingCard extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddReviewPage()),
+                    MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: "Life Ki Do Center", OrganizationType: "Lifestyle Center",
+                    UserId: "1234", OrganizationId: "1234")),
                   );
                 },
                 style: kButtonStyle,
