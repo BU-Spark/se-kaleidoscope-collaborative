@@ -16,9 +16,8 @@ class _FirstScreenState extends State<FirstScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text("Kaleidoscope Collaborative"),
-        ),
+        title: Text('Kaleidoscope Collaborative', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
       ),
       body: SafeArea(
         child: Padding(
