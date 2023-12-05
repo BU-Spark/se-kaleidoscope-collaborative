@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
 
@@ -50,6 +51,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                 // Small Image on the top left corner
                 Image.asset(
                   '${widget.OrgImgLink}',
+                  fit: BoxFit.cover,
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
@@ -185,6 +187,14 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DashboardScreen(),
+                        ),
+                      );
+
+                    
               },
                   child: Text('Homepage'),
                   style: kSmallButtonStyle,

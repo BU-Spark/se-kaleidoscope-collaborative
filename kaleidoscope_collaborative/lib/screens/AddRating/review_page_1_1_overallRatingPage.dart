@@ -38,7 +38,8 @@ class _AddReviewPageState extends State<AddReviewPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  '$widget.OrgImgLink',
+                  '${widget.OrgImgLink}',
+                  fit: BoxFit.cover,
                   width: 117.0, // Set the width to match your design
                   height: 99.0, // Set the height to match your design
                 ),
