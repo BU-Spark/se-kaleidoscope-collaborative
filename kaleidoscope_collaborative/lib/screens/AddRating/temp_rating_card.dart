@@ -4,11 +4,24 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
 
 class TemporaryRatingCard extends StatelessWidget {
+  final String OrganizationName;
+  final String OrganizationType;
+  final String UserId;
+  final String OrganizationId;
+  final String OrgImgLink;
+  const TemporaryRatingCard({Key? key, 
+  required this.OrganizationName,
+  required this.OrganizationType,
+  required this.UserId,
+  required this.OrganizationId,
+  required this.OrgImgLink,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rating Card',style: TextStyle(color:Colors.black)),
+        title: Text('Temporary Rating Card',style: TextStyle(color:Colors.black)),
 
         backgroundColor: Colors.white,
         elevation: 0,
@@ -22,8 +35,8 @@ class TemporaryRatingCard extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: "Life Ki Do Center", OrganizationType: "Lifestyle Center",
-                    UserId: "1234", OrganizationId: "1234")),
+                    MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: this.OrganizationName, 
+                    OrganizationType: this.OrganizationType, UserId: this.UserId, OrganizationId: this.OrganizationId, OrgImgLink: this.OrgImgLink,)),
                   );
                 },
                 style: kButtonStyle,
@@ -33,15 +46,6 @@ class TemporaryRatingCard extends StatelessWidget {
                 ),
               ),
             SizedBox(height: 24),
-            // Text(
-            //   'Identity Verified',
-            //   style: TextStyle(
-            //     color: Colors.black,
-            //     fontSize: 24,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            // You can add more widgets here as needed
           ],
         ),
       ),
