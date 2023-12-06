@@ -1,0 +1,314 @@
+import 'package:flutter/material.dart';
+import 'search_page_1_2.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'no_result_found.dart';
+
+class SearchPage1_1 extends StatefulWidget {
+  final String query;
+  final Map<String, dynamic>? coordinates;
+
+  SearchPage1_1({required this.query, required this.coordinates});
+
+  @override
+  _SearchPage1_1State createState() => _SearchPage1_1State();
+}
+
+class _SearchPage1_1State extends State<SearchPage1_1> {
+  TextEditingController _searchController = TextEditingController();
+  List<String> selectedFilters = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.text = widget.query;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
+            GestureDetector(
+              child: Icon(Icons.history),
+              onTap: () {},
+            ),
+          ],
+          backgroundColor: Colors.blue,
+          elevation: 0,
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: kToolbarHeight + 8),
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        readOnly: true,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        // Handle search as needed
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text("Filters", style: TextStyle(fontSize: 18)),
+                  SizedBox(height: 8),
+                  Text(
+                    "Please select the accommodation you need. Pre-selected accommodations are based on your profile.",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 16),
+                  _buildBoldedWordRowWithBoxes(
+                    "Accomodation(s) Needed",
+                    selectedFilters.isEmpty
+                        ? []
+                        : selectedFilters
+                            .map((filter) => filter)
+                            .toList(),
+                  ),
+                  _buildBoldedWordRowWithBoxes(
+                    "Mobility",
+                    [
+                      "Accessible Washroom",
+                      "Alternative Entrance",
+                      "Handrails",
+                      "Elevator",
+                      "Lowered Counter",
+                    ],
+                  ),
+                  _buildBoldedWordRowWithBoxes(
+                    "Stimuli",
+                    [
+                      "Outdoor Access Only",
+                      "Reduced Crowd",
+                      "Scent Free",
+                      "Digital Menu",
+                    ],
+                  ),
+                  _buildBoldedWordRowWithBoxes(
+                    "Communication",
+                    [
+                      "Braille",
+                      "Customer Service",
+                      "Service Animal Friendly",
+                      "Sign Language/ASL",
+                    ],
+                  ),
+                  _buildBoldedWordRowWithBoxes(
+                    "Customer Reviews",
+                    [
+                      "1 Star & Up",
+                      "2 Stars & Up",
+                      "3 Stars & Up",
+                      "4 Stars & Up",
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.deepPurple,
+        child: TextButton(
+          onPressed: () {
+            _showResults();
+          },
+          child: Text(
+            "Show Results",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+void _showResults() async {
+  // Get the initial query
+  String initialQuery = widget.query;
+
+  // Check if coordinates are available
+  if (widget.coordinates != null) {
+    // Extract latitude and longitude
+    double? latitude = widget.coordinates!['lat'] as double?;
+    print("THIS IS THE LATITUDE: ");
+    print(latitude);
+    double? longitude = widget.coordinates!['lng'] as double?;
+
+    // Check if latitude and longitude are not null
+    if (latitude != null && longitude != null) {
+      // Construct the API endpoint for nearby places
+      String nearbyPlacesUrl =
+          'http://localhost:3000/api/nearby/$latitude,$longitude/500/hospital';
+
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        // Send a request to get nearby places
+        final nearbyPlacesResponse = await http.get(Uri.parse(nearbyPlacesUrl));
+
+        if (nearbyPlacesResponse.statusCode == 200) {
+          // Parse the response JSON to get nearby places
+          List<dynamic> nearbyPlaces = json.decode(nearbyPlacesResponse.body);
+          // Display the nearby places's count 
+          print('Nearby places count: ${nearbyPlaces.length}'); 
+
+          // Now you have the nearby places, you can navigate to the next page
+          // with the initial query, selected filters, and nearby places data
+
+          // If the nearby places is empty, navigate to the no result found page 
+          if (nearbyPlaces.isEmpty) {
+            // Navigate to NoResultFoundPage when no results are found
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NoResultFoundPage(),
+              ),
+            );
+          }
+
+          // Navigate to SearchPage1_2 with the initial query, selected filters, and TOP 5 nearby places 
+          if (nearbyPlaces.length > 5) 
+            nearbyPlaces = nearbyPlaces.sublist(0, 5); // Get the top 5 nearby places 
+          else 
+            nearbyPlaces = nearbyPlaces.sublist(0, nearbyPlaces.length); // Get all nearby places
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage1_2(
+                initialQuery: initialQuery,
+                selectedFilters: selectedFilters,
+                nearbyPlaces: nearbyPlaces,
+              ),
+            ),
+          );
+        } else {
+          // Handle the error when getting nearby places
+          print('Error getting nearby places: ${nearbyPlacesResponse.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      // Handle the case where latitude or longitude is null
+      print('Error: Latitude or longitude is null.');
+    }
+  } else {
+    // Handle the case where coordinates are null
+    print('Error: Coordinates are null.');
+  }
+}
+
+
+
+  Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            word,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUniqueGrayBox(String word, String box) {
+    bool isSelected = selectedFilters.contains(box);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (isSelected) {
+            selectedFilters.remove(box);
+          } else {
+            selectedFilters.add(box);
+          }
+        });
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 8, bottom: 8),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.purple : Colors.grey,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              box,
+              style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+            ),
+            SizedBox(width: 4),
+            if (isSelected)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedFilters.remove(box);
+                  });
+                },
+                child: Icon(
+                  Icons.clear,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
