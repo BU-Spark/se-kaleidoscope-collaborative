@@ -5,6 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
 
 
+// import search_page_1_0.dart; 
+import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
+
+
 
 
 class Category {
@@ -152,20 +156,27 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             );
           },
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(Icons.search, color: Colors.black),
-        //     onPressed: () {
-        //       // Implement search functionality
-        //     },
-        //   ),
-        //   IconButton(
-        //     icon: Icon(Icons.notifications, color: Colors.black),
-        //     onPressed: () {
-        //       // Implement notification functionality
-        //     },
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.black),
+            onPressed: () {
+              // Implement search functionality
+              // Navigate to the SearchPage when the search icon is clicked
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage()),
+              );
+
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications, color: Colors.black),
+            onPressed: () {
+              // Implement notification functionality
+              // Navigate to the SearchPage when the search icon is clicked
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Align(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ratings_card.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
 
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -54,7 +55,19 @@ class SearchPage1_3 extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Implement the action when the button is pressed
-              },
+              // Implement notification functionality
+              // Navigate to the temp rating card page 
+              Navigator.push(
+                context,
+                // Sample routing, THIS will be optimized ONCE DB is set up 
+                /**
+                 * TO DO: 
+                 * 
+                 * ROUTE THIS PAGE CORRECTLY 
+                 */
+                MaterialPageRoute(builder: (context) => TemporaryRatingCard(OrganizationName: 'temp', OrganizationId: '1234' ,OrganizationType: 'temp', UserId: '123', OrgImgLink: 'images/dentist.jpg')),
+              );
+            },
               child: Text("Add a Review"),
             ),
             // Display the content of RatingPage directly
