@@ -54,3 +54,11 @@ Thank you for your interest in contributing to the Kaleidoscope Collaborative Pr
 7. **Collaborate and Iterate**: Wait for the repository owners or maintainers to review your pull request. Make any necessary changes or address any feedback requested. Once approved, the changes will be merged into the main repository.
 
 We appreciate your contributions to the Kaleidoscope Collaborative Project. Thank you for helping us make a difference!
+
+
+
+## Note : 
+<!-- install firebase tools  -->
+curl -sL https://firebase.tools | bash  
+
+

@@ -3,6 +3,13 @@ import 'search_page_1_3.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+/**
+ * TO DO: 
+ * search_page_1_2.dart: 
+ * - boilerplate template for the search result item page with the location card implemented.
+ * TO BE COMPLETED: 
+ * - the location card is not currently being populated with the information from the database. 
+ */
 class SearchPage1_2 extends StatelessWidget {
   final String initialQuery;
   final List<String> selectedFilters;

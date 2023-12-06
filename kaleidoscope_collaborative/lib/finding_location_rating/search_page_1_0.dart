@@ -3,7 +3,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'search_page_1_1.dart';
 import 'no_result_found.dart';
-
+/**
+ * TO DO:
+ * 
+ * search_page_1_0.dart:
+ * It is fully functionally. 
+ * 
+ * Update the UI wherever necessary. 
+ */
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();

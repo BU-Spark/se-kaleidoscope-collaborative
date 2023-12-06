@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
+
 class AddReviewPage extends StatefulWidget {
   final String OrganizationName;
   final String OrganizationType;
@@ -45,26 +46,29 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 ),
                 SizedBox(width: 16.0), // Add some spacing between the image and text
                 // Organization Title and Type
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      '${widget.OrganizationName}',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        '${widget.OrganizationName}',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '${widget.OrganizationType}',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
+                      SizedBox(height: 10),
+                      Text(
+                        '${widget.OrganizationType}',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    SizedBox(height: 48),
-                  ],
+                      SizedBox(height: 48),
+                    ],
+                  ),
                 ),
               ],
             ),

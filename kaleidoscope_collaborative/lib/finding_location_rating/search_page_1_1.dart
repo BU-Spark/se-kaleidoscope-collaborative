@@ -4,6 +4,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'no_result_found.dart';
 
+/**
+ * TO DO: 
+ * 
+ * search_page_1_1.dart: 
+ * - Accomodations needed and filter page is implemented closely to the figma wireframes. 
+ * - the selection of accomodation logic is completed. 
+ * - the confirmation of filered accomodations is completed.
+ * - the routing to the ratings page is completed. 
+ * TO BE COMPLETED: 
+ * - directing the filter searches to the database to retrieve the information. 
+ */
 class SearchPage1_1 extends StatefulWidget {
   final String query;
   final Map<String, dynamic>? coordinates;

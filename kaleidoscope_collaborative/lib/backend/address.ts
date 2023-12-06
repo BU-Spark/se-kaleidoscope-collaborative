@@ -4,6 +4,22 @@ import axios from 'axios';
 
 dotenv.config();
 
+/****************
+ * READ ME: 
+ * We are using Google Maps API to retrieve the information of the locations. Please set up and store your own API key in .env file to run the code locally.
+link to setup Google Maps API: [here](https://developers.google.com/maps/documentation/places/web-service/get-api-key) 
+link to the documentation: [here](https://developers.google.com/maps/documentation/places/web-service/overview) 
+
+Current API structure for the backend: 
+
+# address.ts 
+- Be sure to install all the necessary dependencies in the requirements.txt file 
+- Troubleshoot potential errors: 
+- use: **ts-node file.ts** to run the file 
+- see the file for detailed information and end points 
+ */
+
+
 // Run with ts-node address.ts 
 const app = express();
 const port = process.env.PORT || 3000;

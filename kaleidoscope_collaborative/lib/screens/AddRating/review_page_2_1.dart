@@ -151,26 +151,29 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                 ),
                 SizedBox(width: 16.0), // Add some spacing between the image and text
                 // Organization Title and Type
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      '${widget.OrganizationName}',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        '${widget.OrganizationName}',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '${widget.OrganizationType}',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
+                      SizedBox(height: 10),
+                      Text(
+                        '${widget.OrganizationType}',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    SizedBox(height: 48),
-                  ],
+                      SizedBox(height: 48),
+                    ],
+                  ),
                 ),
               ],
             ),

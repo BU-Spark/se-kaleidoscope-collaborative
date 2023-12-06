@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'ratings_card.dart';
-import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 
+
+/**
+ * TO DO: 
+ * 
+ * # 5. search_page_1_3.dart: 
+ * - the endpoint of the selected dummy card from search_page_1_2.dart. 
+ * TO BE COMPLETED: 
+ * -route the logic with database to retrieve the information of the selected location. 
+ */
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, dynamic> result;
   final Map<String, dynamic> placeDetails;
@@ -65,7 +74,7 @@ class SearchPage1_3 extends StatelessWidget {
                  * 
                  * ROUTE THIS PAGE CORRECTLY 
                  */
-                MaterialPageRoute(builder: (context) => TemporaryRatingCard(OrganizationName: 'temp', OrganizationId: '1234' ,OrganizationType: 'temp', UserId: '123', OrgImgLink: 'images/dentist.jpg')),
+                MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: placeDetails['name'],  OrganizationId: placeDetails['place_id'] ,OrganizationType: 'temp', UserId: '123', OrgImgLink: 'images/dentist.jpg')),
               );
             },
               child: Text("Add a Review"),
