@@ -173,7 +173,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             icon: Icon(Icons.notifications, color: Colors.black),
             onPressed: () {
               // Implement notification functionality
-              // Navigate to the SearchPage when the search icon is clicked
             },
           ),
         ],

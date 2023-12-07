@@ -22,7 +22,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Accomodation Rating Page', style: TextStyle(color: Colors.black)),
+        title: Text('Accommodation Rating Page', style: TextStyle(color: Colors.black)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),

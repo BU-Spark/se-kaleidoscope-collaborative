@@ -10,6 +10,7 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_ove
  * - the endpoint of the selected dummy card from search_page_1_2.dart. 
  * TO BE COMPLETED: 
  * -route the logic with database to retrieve the information of the selected location. 
+ * - update the UI and formatting 
  */
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, dynamic> result;

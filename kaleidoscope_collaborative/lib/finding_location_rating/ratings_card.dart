@@ -134,7 +134,7 @@ class _RatingBarState extends State<RatingBar> {
               color: Color.fromRGBO(47, 10, 158, 0.612) // Background color of the circle
             ),
             child: IconButton(
-              icon: Icon(Icons.star, size: 30, color: rating >= i ? Colors.yellow : Colors.white),
+              icon: Icon(Icons.star, size: 45, color: rating >= i ? Colors.yellow : Colors.white),
               onPressed: () {
                 setState(() {
                   rating = i;
