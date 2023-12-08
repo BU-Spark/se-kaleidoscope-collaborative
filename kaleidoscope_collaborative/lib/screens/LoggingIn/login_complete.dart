@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 
 
 class LoginCompletePage extends StatefulWidget {
@@ -34,7 +35,7 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
         Timer(Duration(seconds: 1), () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => OnboardingScreen()),
+            MaterialPageRoute(builder: (context) => DashboardScreen()),
           );
         });
       }
