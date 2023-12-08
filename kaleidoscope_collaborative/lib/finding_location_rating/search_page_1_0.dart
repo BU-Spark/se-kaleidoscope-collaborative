@@ -27,11 +27,10 @@ class _SearchPageState extends State<SearchPage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          title: Text('Search Page', style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
@@ -39,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
               onTap: () {},
             ),
           ],
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.white,
           elevation: 0,
         ),
       ),
@@ -47,25 +46,33 @@ class _SearchPageState extends State<SearchPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: kToolbarHeight + 8),
+            // padding: EdgeInsets.only(top: kToolbarHeight + 8),
+            padding: EdgeInsets.all(16),
             child: Container(
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(8),
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
               ),
               margin: EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: 
+                    TextField(
                       controller: _searchController,
                       focusNode: _searchFocus,
                       decoration: InputDecoration(
-                        hintText: 'Type business, address, or name',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                      hintText: 'Type business, address, or name',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
                       ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      contentPadding: EdgeInsets.symmetric(vertical: 15),
+                    ),
                       onTap: () {
                         FocusScope.of(context).requestFocus(_searchFocus);
                       },
