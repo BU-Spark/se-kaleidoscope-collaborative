@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:kaleidoscope_collaborative/screens/first_screen.dart'; // Make sure to add this package to your pubspec.yaml
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
+
 
 class IdentityVerifiedPage extends StatelessWidget {
   @override
@@ -20,7 +21,7 @@ class IdentityVerifiedPage extends StatelessWidget {
             GestureDetector(
               onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FirstScreen()),
+                MaterialPageRoute(builder: (context) => OnboardingScreen()),
               ),
               child: Icon(
                 MaterialCommunityIcons.check_circle_outline,
