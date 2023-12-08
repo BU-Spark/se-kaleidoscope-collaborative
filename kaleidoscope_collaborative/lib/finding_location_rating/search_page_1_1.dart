@@ -42,11 +42,10 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          title: Text('Filter Page', style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
@@ -54,7 +53,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
               onTap: () {},
             ),
           ],
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.white,
           elevation: 0,
         ),
       ),
@@ -63,11 +62,13 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: EdgeInsets.only(top: kToolbarHeight + 8),
+              // padding: EdgeInsets.only(top: kToolbarHeight + 8),
+            padding: EdgeInsets.all(8),
+
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.grey,
+                  color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8),
                 ),
                 margin: EdgeInsets.symmetric(horizontal: 16),
@@ -158,7 +159,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Colors.deepPurple,
+        color: Color(0xFF6750A4),
         child: TextButton(
           onPressed: () {
             _showResults();
@@ -293,7 +294,7 @@ void _showResults() async {
         margin: EdgeInsets.only(right: 8, bottom: 8),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.purple : Colors.grey,
+          color: isSelected ? Color.fromARGB(255, 222, 202, 251): Colors.grey[300],
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -301,7 +302,7 @@ void _showResults() async {
           children: [
             Text(
               box,
-              style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+              style: TextStyle(color: isSelected ? Colors.black : Colors.black),
             ),
             SizedBox(width: 4),
             if (isSelected)
@@ -313,7 +314,7 @@ void _showResults() async {
                 },
                 child: Icon(
                   Icons.clear,
-                  color: Colors.white,
+                  color: Colors.black,
                   size: 16,
                 ),
               ),
