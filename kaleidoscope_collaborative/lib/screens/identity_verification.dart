@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
 import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
@@ -17,6 +21,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
    List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
   bool _isCodeIncorrect = false;
 
+   final _auth = FirebaseAuth.instance;
+   late User loggedInUser;
+
   // Call this function when the 4th box is filled
   void _verifyCode() {
     String enteredCode = _controllers.map((controller) => controller.text).join();
@@ -31,6 +38,26 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
       });
     }
   }
+
+  @override
+  void initState(){
+      super.initState();
+      getCurrentUser();
+      print("Entered verification");
+  }
+
+   void getCurrentUser() async{
+     try{
+       final user = _auth.currentUser;
+       if(user!=null){
+         loggedInUser = user;
+         print(loggedInUser.email);
+       }
+     }
+     catch(e){
+       print(e);
+     }
+   }
   
   @override
   void dispose() {
@@ -81,33 +108,33 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
               SizedBox(height: 16),
 
               Row(
-  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  children: List.generate(4, (index) {
-    return SizedBox(
-      width: 50,
-      child: TextField(
-        controller: _controllers[index],
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          errorText: _isCodeIncorrect ? 'Incorrect code' : null, // Show error on the last box only
-        ),
-        keyboardType: TextInputType.number,
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        onChanged: (value) {
-          if (value.length == 1 && index < 3) {
-            // Move to the next field if the current one is filled
-            FocusScope.of(context).nextFocus();
-          }
-          if (value.length == 1 && index == 3) {
-            // If the last box is filled, verify the code
-            _verifyCode();
-          }
-        },
-      ),
-    );
-  }),
-),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(4, (index) {
+                  return SizedBox(
+                    width: 50,
+                    child: TextField(
+                      controller: _controllers[index],
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        errorText: _isCodeIncorrect ? 'Incorrect code' : null, // Show error on the last box only
+                      ),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      maxLength: 1,
+                      onChanged: (value) {
+                        if (value.length == 1 && index < 3) {
+                          // Move to the next field if the current one is filled
+                          FocusScope.of(context).nextFocus();
+                        }
+                        if (value.length == 1 && index == 3) {
+                          // If the last box is filled, verify the code
+                          _verifyCode();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ),
 
             SizedBox(height: 16),
             Text(
