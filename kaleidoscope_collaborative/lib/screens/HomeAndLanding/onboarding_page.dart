@@ -11,6 +11,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final int _numPages = 4;
 
+
   @override
   void dispose() {
     _pageController.dispose();
