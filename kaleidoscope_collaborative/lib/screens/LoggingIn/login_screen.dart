@@ -118,8 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     if(existingUser!=null){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
                     }
-
-
                   }
                   catch(e){
                     print(e);
