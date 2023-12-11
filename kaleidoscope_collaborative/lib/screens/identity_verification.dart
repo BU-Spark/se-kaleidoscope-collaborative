@@ -21,17 +21,11 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
    List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
   bool _isCodeIncorrect = false;
 
-   final _auth = FirebaseAuth.instance;
-   late User loggedInUser;
-
   // Call this function when the 4th box is filled
   void _verifyCode() {
     String enteredCode = _controllers.map((controller) => controller.text).join();
     if (enteredCode == '1234') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => IdentityVerifiedPage()),
-      );
+      Navigator.pop(context, true);
     } else {
       setState(() {
         _isCodeIncorrect = true;
@@ -42,22 +36,8 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   @override
   void initState(){
       super.initState();
-      getCurrentUser();
       print("Entered verification");
   }
-
-   void getCurrentUser() async{
-     try{
-       final user = _auth.currentUser;
-       if(user!=null){
-         loggedInUser = user;
-         print(loggedInUser.email);
-       }
-     }
-     catch(e){
-       print(e);
-     }
-   }
   
   @override
   void dispose() {
