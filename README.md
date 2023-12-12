@@ -11,6 +11,16 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 - Revathi Vipinachandran (Boston University)
 - JingHong Huang (Boston University)
 
+# Technical Architecture 
+
+our tech stack: 
+- Flutter + dart
+- Firebase backend
+- Firestore: data storage
+     - link: https://console.firebase.google.com/u/0/project/se-kaleidoscope-collaborative 
+- Express.js for Google API routing
+- Deployment: GCP deployment as most of our tech stack revolves around Google Infrastructure
+- State: Provider, which has not been integrated 
 
 # Features
 
@@ -24,6 +34,22 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 - Accommodations Based Reviews
 - Search and Filter
 
+# How to Run the Project 
+- Please follow through with the installations for Flutter as well as the remote devices needed for displaying the Flutter environment
+- MAKE SURE TO USE FLUTTER VERSION 3.13.3 so that the Buttons will function properly.
+- Make sure to run the backend express.js with your OWN Google API key, specific instructions are in the backend document. Make sure to run the requirement.txt installation beforehand.
+- To run the flutter development, make sure to start the remote device, and use the command: **flutter run lib/screens/main.dart **
+
+
+# Bugs We Have Encountered 
+
+1. NODES MODULES ERROR:
+    - please run **npm i** to install the necessary node packages, as well as the ones in requirements.txt
+3. NO SUCH METHOD ERROR for page loading: this comes when there are too many flutter runs 
+    - flutter clean
+    - flutter pub get
+    - flutter run   
+      
 
 # Future Scope
 
