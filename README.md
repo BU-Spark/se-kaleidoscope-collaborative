@@ -56,9 +56,10 @@ Thank you for your interest in contributing to the Kaleidoscope Collaborative Pr
 We appreciate your contributions to the Kaleidoscope Collaborative Project. Thank you for helping us make a difference!
 
 
+# Test Cases and Security 
 
-## Note : 
-<!-- install firebase tools  -->
-curl -sL https://firebase.tools | bash  
+This is the first integration of the project implementation, we have not yet implemented any security measurements and test cases. The future teams should take action wherever necessary to implement test cases that are suitable for the frontend and backend architecture. 
+
+
 
 
