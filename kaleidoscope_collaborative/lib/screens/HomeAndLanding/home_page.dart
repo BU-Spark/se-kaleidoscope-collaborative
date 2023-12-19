@@ -1,16 +1,13 @@
+// The DashboardScreen is the main interface of the app after login, providing navigation to various categories, a search feature, notifications, and a user profile.
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
 
-
-// import search_page_1_0.dart; 
 import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
 
-
-
-
+// This class defines a category among the list of categories that should be displayed to the user when the user clicks on the explore tab
 class Category {
   final String imagePath;
   final String name;
@@ -26,7 +23,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
-  // Initialize the TabController here without late
+  // TabController for managing tabs in the AppBar.
   TabController? _tabController;
   int _selectedIndex = 1;
   final _auth = FirebaseAuth.instance;
@@ -35,6 +32,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
   late String first_name;
 
+  // List of categories to be displayed on the Dashboard.
   final List<Category> categories = [
     Category(imagePath: 'images/restaurant.jpg', name: 'Restaurant'),
     Category(imagePath: 'images/dojo.jpg', name: 'Dojo'),
@@ -65,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       print(e);
     }
   }
-
+  // Future function to fetch user name by email.
   Future<String> getUserNameByEmail(String? email) async {
     try {
       // Assume 'User' is your collection where user data is stored
@@ -99,9 +97,10 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   Widget build(BuildContext context) {
 
     if (_tabController == null) {
-      return Container(); // or some loading indicator
+      return Container(); // Display a loading indicator or empty container before TabController is initialized.
     }
     return Scaffold(
+      // AppBar setup with a custom title, search, and notifications icons.
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min, // Use min size of the Row
@@ -268,13 +267,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           ],
         ),
       ),
+      // Body of the DashboardScreen consisting of a TabBarView to switch between 'Explore' and 'Review' sections.
       body: TabBarView(
         controller: _tabController, // Provide the TabController to the TabBarView
         children: [
-          // Your grid view or other widgets for the Explore tab
-          // Center(
-          //     child: Text('Explore Content')),
-          Column(
+          // Explore tab with a list of categories in a grid view.
+
+          Column(       // Column configuration for Explore tab
             children: [
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -336,10 +335,11 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               ),
             ],
           ),
-          // Your widgets for the Review tab
+          // Review tab content.
           Center(child: Text('Review Content')),
         ],
       ),
+      // Bottom navigation bar to navigate between different sections like 'Favorite', 'Explore', and 'Profile'.
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
