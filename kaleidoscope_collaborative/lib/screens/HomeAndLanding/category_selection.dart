@@ -1,3 +1,4 @@
+// This screen allows users to select and explore different categories, displaying relevant items and navigation options.
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
@@ -5,6 +6,7 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// On the home page, a set of default categories of organisations will be displayed to help the user narrow down their search to a particular category. Upon choosing a particular category the user will be presented with a list of organisations belonging to the category chosen. This class defines an individual organisation from the list of organisations belonging to the chosen category.
 class categoryItem {
   final String name;
   final String orgType;
@@ -61,7 +63,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
     try {
       QuerySnapshot querySnapshot = await _firestore
           .collection('Organization')
-          .where('org_type', isEqualTo: category) // Filter by the category
+          .where('org_type', isEqualTo: category) // Filter by the category type
           .get();
 
       List<categoryItem> items = querySnapshot.docs.map((doc) {
@@ -70,7 +72,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
           name: data['name'] ?? '',
           orgType: data['org_type'] ?? '',
           // imagePath: data['imagePath'] ?? '', // Replace with the correct field name if different
-          imagePath: 'images/restaurant.jpg',
+          imagePath: 'images/restaurant.jpg', // I have hardcoded the image parameter, but we need to add an image_path column to the organisation table of firestore database, and fetch that value to replace the image_path field here to create an object with dynamic image display.
         );
       }).toList();
 
@@ -83,6 +85,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
     }
   }
 
+  // When the side bar is clicked, the user should be able to see his username displayed at the top left corner. So in this part of the code, we will fetch the user's username based on his email id.
   Future<String> getUserNameByEmail(String? email) async {
     try {
       // Assume 'User' is your collection where user data is stored
@@ -103,7 +106,6 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
 
     return first_name;
   }
-
 
   @override
   void dispose() {
@@ -173,20 +175,6 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
             );
           },
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(Icons.search, color: Colors.black),
-        //     onPressed: () {
-        //       // Implement search functionality
-        //     },
-        //   ),
-        //   IconButton(
-        //     icon: Icon(Icons.notifications, color: Colors.black),
-        //     onPressed: () {
-        //       // Implement notification functionality
-        //     },
-        //   ),
-        // ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
           child: Align(
@@ -214,10 +202,10 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
         ),
       ),
       drawer: Drawer(
-        child: ListView(
+        child: ListView(  // This widget is used to create a scrollable list of items.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            FutureBuilder<String>(
+            FutureBuilder<String>(  // This widget is a convenient way to build a widget and display the user's name once it's retrieved from a future (getUserNameByEmail(loggedInUser.email)).
               future: getUserNameByEmail(loggedInUser.email), // Future that returns the name
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -302,6 +290,8 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
                 ),
               ),
               Expanded(
+                // This section creates a GridView that dynamically displays items based on the 'category_items' list. Each item is represented as a Card within the grid.
+// The GridView uses a builder method to construct each item, allowing for efficient memory usage and smooth scrolling with potentially large datasets.
                 child: GridView.builder(
                   padding: EdgeInsets.all(16.0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -343,20 +333,6 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
                           ],
                         ),
                       ),
-                      // child: Column(
-                      //   crossAxisAlignment: CrossAxisAlignment.stretch,
-                      //   children: [
-                      //     Expanded(
-                      //       child: Image.asset(
-                      //         'images/restaurant.jpg',
-                      //         fit: BoxFit.cover,
-                      //       ),
-                      //     ),
-                      //     ListTile(
-                      //       title: Text(category.name),
-                      //     ),
-                      //   ],
-                      // ),
                     );
                   },
                 ),
@@ -367,6 +343,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
           Center(child: Text('Review Content')),
         ],
       ),
+      // Displays the bottom navigation bar of the screen
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
