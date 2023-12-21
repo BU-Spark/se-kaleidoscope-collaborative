@@ -41,18 +41,6 @@ For MAC:
 - Test the iOS Simulator
 
 
-# Features
-
-- User Registration
-- User Verification
-- User Login
-- Landing Page
-- Explore Page
-- Rating Card
-- Add a Review
-- Accommodations Based Reviews
-- Search and Filter
-
 # How to Run the Project 
 - Please follow through with the installations for Flutter as well as the remote devices needed for displaying the Flutter environment
 - MAKE SURE TO USE FLUTTER VERSION 3.13.3 so that the Buttons will function properly.
@@ -72,6 +60,18 @@ For MAC:
     - This is caused by android emulator not being able to connect to localhost. To fix this, you need to run the backend on a different port: 10.0.2.2:8000 (instead of localhost:3000, which works for iOS emulator)
 4. Running the code on apple device giving the following error: Expected ios/Runner.xcodeproj but this file is missing. No application found for TargetPlatform.ios. Is your project missing an ios/Runner/Info.plist? Consider running "flutter create ." to create one.
     - flutter create .
+
+# Features Implemented
+
+- User Registration
+- User Verification
+- User Login
+- Landing Page
+- Explore Page
+- Rating Card
+- Add a Review
+- Accommodations Based Reviews
+- Search and Filter
 
 
 # Future Scope
