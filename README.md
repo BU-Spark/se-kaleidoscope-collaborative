@@ -21,6 +21,7 @@ our tech stack:
 - Express.js for Google API routing
 - Deployment: GCP deployment as most of our tech stack revolves around Google Infrastructure
 - State: Provider, which has not been integrated 
+- Development Emulator: IOS emulator (preferred as the backend code is written for IOS emulator, for android emulator, please change the localhost to 10.0.2.2:8000 in backend/address.ts) 
 
 # Features
 
@@ -37,7 +38,7 @@ our tech stack:
 # How to Run the Project 
 - Please follow through with the installations for Flutter as well as the remote devices needed for displaying the Flutter environment
 - MAKE SURE TO USE FLUTTER VERSION 3.13.3 so that the Buttons will function properly.
-- Make sure to run the backend express.js with your OWN Google API key, specific instructions are in the backend document. Make sure to run the requirement.txt installation beforehand.
+- Make sure to run the backend express.js with your OWN Google API key, specific instructions are in the backend document, in address.ts. Make sure to run the requirements.txt installation beforehand.
 - To run the flutter development, make sure to start the remote device, and use the command: **flutter run lib/screens/main.dart **
 
 
@@ -49,7 +50,9 @@ our tech stack:
     - flutter clean
     - flutter pub get
     - flutter run   
-      
+3. Running backend giving "Error: ClientException with SocketException: Connection refused (OS error 111)" with android emulator 
+    - This is caused by android emulator not being able to connect to localhost. To fix this, you need to run the backend on a different port: 10.0.2.2:8000 (instead of localhost:3000, which works for iOS emulator)
+
 
 # Future Scope
 
@@ -87,5 +90,7 @@ We appreciate your contributions to the Kaleidoscope Collaborative Project. Than
 This is the first integration of the project implementation, we have not yet implemented any security measurements and test cases. The future teams should take action wherever necessary to implement test cases that are suitable for the frontend and backend architecture. 
 
 
+# Deployment 
+As of now, we have not deployed the project. The future teams should take action to deploy the project on GCP or AWS or any other cloud platform that is suitable for the project. 
 
 

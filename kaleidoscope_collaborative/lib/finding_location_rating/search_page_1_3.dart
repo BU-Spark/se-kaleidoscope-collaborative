@@ -104,11 +104,6 @@ class RatingPageContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
-        // "Add a Review" button (also above the rating bar)
-        // Include the content from RatingPage or customize as needed
-        // You can directly use the widgets from RatingPage or modify them accordingly
-        // ...
-        // For example:
         Text("Community Reviews", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         SizedBox(height: 5),
         Text(
