@@ -13,7 +13,7 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 
 # Technical Architecture 
 
-our tech stack: 
+Our tech stack: 
 - Flutter + dart
 - Firebase backend
 - Firestore: data storage
@@ -24,6 +24,21 @@ our tech stack:
 - Development Emulator: IOS emulator (preferred as the backend code is written for IOS emulator, for android emulator, please change the localhost to 10.0.2.2:8000 in backend/address.ts) 
 
 <img src="technical_architecture.png" alt="Logo" width="600"/>
+
+
+# Project Setup 
+
+For windows: 
+- Install the Flutter SDK - https://docs.flutter.dev/get-started/install/windows
+- Install Android Studio - https://developer.android.com/studio/install
+- Install the Android Emulator - Choose your android emulator when creating your flutter project on android studio code
+
+For MAC:
+- Install the Flutter SDK - https://docs.flutter.dev/get-started/install/macos
+- Install Android Studio - https://developer.android.com/studio/install
+- Install Android Emulator - Create virtual device on android studio code and add an ios emulator
+- Install Xcode and command-line tools - https://docs.flutter.dev/get-started/install/macos/mobile-ios#configure-xcode
+- Test the iOS Simulator
 
 
 # Features
@@ -55,6 +70,8 @@ our tech stack:
     - flutter run   
 3. Running backend giving "Error: ClientException with SocketException: Connection refused (OS error 111)" with android emulator 
     - This is caused by android emulator not being able to connect to localhost. To fix this, you need to run the backend on a different port: 10.0.2.2:8000 (instead of localhost:3000, which works for iOS emulator)
+4. Running the code on apple device giving the following error: Expected ios/Runner.xcodeproj but this file is missing. No application found for TargetPlatform.ios. Is your project missing an ios/Runner/Info.plist? Consider running "flutter create ." to create one.
+    - flutter create .
 
 
 # Future Scope
