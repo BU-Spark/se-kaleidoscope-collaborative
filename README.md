@@ -23,6 +23,9 @@ our tech stack:
 - State: Provider, which has not been integrated 
 - Development Emulator: IOS emulator (preferred as the backend code is written for IOS emulator, for android emulator, please change the localhost to 10.0.2.2:8000 in backend/address.ts) 
 
+<img src="technical_architecture.png" alt="Logo" width="200"/>
+
+
 # Features
 
 - User Registration
