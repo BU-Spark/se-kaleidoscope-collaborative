@@ -24,8 +24,21 @@ class SearchPage1_2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search Results"),
+          title: Text('Search Results', style: TextStyle(color: Colors.black)),
+          leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            GestureDetector(
+              child: Icon(Icons.history),
+              onTap: () {},
+            ),
+          ],
+          backgroundColor: Colors.white,
+          elevation: 0,
       ),
+      
       body:
 
             /**
