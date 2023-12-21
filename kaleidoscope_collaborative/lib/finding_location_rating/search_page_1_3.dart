@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'ratings_card.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 
@@ -22,7 +23,10 @@ class SearchPage1_3 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(result['name'] ?? ''),
+        title: Text(result['name'] ?? '', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -79,7 +83,10 @@ class SearchPage1_3 extends StatelessWidget {
               );
             },
               child: Text("Add a Review"),
+               style: kSmallButtonStyle,
+              
             ),
+            
             // Display the content of RatingPage directly
             RatingPageContent(),
           ],
@@ -102,7 +109,7 @@ class RatingPageContent extends StatelessWidget {
         // You can directly use the widgets from RatingPage or modify them accordingly
         // ...
         // For example:
-        Text("Community Reviews", style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+        Text("Community Reviews", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         SizedBox(height: 5),
         Text(
           'Joe Smith',
