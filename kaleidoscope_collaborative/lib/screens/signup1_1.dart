@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 // import 'package:kaleidoscope_collaborative/screens/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
+import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
 import 'identity_verification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
@@ -13,7 +15,8 @@ class SignupScreen extends StatefulWidget{
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-   CloudFirestoreService? service;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  CloudFirestoreService? service;
 
   final FocusNode _fnameFocus = FocusNode();
   final FocusNode _lnameFocus = FocusNode();
@@ -101,28 +104,28 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _validatePasswords() {
-  setState(() {
-    _passwordsMatch = _passwordTextController.text == _confirmPasswordTextController.text;
+    setState(() {
+      _passwordsMatch = _passwordTextController.text == _confirmPasswordTextController.text;
 
-  });
-}
+    });
+  }
 
   void _validateEmailId() {
-  setState(() {
-    _emailMatch = _emailTextController.text == _confirmEmailTextController.text;
-    _phoneNumberMatch = false;
-    _emailOrPhoneNumberMatch = _emailMatch; 
+    setState(() {
+      _emailMatch = _emailTextController.text == _confirmEmailTextController.text;
+      _phoneNumberMatch = false;
+      _emailOrPhoneNumberMatch = _emailMatch;
 
-  });
-}
+    });
+  }
 
   void _validatePhoneNumber() {
-  setState(() {
-    _phoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
-    _emailMatch = false;
-    _emailOrPhoneNumberMatch = _phoneNumberMatch; 
-  });
-}
+    setState(() {
+      _phoneNumberMatch = _phoneNumberTextController.text == _confirmPhoneNumberTextController.text;
+      _emailMatch = false;
+      _emailOrPhoneNumberMatch = _phoneNumberMatch;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +174,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     border: OutlineInputBorder(),
                     labelText: 'First Name',
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_fnameTextController),
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_fnameTextController),
                     ),
                   ),
                   controller: _fnameTextController,
@@ -186,8 +189,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     border: OutlineInputBorder(),
                     labelText: 'Last Name',
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_lnameTextController),
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_lnameTextController),
                     ),
                   ),
                   controller: _lnameTextController,
@@ -201,8 +204,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     border: OutlineInputBorder(),
                     labelText: 'Username',
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_usernameTextController),
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_usernameTextController),
                     ),
                   ),
                   controller: _usernameTextController,
@@ -217,8 +220,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_passwordTextController),
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_passwordTextController),
                     ),
                   ),
                   // onChanged: (value) {
@@ -235,12 +238,12 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Password',
-                  errorText: _passwordsMatch ? null : 'Passwords do not match',
+                    errorText: _passwordsMatch ? null : 'Passwords do not match',
 
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_confirmPasswordTextController),
-                          
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_confirmPasswordTextController),
+
                     ),
                   ),
                   controller: _confirmPasswordTextController,
@@ -253,21 +256,21 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Email input
                 GestureDetector(
                   child:
-                    TextField(
-                      focusNode: _emailFocus,
-                      enabled: isEmailActive,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Email',
-                        suffixIcon: IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: ()=> clearText(_emailTextController),
-                        ),
+                  TextField(
+                    focusNode: _emailFocus,
+                    enabled: isEmailActive,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: ()=> clearText(_emailTextController),
                       ),
-                      controller: _emailTextController,
-                      onTap: () => setEmailActive(),
                     ),
+                    controller: _emailTextController,
                     onTap: () => setEmailActive(),
+                  ),
+                  onTap: () => setEmailActive(),
                 ),
                 SizedBox(height: 16),
 
@@ -278,10 +281,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Email',
-                  errorText: _emailMatch ? null : 'Email ids do not match',
+                    errorText: _emailMatch ? null : 'Email ids do not match',
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_confirmEmailTextController),
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_confirmEmailTextController),
                     ),
                   ),
                   controller: _confirmEmailTextController,
@@ -292,7 +295,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(height: 32),
 
-                
+
 
                 // Divider with 'or'
                 const Row(
@@ -315,7 +318,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 // Phone Number input
                 GestureDetector(
-                child:
+                  child:
                   TextField(
                     focusNode: _phoneNumberFocus,
                     enabled: isPhoneNumberActive,
@@ -323,16 +326,16 @@ class _SignupScreenState extends State<SignupScreen> {
                       border: OutlineInputBorder(),
                       labelText: 'Phone Number',
                       suffixIcon: IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: ()=> clearText(_phoneNumberTextController),
+                        icon: const Icon(Icons.clear),
+                        onPressed: ()=> clearText(_phoneNumberTextController),
                       ),
                     ),
                     controller: _phoneNumberTextController,
                     onTap: () => setPhoneNumberActive(),
                   ),
                   onTap: () => setPhoneNumberActive(),
-                  ),
-                  SizedBox(height: 16),
+                ),
+                SizedBox(height: 16),
 
                 // Confirm Phone Number input
                 TextField(
@@ -341,10 +344,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: ' Confirm Phone Number',
-                  errorText: _phoneNumberMatch ? null : 'Phone numbers do not match',
+                    errorText: _phoneNumberMatch ? null : 'Phone numbers do not match',
                     suffixIcon: IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: ()=> clearText(_confirmPhoneNumberTextController),
+                      icon: const Icon(Icons.clear),
+                      onPressed: ()=> clearText(_confirmPhoneNumberTextController),
                     ),
                   ),
                   controller: _confirmPhoneNumberTextController,
@@ -356,52 +359,109 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 32),
 
                 ElevatedButton(
-                child: Text('Submit'),
-                
-                onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch))) ? ()  async {
-                  // Collect user data from the text controllers
-                  Map<String, dynamic> userData = {
-                    'first_name': _fnameTextController.text,
-                    'last_name': _lnameTextController.text,
-                    'username': _usernameTextController.text,
-                    'password': _passwordTextController.text,
-                    'email': _emailTextController.text,
-                    'phone_number': _phoneNumberTextController.text,
-                  };
+                  child: Text('Submit'),
 
-                  // Add the user to the database
-                  try {
-                    await service?.addUserData(userData);
-                    // Go to the identity verification page after adding the user
+                  onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch))) ? ()  async {
+
                     if (isEmailActive) {
                       // If email is the chosen method, validate emails.
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod: _emailTextController.text, resendCode: 'Email')));
+                      bool verificationSuccessful = false;
+
+                      // Navigate to the Identity Verification page and await the result
+                      verificationSuccessful = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod: _emailTextController.text, resendCode: 'Email')),
+                      );
+
+
+                      if (verificationSuccessful) {
+
+                        Map<String, dynamic> userData = {
+                          'first_name': _fnameTextController.text,
+                          'last_name': _lnameTextController.text,
+                          'username': _usernameTextController.text,
+                          'password': _passwordTextController.text,
+                          'email': _emailTextController.text,
+                          'phone_number': _phoneNumberTextController.text,
+                        };
+                        // Proceed with Firebase registration and Firestore data addition
+                        try {
+                          // Add user data to Firestore
+                          await service?.addUserData(userData);
+
+                          // For Firebase Auth registration
+                            final newUser = _auth.createUserWithEmailAndPassword(email: _emailTextController.text, password: _passwordTextController.text);
+                            if(newUser!=null){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
+                            }
+                          // Go to the identity verification page after adding the user
+                        } catch (e) {
+                          print('Error during Firebase signup: $e');
+                        }
+                      } else {
+                        // Handle verification failure
+                        print('Identity verification failed');
+                      }
                     } else {
                       // If phone number is the chosen method, validate phone numbers.
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod:_phoneNumberTextController.text, resendCode: 'SMS')));
+
+                      bool verificationSuccessful = false;
+                      // Send a verification code to the given phone number
+                      await _auth.verifyPhoneNumber(
+                        phoneNumber: _phoneNumberTextController.text,
+                        verificationCompleted: (PhoneAuthCredential credential) async {
+                          // Auto-resolve the SMS verification code
+                        },
+                        verificationFailed: (FirebaseAuthException e) {
+                          // Handle verification failure
+                          print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+                        },
+                        codeSent: (String verificationId, int? resendToken) async {
+                          // Code has been sent to the user, navigate to the code verification page
+                          verificationSuccessful = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod:_phoneNumberTextController.text, resendCode: 'SMS')),
+                          );
+
+                          // Check the result of the code verification
+                          if (verificationSuccessful) {
+                            Map<String, dynamic> userData = {
+                              'first_name': _fnameTextController.text,
+                              'last_name': _lnameTextController.text,
+                              'username': _usernameTextController.text,
+                              'password': _passwordTextController.text,
+                              'email': _emailTextController.text,
+                              'phone_number': _phoneNumberTextController.text,
+                            };
+
+                            await service?.addUserData(userData);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
+
+                          } else {
+                            // Handle verification failure
+                          }
+                        },
+                        codeAutoRetrievalTimeout: (String verificationId) {
+                          // Auto-retrieval time has lapsed
+                        },
+                      );
                     }
-                  } catch (e) {
-                    // Handle errors here, possibly show an error message to the user
-                  print(e); // Use a proper way to log errors or show a dialog to the user
-                  }
-                } : null,
-                // onPressed: () {
-                //   // go to the idenity verification page
-                //   Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerificationPage()));
-                // },
-                style: kButtonStyle,
-              ),
-              SizedBox(height: 32),
+
+                  } : null,
 
 
-                ],
-              ),
+                  style: kButtonStyle,
+                ),
+                SizedBox(height: 32),
+
+
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
 
 

@@ -11,3 +11,7 @@ json
 http
 # Install TypeScript type definitions for Node.js
 @types/node
+
+## Note : 
+# <!-- install firebase tools  -->
+# curl -sL https://firebase.tools | bash  
