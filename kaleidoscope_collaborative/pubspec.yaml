@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mockito: ^5.0.16
   pin_code_fields: ^8.0.0
   cupertino_icons: ^1.0.2
   flutter_verification_code: ^1.1.7
