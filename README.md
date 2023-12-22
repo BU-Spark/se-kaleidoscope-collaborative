@@ -142,6 +142,29 @@ TypeScript for Backend Logic:
 
 
 # Deployment 
-As of now, we have not deployed the project. The future teams should take action to deploy the project on GCP or AWS or any other cloud platform that is suitable for the project. 
+Our project is still in its development phase, so we haven't made an Android or iOS deployment for the front-end of our application. The backend code that uses typescript needs to be deployed into firebase functions and the future teams will have to deploy the project once it is ready.
+
+Steps for deployment:
+
+Flutter Front-end Deployment:
+iOS Deployment:
+- Use Xcode to archive the application and upload it to the App Store Connect.
+Follow the certification and provisioning process required by Apple.
+
+- Android Deployment:
+Generate a signed APK or App Bundle using the flutter build apk or flutter build appbundle command.
+Upload the build to the Google Play Console.
+Follow the certification process required by Google.
+
+Firebase Backend Deployment:
+
+- Firebase Functions: Use the Firebase CLI to deploy cloud functions written in TypeScript. Command: firebase deploy --only functions
+
+- Firestore Security Rules and Indexes: Deploy security rules and indexes for Firestore through the Firebase CLI. Commands: 1. firebase deploy --only firestore:rules 2. firebase deploy --only firestore:indexes
+
+Google Cloud Platform (GCP) Infrastructure:
+- Use Google Cloud Console or CLI tools to manage and deploy resources that your backend might depend on, like Compute Engine, App Engine, or Kubernetes Engine.
+
+
 
 
