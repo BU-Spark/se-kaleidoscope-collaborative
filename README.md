@@ -127,6 +127,7 @@ The front end test cases can be found by navigating to the test folder within th
 Flutter Front-end testing:
 - Widget Testing: We have written widget tests for the home page and the first screen to verify the behavior of individual widgets. We have used the testWidgets function provided by the Flutter Test package.
 - Mocking Dependencies: For widgets that depend on models or services such as Firebase Auth, we have used mocking libraries like mockito to create mock instances.
+- Testing User Interactions: We have simulated user interactions with widgets using the flutter_test package's tap, drag, and enterText functions.
 
 Firebase Backend testing:
 - Service Testing: Write tests for your services that interact with Firebase. Use mockito to mock Firebase services.
