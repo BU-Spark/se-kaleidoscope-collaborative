@@ -147,8 +147,8 @@ Our project is still in its development phase, so we haven't made an Android or 
 Steps for deployment:
 
 Flutter Front-end Deployment:
-iOS Deployment:
-- Use Xcode to archive the application and upload it to the App Store Connect.
+- iOS Deployment:
+Use Xcode to archive the application and upload it to the App Store Connect.
 Follow the certification and provisioning process required by Apple.
 
 - Android Deployment:
@@ -157,7 +157,6 @@ Upload the build to the Google Play Console.
 Follow the certification process required by Google.
 
 Firebase Backend Deployment:
-
 - Firebase Functions: Use the Firebase CLI to deploy cloud functions written in TypeScript. Command: firebase deploy --only functions
 
 - Firestore Security Rules and Indexes: Deploy security rules and indexes for Firestore through the Firebase CLI. Commands: 1. firebase deploy --only firestore:rules 2. firebase deploy --only firestore:indexes
