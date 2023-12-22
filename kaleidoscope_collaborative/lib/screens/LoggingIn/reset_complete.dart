@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
+import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
+
+import 'login_complete.dart';
 
 // StatefulWidget for the Password Confirmed Screen.
 class PasswordConfirmedScreen extends StatefulWidget {
@@ -16,10 +19,10 @@ class _PasswordConfirmedScreenState extends State<PasswordConfirmedScreen> {
   void initState() {
     super.initState();
     // Automatically navigate to OnboardingScreen after a 3-second delay.
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 1), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        MaterialPageRoute(builder: (context) => FirstScreen()),
       );
     });
   }
