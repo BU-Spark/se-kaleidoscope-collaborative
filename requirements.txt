@@ -3,7 +3,7 @@ python-dotenv==0.19.1
 # Node.js/npm dependencies
 ## Install Node.js and npm: https://nodejs.org/
 ## Install TypeScript globally
-ypescript
+typescript
 ts-node 
 axios
 express

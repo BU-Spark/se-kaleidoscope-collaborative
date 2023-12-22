@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
+// Implementing Add a Review 1.1 : Overall Rating Page
 
 class AddReviewPage extends StatefulWidget {
   final String OrganizationName;
@@ -41,11 +42,10 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 Image.asset(
                   '${widget.OrgImgLink}',
                   fit: BoxFit.cover,
-                  width: 117.0, // Set the width to match your design
-                  height: 99.0, // Set the height to match your design
+                  width: 117.0, 
+                  height: 99.0, 
                 ),
-                SizedBox(width: 16.0), // Add some spacing between the image and text
-                // Organization Title and Type
+                SizedBox(width: 16.0), 
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,8 +108,8 @@ class _AddReviewPageState extends State<AddReviewPage> {
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.star,
-                          color: Colors.white, // The color for the circle
-                          size: 58, // The size of the circle
+                          color: Colors.white, 
+                          size: 58, 
                         ),
                       ),
                     ],

@@ -1,3 +1,5 @@
+// The OnboardingScreen provides a multi-step introduction to the app's features and purpose, guiding new users through key information.
+
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 
@@ -11,6 +13,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController(initialPage: 0);
   final int _numPages = 4;
 
+  // Dispose of PageController when the widget is disposed.
   @override
   void dispose() {
     _pageController.dispose();
@@ -20,6 +23,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // AppBar setup with dynamic title based on the current onboarding page.
       appBar: AppBar(
         title: Text('Onboarding ${_currentPage + 1}'),
         backgroundColor: Colors.white,
@@ -27,6 +31,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       body: Column(
         children: [
+          // PageView to create a swipeable series of onboarding pages.
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -36,6 +41,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 });
               },
               children: [
+                // Individual onboarding pages.
                 buildPage(
                   title: 'Welcome to\nKaleidoscope',
                   content: 'We are here to empower your experience with reviews from your community.',
@@ -59,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
           ),
-          // Dots indicators
+          // // Dots indicators for onboarding progress.
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -68,6 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
 
+          // Navigation buttons to move through onboarding pages.
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Row(
@@ -118,7 +125,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-
+  // Helper function to build each onboarding page.
   Widget buildPage({required String title, required String content, required String imagePath}) {
     return Padding(
       padding: const EdgeInsets.all(30.0),
@@ -151,7 +158,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-
+  // Helper function to build the dot indicators for the onboarding page.
   Widget buildDot(int index, BuildContext context) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 200),

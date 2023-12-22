@@ -4,6 +4,7 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_par
 import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
+// Implementing Add a Review 2.1 : Choosing Accommodations for Rating Page
 
 class ChooseRatingParametersPage extends StatefulWidget {
   final String OrganizationName;
@@ -142,14 +143,13 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
           children: <Widget>[
             Row(
               children: <Widget>[
-                // Small Image on the top left corner
                 Image.asset(
                   '${widget.OrgImgLink}',
                   fit: BoxFit.cover,
-                  width: 117.0, // Set the width to match your design
-                  height: 99.0, // Set the height to match your design
+                  width: 117.0,
+                  height: 99.0,
                 ),
-                SizedBox(width: 16.0), // Add some spacing between the image and text
+                SizedBox(width: 16.0), 
                 // Organization Title and Type
                 Expanded(
                   child: Column(
@@ -228,8 +228,6 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                         ),
                       );
 
-                      // Handle the result here, e.g., save the rating for each parameter
-                      // Store the rating; if the result is null, it indicates that the user skipped this parameter
                       if (rating != null) {
                       parameterRatings[parameter] = rating;}
                       // If result is null, the user may have skipped rating this parameter
@@ -239,10 +237,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                       context,
                       MaterialPageRoute(builder: (context) => TextReviewPage(overallRating: widget.overallRating, parameterRatings: parameterRatings,
                       OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId, OrgImgLink: widget.OrgImgLink)), 
-                    );
-                    
-                    // After rating all parameters, you might navigate to a summary or review submission page
-                  },
+                    );    
+                 },
                   child: Text('Next'),
                   style: kSmallButtonStyle,
                 ),

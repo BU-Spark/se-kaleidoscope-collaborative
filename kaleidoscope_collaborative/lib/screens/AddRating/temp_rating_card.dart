@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
+// Implementing Temporary Rating Card
 
+// TODO: 
+// Replace this page with the rating card implemented Find Location/Rating Wireframe 2.0
+// link the add the review button
 class TemporaryRatingCard extends StatelessWidget {
   final String OrganizationName;
   final String OrganizationType;

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
+// Implementing Add a Review 5 - 5.2 : Summary of the Ratings
 
+// TODO: 
+//Route the back to business page to the business card
 class SummaryReviewPage extends StatefulWidget {
   final String OrganizationName;
   final String OrganizationType;
@@ -48,14 +51,13 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                // Small Image on the top left corner
                 Image.asset(
                   '${widget.OrgImgLink}',
                   fit: BoxFit.cover,
-                  width: 117.0, // Set the width to match your design
-                  height: 99.0, // Set the height to match your design
+                  width: 117.0,
+                  height: 99.0,
                 ),
-                SizedBox(width: 16.0), // Add some spacing between the image and text
+                SizedBox(width: 16.0), 
                 // Organization Title and Type
                 Expanded(
                   child: Column(
@@ -183,7 +185,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
-                   
+                   // todo: route back to business card
                    },
                   child: Text('Back to Business'),
                   style: kSmallButtonStyle,
@@ -196,8 +198,6 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                           builder: (context) => DashboardScreen(),
                         ),
                       );
-
-                    
               },
                   child: Text('Homepage'),
                   style: kSmallButtonStyle,

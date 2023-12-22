@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+/**
+ * This page is displayed when no result is found for the location.
+ */
 class NoResultFoundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
