@@ -15,7 +15,7 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 
 Our tech stack: 
 - Flutter + dart
-- Firebase backend
+- Firebase backend (Firebase Auth for User Authentication)
 - Firestore: data storage
      - link: https://console.firebase.google.com/u/0/project/se-kaleidoscope-collaborative 
 - Express.js for Google API routing
