@@ -7,7 +7,7 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 // StatefulWidget for the Verification Code Screen.
 class VerificationCodeScreen extends StatefulWidget {
   final String unique_id;
-  final String verification_type;
+  final String verification_type;        // TODO: Add an additional variable to accept the verification code sent to user. It needs to be a required parameter.
 
   const VerificationCodeScreen({Key? key, required this.unique_id, required this.verification_type}) : super(key: key);
 
@@ -76,7 +76,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                   // Navigate to verification complete screen when code is filled.
                   if (value.length == 4) {
                     Future.delayed(Duration(milliseconds: 100), () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationComplete()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationComplete()));    // TODO: Compare the verification code sent to user with the user's input into PinCodeTextField. If the codes match navigate to VerificationComplete page. Or else display an error message.
                     });
                   }
                 },
@@ -106,7 +106,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               ElevatedButton(
                 child: Text('Resend Email'),
                 onPressed: () {
-                  // Implement resend logic
+                  //TODO: Implement resend logic (same as the logic implemented in forgot password page)
                 },
                 style: kButtonStyle,
               ),
@@ -115,7 +115,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               ElevatedButton(
                 child: Text('Try another email address'),
                 onPressed: () {
-                  // Implement change email logic
+                  // TODO: Go back to forgot password page
                 },
                 style: kButtonStyle,
               ),
