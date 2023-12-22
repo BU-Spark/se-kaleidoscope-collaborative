@@ -86,6 +86,8 @@ For more information, [click here](https://developer.apple.com/documentation/xco
 - Accommodations Based Reviews
 - Search and Filter
 
+* Certain page-specific features that require further development or enhancement are listed as TODOs in the project files.
+
 
 # Future Scope
 
