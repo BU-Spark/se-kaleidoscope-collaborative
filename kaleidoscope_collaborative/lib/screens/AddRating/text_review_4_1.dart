@@ -4,6 +4,10 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/summaryReview_5_1.d
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
+// Implementing Add a Review 4.1 - 4.2 : Text Review
+
+// TODO: 
+//Route the back to business page to the business card
 class TextReviewPage extends StatefulWidget {
   final int overallRating;
   final String OrganizationName;
@@ -77,10 +81,10 @@ class _TextReviewPageState extends State<TextReviewPage> {
                 Image.asset(
                   '${widget.OrgImgLink}',
                   fit: BoxFit.cover,
-                  width: 117.0, // Set the width to match your design
-                  height: 99.0, // Set the height to match your design
+                  width: 117.0, 
+                  height: 99.0, 
                 ),
-                SizedBox(width: 16.0), // Add some spacing between the image and text
+                SizedBox(width: 16.0),
                 // Organization Title and Type
                 Expanded(
                   child: Column(

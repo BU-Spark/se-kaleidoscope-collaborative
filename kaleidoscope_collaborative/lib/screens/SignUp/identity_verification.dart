@@ -1,13 +1,16 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
-import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 
-// Implementing the Idenity Verification Page
+// Implementing Register New User 1.3.0 - 1.3.3 : Identity Verification Page
+
+//TO DO:
+// Adding the authentication code - hard coded for now - to be replaced with the code sent to the user's email/phone number
+// Implement the function for the "Resend" button and "Try another verification method" button
 
 class IdentityVerificationPage extends StatefulWidget{
   final String verificationMethod;

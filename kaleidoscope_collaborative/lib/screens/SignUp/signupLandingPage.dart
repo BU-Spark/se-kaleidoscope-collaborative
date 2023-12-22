@@ -21,7 +21,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-        elevation: 0, // Removes the shadow under the app bar
+        elevation: 0, 
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -31,8 +31,8 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
           children: <Widget>[
             Image.asset(
               'images/logo.jpg',
-              width: 117.0, // Set the width to match your design
-              height: 99.0, // Set the height to match your design
+              width: 117.0, 
+              height: 99.0, 
             ),
             SizedBox(height: 48),
 

@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:kaleidoscope_collaborative/screens/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
-import 'package:kaleidoscope_collaborative/screens/identity_Verifed_1_4.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 import 'identity_verification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
+// Implementing the 1.1 -  1.2.3 Sign Up Page
 
 class SignupScreen extends StatefulWidget{
   const SignupScreen({super.key});
@@ -44,7 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _passwordsMatch = true;
   bool _emailMatch = true;
   bool _phoneNumberMatch = true;
-  bool _emailOrPhoneNumberMatch = false; // Set to true if this validation is optional
+  bool _emailOrPhoneNumberMatch = false;
 
 
   @override
@@ -162,8 +162,8 @@ class _SignupScreenState extends State<SignupScreen> {
               children: <Widget>[
                 Image.asset(
                   'images/logo.jpg',
-                  width: 117.0, // Set the width to match your design
-                  height: 99.0, // Set the height to match your design
+                  width: 117.0, 
+                  height: 99.0, 
                 ),
                 SizedBox(height: _fnameFocus.hasFocus || _lnameFocus.hasFocus || _usernameFocus.hasFocus ? 20 : 48),
 

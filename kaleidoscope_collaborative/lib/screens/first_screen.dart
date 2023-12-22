@@ -3,7 +3,7 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.da
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';
-import 'signupLandingPage.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
 
 
 // import search bar 
