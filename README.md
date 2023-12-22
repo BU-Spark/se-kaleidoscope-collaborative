@@ -120,7 +120,30 @@ We appreciate your contributions to the Kaleidoscope Collaborative Project. Than
 
 # Test Cases and Security 
 
-This is the first integration of the project implementation, we have not yet implemented any security measurements and test cases. The future teams should take action wherever necessary to implement test cases that are suitable for the frontend and backend architecture. 
+This is the first integration of the project implementation, so we have created a few test cases for testing the flutter front end. However we have not yet implemented any security measurements. The future teams should take action wherever necessary to implement additional test cases that are suitable for the frontend and backend architecture. The front end test cases can be found by navigating to the test folder within the root folder.
+
+Flutter Front-end testing methods used:
+
+    - Widget Testing: We have written widget tests for the home page and the first screen to verify the behavior of individual widgets. We have used the testWidgets function provided by the Flutter Test package.
+    - Mocking Dependencies: For widgets that depend on models or services such as Firebase Auth, we have used mocking libraries like mockito to create mock instances.
+
+Firebase Backend testing:
+
+    - Service Testing: Write tests for your services that interact with Firebase. Use mockito to mock Firebase services.
+    - Firebase Emulator: Consider using the Firebase Local Emulator Suite to run integration tests without affecting your production database.
+
+Firestore Database:
+
+    - Model Testing: Write tests for data models to ensure proper serialization and deserialization.
+    - Repository Testing: Test the data layer with mock responses to simulate database operations.
+
+Google IAM & User Authentication:
+
+    - Auth Testing: Test authentication logic by mocking the FirebaseAuth instance and verifying the behavior of your authentication services.
+
+TypeScript for Backend Logic:
+
+    - TS Unit Testing: Use a JavaScript testing framework like Jest or Mocha to write and run tests for your TypeScript code.
 
 
 # Deployment 
