@@ -87,9 +87,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               // Button to send reset instructions to the entered email.
               ElevatedButton(
                 child: Text('Send Email'),
-                onPressed: () {
+                onPressed: () {         //TODO: Integrate the function to send a verification code to the user provided email id
                   String email = _emailTextController.text;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: email,  verification_type: 'email',)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: email,  verification_type: 'email',)));   //TODO: Pass the verification code sent to user as a parameter to the password_reset_verification.dart page (VerificationCodeScreen).
                 },
                 style: kButtonStyle,
               ),
@@ -120,9 +120,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               // Button to send reset instructions to the entered phone number.
               ElevatedButton(
                 child: Text('Send to Phone'),
-                onPressed: () {
+                onPressed: () {        //TODO: Integrate the function to send a verification code to the user provided phone number
                   String number = _phoneTextController.text;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: number, verification_type: "text",)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: number, verification_type: "text",)));    //TODO: Pass the verification code sent to user as a parameter to the password_reset_verification.dart page (VerificationCodeScreen).
                 },
                 style: kButtonStyle,
               ),
