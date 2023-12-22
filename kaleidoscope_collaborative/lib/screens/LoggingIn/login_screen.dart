@@ -71,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: _emailFocus.hasFocus || _passwordFocus.hasFocus ? 20 : 48),
 
               // TextField for email input.
+              // TODO: Email text input validation on the front end
               TextField(
                 focusNode: _emailFocus,
                 obscureText: false,
@@ -93,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               SizedBox(height: 16),
 
+              // TODO: Password input validation on the front end
               // TextField for password input.
               TextField(
                 focusNode: _passwordFocus,
@@ -163,6 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 16),
 
+              // TODO: Implement login using facebook:
+              //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Facebook and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
                 child: Text('Log In with Facebook'),
                 onPressed: () {
@@ -170,6 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: kButtonStyle,
               ),
               SizedBox(height: 16),
+              // TODO: Implement login using google:
+              //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Google and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
                 child: Text('Log In with Google'),
                 onPressed: () {
