@@ -343,14 +343,14 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Favorite',
+            label: 'Favorite',       // TODO: Add a favourite icon to every category_item card (Not implemented yet as the figma wireframes don't have it). But when the user clicks on the favourite icon, this data should be stored into Firestore, and later when the user clicks on the favourite tab, the list of user's favourite organisations should be fetched and displayed the way explore tab displays content.
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.person),   // TODO: Once front end of the profile customization pages are done, this icon should navigate to that screen
             label: 'Profile',
           ),
         ],
