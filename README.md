@@ -128,21 +128,17 @@ Flutter Front-end testing methods used:
     - Mocking Dependencies: For widgets that depend on models or services such as Firebase Auth, we have used mocking libraries like mockito to create mock instances.
 
 Firebase Backend testing:
-
     - Service Testing: Write tests for your services that interact with Firebase. Use mockito to mock Firebase services.
     - Firebase Emulator: Consider using the Firebase Local Emulator Suite to run integration tests without affecting your production database.
 
 Firestore Database:
-
     - Model Testing: Write tests for data models to ensure proper serialization and deserialization.
     - Repository Testing: Test the data layer with mock responses to simulate database operations.
 
 Google IAM & User Authentication:
-
     - Auth Testing: Test authentication logic by mocking the FirebaseAuth instance and verifying the behavior of your authentication services.
 
 TypeScript for Backend Logic:
-
     - TS Unit Testing: Use a JavaScript testing framework like Jest or Mocha to write and run tests for your TypeScript code.
 
 
