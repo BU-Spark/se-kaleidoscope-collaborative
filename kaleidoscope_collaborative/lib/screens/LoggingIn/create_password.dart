@@ -66,7 +66,7 @@ class _CreatePasswordState extends State<CreatePassword> {
               SizedBox(height: 48),
               // Instruction text for creating a new password.
               const Text(
-                'Your new password must be different from previous used passwords.',
+                'Your new password must be different from previously used passwords.',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),
@@ -79,6 +79,8 @@ class _CreatePasswordState extends State<CreatePassword> {
               ),
               SizedBox(height: 32),
               // TextField for the new password.
+              // TODO: Implement the logic to distinguish the new password from previously used passwords.
+              // TODO: Also add input password text validation (password should be 7-10 Characters in length; 1 capital letter; 1 number; 1 special character)
               TextField(
                 controller: _newPasswordController,
                 decoration: InputDecoration(
@@ -107,6 +109,7 @@ class _CreatePasswordState extends State<CreatePassword> {
               ),
               SizedBox(height: 24),
               // Button to submit the new password.
+              // TODO: Check if _newPasswordController.text and _confirmPasswordController.text match. If it matches go to PasswordConfirmedScreen (reset_complete.dart) or else display error message.
               ElevatedButton(
                 child: Text('Reset Password'),
                 onPressed: () {
