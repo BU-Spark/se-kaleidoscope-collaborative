@@ -120,9 +120,11 @@ We appreciate your contributions to the Kaleidoscope Collaborative Project. Than
 
 # Test Cases and Security 
 
-This is the first integration of the project implementation, so we have created a few test cases for testing the flutter front end. However we have not yet implemented any security measurements. The future teams should take action wherever necessary to implement additional test cases that are suitable for the frontend and backend architecture. The front end test cases can be found by navigating to the test folder within the root folder.
+This is the first integration of the project implementation, so we have created a few test cases for testing the flutter front end. However we have not yet implemented any security measurements. The future teams should take action wherever necessary to implement additional test cases that are suitable for the frontend and backend architecture. 
 
-Flutter Front-end testing methods used:
+The front end test cases can be found by navigating to the test folder within the root directory. The test cases can be run by using the command `flutter test` from the root directory.
+
+Flutter Front-end testing:
 - Widget Testing: We have written widget tests for the home page and the first screen to verify the behavior of individual widgets. We have used the testWidgets function provided by the Flutter Test package.
 - Mocking Dependencies: For widgets that depend on models or services such as Firebase Auth, we have used mocking libraries like mockito to create mock instances.
 
