@@ -58,6 +58,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
     }
   }
 
+  // Fetching/Querying data from Firestore to display the list of category items based on the category chosen by the user.
   void getCategoryItems(String category) async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     try {
