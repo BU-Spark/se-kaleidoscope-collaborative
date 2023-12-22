@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
+// Implementing Add a Review 3.1.1 - 3.5.2 : Rating Page - for each accommodation
+
+// TODO: route the back to business page to the business card
 class ParameterRatingPage extends StatefulWidget {
   final String parameterName;
   final String OrganizationName;
@@ -28,7 +31,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
-        elevation: 0, // Removes the shadow under the app bar
+        elevation: 0,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -37,14 +40,13 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                // Small Image on the top left corner
                 Image.asset(
                   '${widget.OrgImgLink}',
                   fit: BoxFit.cover,
-                  width: 117.0, // Set the width to match your design
-                  height: 99.0, // Set the height to match your design
+                  width: 117.0,
+                  height: 99.0,
                 ),
-                SizedBox(width: 16.0), // Add some spacing between the image and text
+                SizedBox(width: 16.0), 
                 // Organization Title and Type
                 Expanded(
                   child: Column(
