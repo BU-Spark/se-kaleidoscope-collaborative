@@ -1,24 +1,26 @@
+// This screen handles verification of users by entering a code sent to their email or phone.
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/verification_complete.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
-
+// StatefulWidget for the Verification Code Screen.
 class VerificationCodeScreen extends StatefulWidget {
   final String unique_id;
-  final String verification_type;
-
+  final String verification_type;        // TODO: Add an additional variable to accept the verification code sent to user. It needs to be a required parameter.
 
   const VerificationCodeScreen({Key? key, required this.unique_id, required this.verification_type}) : super(key: key);
-
 
   @override
   _VerificationCodeScreenState createState() => _VerificationCodeScreenState();
 }
 
+// State class for VerificationCodeScreen.
 class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
+  // Text editing controller for PIN input.
   final TextEditingController _pinController = TextEditingController();
 
+  // Dispose controller when the widget is disposed.
   @override
   void dispose() {
     _pinController.dispose();
@@ -29,6 +31,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // AppBar with back button.
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
@@ -43,16 +46,19 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              // Displaying the app logo.
               Image.asset(
-                'images/logo.jpg', // Ensure you have an image at this path
+                'images/logo.jpg',
                 height: 99.0,
               ),
               SizedBox(height: 48),
+              // Title for entering the verification code.
               const Text(
                 'Enter Verification Code',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
+              // Display where the verification code was sent.
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
@@ -61,18 +67,20 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 ),
               ),
               SizedBox(height: 24),
+              // PIN code text field.
               PinCodeTextField(
                 appContext: context,
                 length: 4,
                 controller: _pinController,
                 onChanged: (String value) {
+                  // Navigate to verification complete screen when code is filled.
                   if (value.length == 4) {
                     Future.delayed(Duration(milliseconds: 100), () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationComplete()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationComplete()));    // TODO: Compare the verification code sent to user with the user's input into PinCodeTextField. If the codes match navigate to VerificationComplete page. Or else display an error message.
                     });
                   }
                 },
-
+                // Styling for the PIN code field.
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
                   borderRadius: BorderRadius.circular(5),
@@ -87,24 +95,27 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
               ),
               SizedBox(height: 24),
+              // Option to resend the verification code.
               Text(
                 'Did not receive the ${widget.verification_type}?',
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 16),
+              // Button to resend email.
               ElevatedButton(
                 child: Text('Resend Email'),
                 onPressed: () {
-                  // Implement resend logic
+                  //TODO: Implement resend logic (same as the logic implemented in forgot password page)
                 },
                 style: kButtonStyle,
               ),
               SizedBox(height: 16),
+              // Button to change email address.
               ElevatedButton(
                 child: Text('Try another email address'),
                 onPressed: () {
-                  // Implement change email logic
+                  // TODO: Go back to forgot password page
                 },
                 style: kButtonStyle,
               ),

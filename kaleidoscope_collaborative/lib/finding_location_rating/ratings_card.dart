@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import './search_page_1_0.dart';
 
+/**
+ * This page displays the dummy rating card format for the establishment. 
+ * Feel free to modify the UI and formatting as needed, as this is referencing figma wireframe: ratings card in finding location/rating 
+ */
 class RatingPage extends StatefulWidget
  
 {
@@ -154,7 +158,7 @@ class _RatingBarState extends State<RatingBar> {
 }
 
 
-// Feature boxes 
+// Feature boxes  and the rectangle: 
 
 class FeatureBoxes extends StatelessWidget {
   @override
