@@ -12,12 +12,6 @@
 .buildlog/
 .history
 .svn/
-<<<<<<< Updated upstream
-migrate_working_dir/
-../.DS_Store
-./.DS_Store
-=======
->>>>>>> Stashed changes
 
 # IntelliJ related
 *.iml
