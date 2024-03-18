@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
 
 import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
 
 // This class defines a category among the list of categories that should be displayed to the user when the user clicks on the explore tab
 class Category {
@@ -15,14 +16,13 @@ class Category {
   Category({required this.imagePath, required this.name});
 }
 
-
 class DashboardScreen extends StatefulWidget {
-
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
+class _DashboardScreenState extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
   // TabController for managing tabs in the AppBar.
   TabController? _tabController;
   int _selectedIndex = 1;
@@ -51,18 +51,18 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  void getCurrentUser() async{
-    try{
+  void getCurrentUser() async {
+    try {
       final user = _auth.currentUser;
-      if(user!=null){
+      if (user != null) {
         loggedInUser = user;
         print(loggedInUser.email);
       }
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
+
   // Future function to fetch user name by email.
   Future<String> getUserNameByEmail(String? email) async {
     try {
@@ -75,8 +75,10 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
       // Check if the query returned any documents
       if (querySnapshot.docs.isNotEmpty) {
-        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>; // Cast to Map<String, dynamic>
-        first_name = userData['first_name']; // Now you can use the '[]' operator
+        var userData = querySnapshot.docs.first.data()
+            as Map<String, dynamic>; // Cast to Map<String, dynamic>
+        first_name =
+            userData['first_name']; // Now you can use the '[]' operator
       }
     } catch (e) {
       print(e.toString());
@@ -84,7 +86,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
     return first_name;
   }
-
 
   @override
   void dispose() {
@@ -95,7 +96,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-
     if (_tabController == null) {
       return Container(); // Display a loading indicator or empty container before TabController is initialized.
     }
@@ -105,8 +105,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         title: Row(
           mainAxisSize: MainAxisSize.min, // Use min size of the Row
           children: [
-
-            Expanded( // Expanded for the text to take all available space on the left
+            Expanded(
+              // Expanded for the text to take all available space on the left
               child: Align(
                 alignment: Alignment.center, // Align text to center
                 child: RichText(
@@ -134,7 +134,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 ),
               ),
             ),
-
             Image.asset(
               'images/logo.jpg', // Replace with your image asset path
               height: 40, // Set your height
@@ -165,7 +164,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 context,
                 MaterialPageRoute(builder: (context) => SearchPage()),
               );
-
             },
           ),
           IconButton(
@@ -183,15 +181,21 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               controller: _tabController,
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
-              labelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
-              unselectedLabelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-              indicatorSize: TabBarIndicatorSize.label, // This aligns the indicator to the width of the label
-              indicator: const UnderlineTabIndicator( // UnderlineTabIndicator is used for a line indicator
+              labelStyle:
+                  TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+              unselectedLabelStyle:
+                  TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+              indicatorSize: TabBarIndicatorSize
+                  .label, // This aligns the indicator to the width of the label
+              indicator: const UnderlineTabIndicator(
+                // UnderlineTabIndicator is used for a line indicator
                 borderSide: BorderSide(
                   color: Colors.deepPurple, // The color of the line
                   width: 2.0, // The thickness of the line
                 ),
-                insets: EdgeInsets.symmetric(horizontal: 8.0), // This will control the width of the line, adjust as needed for your layout
+                insets: EdgeInsets.symmetric(
+                    horizontal:
+                        8.0), // This will control the width of the line, adjust as needed for your layout
               ),
               tabs: const [
                 Tab(text: 'Explore'),
@@ -206,7 +210,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           padding: EdgeInsets.zero,
           children: <Widget>[
             FutureBuilder<String>(
-              future: getUserNameByEmail(loggedInUser.email), // Future that returns the name
+              future: getUserNameByEmail(
+                  loggedInUser.email), // Future that returns the name
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   // Check if the future is complete and has data
@@ -268,11 +273,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       ),
       // Body of the DashboardScreen consisting of a TabBarView to switch between 'Explore' and 'Review' sections.
       body: TabBarView(
-        controller: _tabController, // Provide the TabController to the TabBarView
+        controller:
+            _tabController, // Provide the TabController to the TabBarView
         children: [
           // Explore tab with a list of categories in a grid view.
 
-          Column(       // Column configuration for Explore tab
+          Column(
+            // Column configuration for Explore tab
             children: [
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -299,37 +306,41 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     childAspectRatio: 1 / 1,
                   ),
                   itemCount: categories.length, // Number of items in your grid
-                    itemBuilder: (context, index) {
-                      var category = categories[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                              MaterialPageRoute(builder: (context) => CategorySelection(category: category.name,),),
-                          );
-                        },
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                  itemBuilder: (context, index) {
+                    var category = categories[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategorySelection(
+                              category: category.name,
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: Image.asset(
-                                  category.imagePath,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              ListTile(
-                                title: Text(category.name),
-                              ),
-                            ],
-                          ),
+                        );
+                      },
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                      );
-                    },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Image.asset(
+                                category.imagePath,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ListTile(
+                              title: Text(category.name),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -343,27 +354,40 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Favorite',       // TODO: Add a favourite icon to every category_item card (Not implemented yet as the figma wireframes don't have it). But when the user clicks on the favourite icon, this data should be stored into Firestore, and later when the user clicks on the favourite tab, the list of user's favourite organisations should be fetched and displayed the way explore tab displays content.
+            label: 'Favorite',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
             label: 'Explore',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),   // TODO: Once front end of the profile customization pages are done, this icon should navigate to that screen
+            icon: Icon(Icons.person),
             label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
         onTap: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+          if (index != _selectedIndex) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          }
+          if (index == 2) {
+            // When "Profile" is tapped, navigate to CustomizeProfilePage
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomizeProfilePage()),
+            ).then((_) {
+              // When returning from CustomizeProfilePage, ensure the index is set to 1
+              setState(() {
+                _selectedIndex = 1;
+              });
+            });
+          }
         },
       ),
       // Rest of your code...
     );
   }
 }
-
