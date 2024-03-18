@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_4.dart';
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
 
-class CustomizeProfilePage_1_3 extends StatefulWidget {
+class CustomizeProfilePage_1_4 extends StatefulWidget {
   final ProfileData profileData;
 
-  CustomizeProfilePage_1_3({Key? key, required this.profileData})
+  CustomizeProfilePage_1_4({Key? key, required this.profileData})
       : super(key: key);
 
   @override
-  _CustomizeProfilePage_1_3State createState() =>
-      _CustomizeProfilePage_1_3State();
+  _CustomizeProfilePage_1_4State createState() =>
+      _CustomizeProfilePage_1_4State();
 }
 
-class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
-  Map<String, bool> disabilityFamiliarity = {
-    'Autism Spectrum Disorder': false,
-    'Deafness': false,
-    'Hearing Impairment': false,
-    'Visual Impairment or Blindness': false,
-    'Deaf-Blindness': false,
-    'Speech or Language Impairment': false,
-    'Specific Learning Disability(SLD - dyslexia, dysgraphia, dyscalculia)':
-        false,
-    'Emotional Disturbance': false,
-    'Orthopedic Impairment': false,
-    'Traumatic Brain Injury': false,
-    'Intellectual Disability': false,
+class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
+  Map<String, bool> acommadation = {
+    'Accessible Parking': false,
+    'Elevator': false,
+    'Braile': false,
+    'Automated Doors': false,
+    'Accessible Washroom': false,
+    'Bright Lighting': false,
+    'Customer Service': false,
+    'Digital Menu': false,
+    'Gender Neutral Washroom': false,
+    'Alternative Entrance': false,
+    'Other': false,
   };
 
-  void _onDisabilityFamiliarityChanged(String key, bool value) {
+  void _onAcommadationChanged(String key, bool value) {
     setState(() {
-      disabilityFamiliarity[key] = value;
+      acommadation[key] = value;
     });
   }
 
@@ -75,7 +74,7 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
                 Container(
                   width: 232,
                   child: const Text(
-                    'What disabilities are you familiar with?',
+                    'Which accommodations do you frequently interact with?',
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w400,
@@ -86,7 +85,7 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                ..._buildDisabilityFamiliarityCheckboxes(),
+                ..._buildAcommadationCheckboxes(),
                 const SizedBox(height: 40), // Space before buttons
                 _buildActionButtons(context),
               ],
@@ -97,9 +96,9 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
     );
   }
 
-  List<Widget> _buildDisabilityFamiliarityCheckboxes() {
+  List<Widget> _buildAcommadationCheckboxes() {
     Color checkboxBackgroundColor = Color.fromRGBO(250, 249, 253, 1);
-    return disabilityFamiliarity.keys.map((String key) {
+    return acommadation.keys.map((String key) {
       return Container(
         color: checkboxBackgroundColor,
         child: CheckboxListTile(
@@ -111,10 +110,10 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
               letterSpacing: 0.5,
             ),
           ),
-          value: disabilityFamiliarity[key],
+          value: acommadation[key],
           onChanged: (bool? value) {
             if (value != null) {
-              _onDisabilityFamiliarityChanged(key, value);
+              _onAcommadationChanged(key, value);
             }
           },
         ),
@@ -148,20 +147,20 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
         ElevatedButton(
           onPressed: () {
             // Create a new list from the selected disabilities
-            List<String> selectedDisabilities = disabilityFamiliarity.entries
+            List<String> acommadations = acommadation.entries
                 .where((entry) => entry.value)
                 .map((entry) => entry.key)
                 .toList();
 
             // Replace the existing accommodations list with the new list of selected disabilities
-            widget.profileData.disability_familiarity = selectedDisabilities;
+            widget.profileData.accommodations = acommadations;
 
             // Navigate to the next page, passing the updated profileData
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    CustomizeProfilePage_1_4(profileData: widget.profileData),
+                    CustomizeProfilePage_1_5(profileData: widget.profileData),
               ),
             );
           },

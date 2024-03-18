@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_4.dart';
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_6.dart';
 
-class CustomizeProfilePage_1_3 extends StatefulWidget {
+class CustomizeProfilePage_1_5 extends StatefulWidget {
   final ProfileData profileData;
 
-  CustomizeProfilePage_1_3({Key? key, required this.profileData})
+  CustomizeProfilePage_1_5({Key? key, required this.profileData})
       : super(key: key);
 
   @override
-  _CustomizeProfilePage_1_3State createState() =>
-      _CustomizeProfilePage_1_3State();
+  _CustomizeProfilePage_1_5State createState() =>
+      _CustomizeProfilePage_1_5State();
 }
 
-class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
-  Map<String, bool> disabilityFamiliarity = {
-    'Autism Spectrum Disorder': false,
-    'Deafness': false,
-    'Hearing Impairment': false,
-    'Visual Impairment or Blindness': false,
-    'Deaf-Blindness': false,
-    'Speech or Language Impairment': false,
-    'Specific Learning Disability(SLD - dyslexia, dysgraphia, dyscalculia)':
-        false,
-    'Emotional Disturbance': false,
-    'Orthopedic Impairment': false,
-    'Traumatic Brain Injury': false,
-    'Intellectual Disability': false,
+class _CustomizeProfilePage_1_5State extends State<CustomizeProfilePage_1_5> {
+  Map<String, bool> locationPreference = {
+    'Banks': false,
+    'Concerts': false,
+    'Gas Station': false,
+    'Grocery Store': false,
+    'Gym': false,
+    'Library': false,
+    'Mall': false,
+    'Movie Theater': false,
+    'Restaurants': false,
+    'Sporting Events': false,
+    'Other': false,
   };
 
-  void _onDisabilityFamiliarityChanged(String key, bool value) {
+  void _onLocationPreferenceChanged(String key, bool value) {
     setState(() {
-      disabilityFamiliarity[key] = value;
+      locationPreference[key] = value;
     });
   }
 
@@ -75,18 +74,17 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
                 Container(
                   width: 232,
                   child: const Text(
-                    'What disabilities are you familiar with?',
+                    'Where do you like to travel to?',
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
                       color: Colors.black,
-                      letterSpacing: 0.15,
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                ..._buildDisabilityFamiliarityCheckboxes(),
+                ..._buildLocationPreferenceCheckboxes(),
                 const SizedBox(height: 40), // Space before buttons
                 _buildActionButtons(context),
               ],
@@ -97,9 +95,9 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
     );
   }
 
-  List<Widget> _buildDisabilityFamiliarityCheckboxes() {
+  List<Widget> _buildLocationPreferenceCheckboxes() {
     Color checkboxBackgroundColor = Color.fromRGBO(250, 249, 253, 1);
-    return disabilityFamiliarity.keys.map((String key) {
+    return locationPreference.keys.map((String key) {
       return Container(
         color: checkboxBackgroundColor,
         child: CheckboxListTile(
@@ -111,10 +109,10 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
               letterSpacing: 0.5,
             ),
           ),
-          value: disabilityFamiliarity[key],
+          value: locationPreference[key],
           onChanged: (bool? value) {
             if (value != null) {
-              _onDisabilityFamiliarityChanged(key, value);
+              _onLocationPreferenceChanged(key, value);
             }
           },
         ),
@@ -148,20 +146,20 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
         ElevatedButton(
           onPressed: () {
             // Create a new list from the selected disabilities
-            List<String> selectedDisabilities = disabilityFamiliarity.entries
+            List<String> locationPreferences = locationPreference.entries
                 .where((entry) => entry.value)
                 .map((entry) => entry.key)
                 .toList();
 
             // Replace the existing accommodations list with the new list of selected disabilities
-            widget.profileData.disability_familiarity = selectedDisabilities;
+            widget.profileData.location_preference = locationPreferences;
 
             // Navigate to the next page, passing the updated profileData
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    CustomizeProfilePage_1_4(profileData: widget.profileData),
+                    CustomizeProfilePage_1_6(profileData: widget.profileData),
               ),
             );
           },
