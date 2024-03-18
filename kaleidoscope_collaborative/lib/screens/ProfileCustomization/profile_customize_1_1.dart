@@ -57,7 +57,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
                     fontWeight: FontWeight.w500,
                     fontSize: 12,
                     height: 24 / 16,
-                    letterSpacing: 0.15,
+                    letterSpacing: 0.5,
                     color: Colors.black,
                   ),
                   softWrap: true,
