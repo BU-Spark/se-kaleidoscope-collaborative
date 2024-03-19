@@ -106,6 +106,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                         11.0,
                         FontWeight.w400)
                     : _displayText('None', 11.0, FontWeight.w400),
+                const SizedBox(height: 20),
                 _buildActionButtons(context),
               ],
             ),
