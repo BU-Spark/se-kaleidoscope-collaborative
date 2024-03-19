@@ -10,7 +10,8 @@ class ProfileData {
   List<String> disability_familiarity;
   List<String> accommodations;
   List<String> location_preference;
-  String profile_pic_path;
+  String profile_picture_path;
+  int uploaded_profile_picture;
 
   ProfileData(
       {required this.name,
@@ -22,31 +23,6 @@ class ProfileData {
           const [], // Remove const and use nullable type
       this.accommodations = const [], // Remove const and use nullable type
       this.location_preference = const [], // Remove const and use nullable type
-      this.profile_pic_path = ""});
-
-  void addDisabilityFamiliarity(String familiarity) {
-    disability_familiarity = List.from(disability_familiarity)
-      ..add(familiarity);
-  }
-
-  void removeDisabilityFamiliarity(String familiarity) {
-    disability_familiarity = List.from(disability_familiarity)
-      ..remove(familiarity);
-  }
-
-  void addAccommodation(String accommodation) {
-    accommodations = List.from(accommodations)..add(accommodation);
-  }
-
-  void removeAccommodation(String accommodation) {
-    accommodations = List.from(accommodations)..remove(accommodation);
-  }
-
-  void addLocationPreference(String location) {
-    location_preference = List.from(location_preference)..add(location);
-  }
-
-  void removeLocationPreference(String location) {
-    location_preference = List.from(location_preference)..remove(location);
-  }
+      this.profile_picture_path = "",
+      this.uploaded_profile_picture = 0});
 }

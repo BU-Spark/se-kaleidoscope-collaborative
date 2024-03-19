@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/Visualize.dart';
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_7.dart';
+
 //import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
+class ProfilePicture {
+  final String imagePath;
+  final int index;
+
+  ProfilePicture({required this.imagePath, required this.index});
+}
 
 class CustomizeProfilePage_1_6 extends StatefulWidget {
   final ProfileData profileData;
@@ -16,19 +23,17 @@ class CustomizeProfilePage_1_6 extends StatefulWidget {
 
 class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
   String? selectedProfileImagePath;
+  String? selectedImagePath;
 
   @override
   Widget build(BuildContext context) {
-    String path =
-        "/Users/jiasonghuang/Desktop/se-kaleidoscope-collaborative/kaleidoscope_collaborative/lib/screens/ProfileCustomization/";
-    //CHANGE TO PATH IN SERVER
-    List<String> profileImages = [
-      path + 'default_image_1.png',
-      path + 'default_image_2.png',
-      path + 'default_image_3.png',
-      path + 'default_image_4.png',
-      path + 'default_image_5.png',
-      path + 'default_image_6.png',
+    final List<String> paths = [
+      'images/defaultProfilePictures/default_image_1.png',
+      'images/defaultProfilePictures/default_image_2.png',
+      'images/defaultProfilePictures/default_image_3.png',
+      'images/defaultProfilePictures/default_image_4.png',
+      'images/defaultProfilePictures/default_image_5.png',
+      'images/defaultProfilePictures/default_image_6.png',
     ];
 
     return Scaffold(
@@ -79,11 +84,15 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Container(
-                  height: 193,
-                  width: 259,
+                // const SizedBox(height: 20),
+                Center(
+                  child: Container(
+                    height: 259,
+                    width: 300,
+                    child: _buildProfileImagesGrid(context, paths),
+                  ),
                 ),
+                const SizedBox(height: 20),
                 Container(
                   width: 232,
                   child: const Text(
@@ -100,7 +109,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                 const SizedBox(height: 20),
                 _buildUploadContainer(context),
                 const SizedBox(height: 40), // Space before buttons
-                _buildActionButtons(context),
+                _buildActionButtons(context, paths),
               ],
             ),
           ),
@@ -162,7 +171,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(BuildContext context, paths) {
     return ButtonBar(
       buttonPadding:
           EdgeInsets.zero, // Removes padding between the buttons if necessary
@@ -192,7 +201,24 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
         SizedBox(width: 16),
         ElevatedButton(
           onPressed: () {
-            // Implementation of next button logic
+            // Check if selectedImagePath is null or empty; if so, use the first image path as default
+            if (selectedImagePath == null || selectedImagePath!.isEmpty) {
+              selectedImagePath =
+                  paths[0]; // Use the first image path by default
+            }
+            // At this point, selectedImagePath is guaranteed to be non-null and non-empty
+
+            // Assign the selected or default image path to profileData
+            widget.profileData.profile_picture_path = selectedImagePath!;
+
+            // Navigate to the next page, passing the updated profileData
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    CustomizeProfilePage_1_7(profileData: widget.profileData),
+              ),
+            );
           },
           style: ElevatedButton.styleFrom(
             primary: Color(0xFF275EA7),
@@ -212,6 +238,43 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildProfileImagesGrid(BuildContext context, List<String> paths) {
+    // This method will build the grid of profile images
+    return GridView.builder(
+      shrinkWrap: true,
+      physics:
+          NeverScrollableScrollPhysics(), // to prevent scrolling of the GridView
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 1, // Assuming square images
+      ),
+      itemCount: paths.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedImagePath = paths[index]; // Set the selected image index
+            });
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: selectedImagePath == paths[index]
+                    ? Colors.blue
+                    : Colors.transparent, // Highlight selected image
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Image.asset(paths[index]), // Display the image
+          ),
+        );
+      },
     );
   }
 }

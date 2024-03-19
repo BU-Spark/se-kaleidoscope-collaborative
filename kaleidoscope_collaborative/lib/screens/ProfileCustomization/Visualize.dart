@@ -28,6 +28,7 @@ class Visualize extends StatelessWidget {
           ? Text(
               'Location Preference: ${profileData.location_preference.join(', ')}')
           : Text('Location Preference: None'),
+      Text('Profile Picture Index: ${profileData.profile_picture_path}'),
     ];
 
     return Scaffold(
