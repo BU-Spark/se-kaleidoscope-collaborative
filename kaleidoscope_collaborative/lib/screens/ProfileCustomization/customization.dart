@@ -11,7 +11,8 @@ class ProfileData {
   List<String> accommodations;
   List<String> location_preference;
   String profile_picture_path;
-  int uploaded_profile_picture;
+  int uploaded_profile_picture_status;
+  String? uploaded_profile_picture;
 
   ProfileData(
       {required this.name,
@@ -24,5 +25,22 @@ class ProfileData {
       this.accommodations = const [], // Remove const and use nullable type
       this.location_preference = const [], // Remove const and use nullable type
       this.profile_picture_path = "",
-      this.uploaded_profile_picture = 0});
+      this.uploaded_profile_picture_status = 0,
+      this.uploaded_profile_picture});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'age': age,
+      'gender': gender,
+      'occupation': occupation,
+      'relationship': relationship,
+      'disability_familiarity': disability_familiarity,
+      'accommodations': accommodations,
+      'location_preference': location_preference,
+      'profile_picture_path': profile_picture_path,
+      'uploaded_profile_picture_status': uploaded_profile_picture_status,
+      'uploaded_profile_picture': uploaded_profile_picture ?? "",
+    };
+  }
 }

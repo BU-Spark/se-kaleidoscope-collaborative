@@ -41,6 +41,9 @@ dependencies:
   firebase_auth: ^4.15.0
   firebase_core_dart: ^1.0.1
   http: any
+  image_picker: ^0.8.4+4
+  image_cropper: ^5.0.1
+  image: ^3.0.1
 
 dev_dependencies:
   flutter_test:

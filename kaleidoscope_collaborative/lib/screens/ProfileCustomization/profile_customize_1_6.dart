@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_7.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:image/image.dart' as img;
 
 //import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
 class ProfilePicture {
@@ -24,6 +29,32 @@ class CustomizeProfilePage_1_6 extends StatefulWidget {
 class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
   String? selectedProfileImagePath;
   String? selectedImagePath;
+  bool isImageUploaded = false;
+
+  Future<String> resizeAndCompressImage(String imagePath) async {
+    // Load the image file
+    img.Image? originalImage =
+        img.decodeImage(await File(imagePath).readAsBytes());
+
+    // Resize the image to a max 500x500 while keeping the aspect ratio
+    img.Image resizedImage =
+        img.copyResize(originalImage!, width: 500, height: 500);
+
+    // Compress the image as a JPEG
+    List<int> jpeg = img.encodeJpg(resizedImage,
+        quality: 85); // Adjust quality for further size optimization
+
+    // Convert the image to a base64 string
+    String base64Image = base64Encode(jpeg);
+
+    return base64Image;
+  }
+
+  Future<String> encodeImageToBase64(String imagePath) async {
+    File imageFile = File(imagePath);
+    List<int> imageBytes = await imageFile.readAsBytes();
+    return base64Encode(imageBytes);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +167,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
               color: Color.fromRGBO(103, 80, 164, 1), // Icon color
             ),
             Text(
-              'Upload Image',
+              isImageUploaded ? 'Successfully Uploaded' : 'Upload Image',
               style: TextStyle(
                 color: Color.fromRGBO(103, 80, 164, 1), // Text color
                 fontSize: 18.0, // Font size
@@ -156,13 +187,34 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                // Handle the image upload logic
+              onPressed: () async {
+                final ImagePicker _picker = ImagePicker();
+                final XFile? image =
+                    await _picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  setState(() {
+                    selectedProfileImagePath = image.path;
+                    isImageUploaded = true; // Update the upload status
+                  });
+                }
+                if (image != null) {
+                  // Encode the image to base64
+                  String base64Image = await resizeAndCompressImage(image.path);
+
+                  // Assuming you have an instance of ProfileData called profileData
+                  // Update the instance with the encoded image
+                  setState(() {
+                    widget.profileData.uploaded_profile_picture = base64Image;
+                    //widget.profileData.profile_picture_path = image.path;
+                    widget.profileData.uploaded_profile_picture_status = 1;
+                    isImageUploaded = true;
+                  });
+                }
               },
               child: Text('Upload Image'),
               style: ElevatedButton.styleFrom(
-                primary: Color.fromRGBO(103, 80, 164, 1), // Button color
-                onPrimary: Colors.white, // Text color
+                primary: Color.fromRGBO(103, 80, 164, 1),
+                onPrimary: Colors.white,
               ),
             ),
           ],

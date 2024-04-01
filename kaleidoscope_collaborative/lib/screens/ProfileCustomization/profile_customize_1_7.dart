@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
+import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
+import 'dart:typed_data';
+import 'dart:convert';
 
 // Make sure this import statement reflects the actual path to your customization.dart file
 
@@ -9,9 +13,15 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
 
   const CustomizeProfilePage_1_7({Key? key, required this.profileData})
       : super(key: key);
+  //THIS METHOD IS USED TO DECODE THE ENCODE IMAGE
+  Uint8List decodeImage(String base64String) {
+    return base64Decode(base64String);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final CloudFirestoreService service =
+        CloudFirestoreService(FirebaseFirestore.instance);
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -60,15 +70,30 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                   child: Container(
                     width: 100, // Set the width as needed
                     height: 100, // Set the height as needed
-
-                    child: ClipRRect(
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
                           5), // Adjust the radius as needed
-                      child: Image.asset(
-                        profileData
-                            .profile_picture_path, // Use the path from ProfileData
-                        fit: BoxFit.cover,
-                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          5), // Match the outer Container's borderRadius
+                      child: profileData.uploaded_profile_picture_status == 1 &&
+                              profileData.uploaded_profile_picture != null
+                          ? Image.memory(
+                              decodeImage(
+                                  profileData.uploaded_profile_picture!),
+                              fit: BoxFit.cover,
+                            )
+                          : profileData.profile_picture_path.isNotEmpty
+                              ? Image.asset(
+                                  profileData.profile_picture_path,
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(
+                                  color: Colors.grey, // Placeholder color
+                                  child: Icon(Icons.person,
+                                      size: 50), // Placeholder icon
+                                ),
                     ),
                   ),
                 ),
@@ -158,13 +183,33 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
         ),
         SizedBox(width: 16),
         ElevatedButton(
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => DashboardScreen()),
-              (Route<dynamic> route) =>
-                  false, // Remove all routes beneath the new route
-            );
+          onPressed: () async {
+            // Convert profileData to Map
+            Map<String, dynamic> profileDataMap = profileData.toMap();
+            print("Attempting to add profile data: $profileDataMap");
+
+            // Use CloudFirestoreService to add or update the profile data in Firestore
+            try {
+              String documentId =
+                  await CloudFirestoreService(FirebaseFirestore.instance)
+                      .addProfileData(
+                          profileDataMap); // Adjust method name as necessary
+              print(
+                  "Profile Data added or updated with document ID: $documentId");
+
+              // Navigate to the DashboardScreen or home screen after successful submission
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DashboardScreen()), // Ensure DashboardScreen is defined
+                (Route<dynamic> route) => false,
+              );
+            } catch (e) {
+              // Handle errors here, possibly show an error message to the user
+              print(
+                  e); // Consider using a more user-friendly way to handle errors
+            }
           },
           style: ElevatedButton.styleFrom(
             primary: Color(0xFF275EA7),

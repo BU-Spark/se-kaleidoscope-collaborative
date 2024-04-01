@@ -17,7 +17,13 @@ class CloudFirestoreService {
     return document.then((value) => value.id);
   }
 
-    Stream<QuerySnapshot<Map<String, dynamic>>> getUsers() {
+  Future<String> addProfileData(Map<String, dynamic> data) async {
+    // Add a new document with a generated ID
+    final document = firestore.collection('ProfileData').add(data);
+    return document.then((value) => value.id);
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUsers() {
     return firestore.collection('User').snapshots();
   }
 }
