@@ -5,6 +5,8 @@ import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.d
 import 'identity_verification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:intl/intl.dart';
+
 
 // Implementing the 1.1 -  1.2.3 Sign Up Page
 
@@ -20,6 +22,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   final FocusNode _fnameFocus = FocusNode();
   final FocusNode _lnameFocus = FocusNode();
+  final TextEditingController _birthdayTextController = TextEditingController();
   final FocusNode _usernameFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmPasswordFocus = FocusNode();
@@ -46,6 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _phoneNumberMatch = true;
   bool _emailOrPhoneNumberMatch = false;
 
+  DateTime? _selectedBirthday;
 
   @override
   void initState() {
@@ -84,6 +88,7 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     _fnameFocus.dispose();
     _lnameFocus.dispose();
+    _birthdayTextController.dispose();
     _usernameFocus.dispose();
     _passwordFocus.dispose();
     _confirmPasswordFocus.dispose();
@@ -125,6 +130,22 @@ class _SignupScreenState extends State<SignupScreen> {
       _emailMatch = false;
       _emailOrPhoneNumberMatch = _phoneNumberMatch;
     });
+  }
+
+  Future<void> _selectBirthday(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedBirthday ?? DateTime(2000), // Adjust as necessary
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _selectedBirthday) {
+      setState(() {
+        _selectedBirthday = picked;
+        // Update the text controller with formatted date
+        _birthdayTextController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
   }
 
   @override
@@ -194,6 +215,23 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   controller: _lnameTextController,
+                ),
+                SizedBox(height: 16),
+
+                // Birthday input
+                GestureDetector(
+                  onTap: () => _selectBirthday(context),
+                  child: AbsorbPointer(
+                    child: TextField(
+                      controller: _birthdayTextController, // Use the controller here
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Birthday',
+                        suffixIcon: Icon(Icons.calendar_today),
+                        // Removed hintText as controller now controls the text
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 16),
 
@@ -428,6 +466,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             Map<String, dynamic> userData = {
                               'first_name': _fnameTextController.text,
                               'last_name': _lnameTextController.text,
+                              'birthday': _birthdayTextController.text,
                               'username': _usernameTextController.text,
                               'password': _passwordTextController.text,
                               'email': _emailTextController.text,
