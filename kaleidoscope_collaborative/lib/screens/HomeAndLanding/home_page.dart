@@ -134,10 +134,17 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ),
               ),
             ),
-            Image.asset(
-              'images/logo.jpg', // Replace with your image asset path
-              height: 40, // Set your height
-              width: 40, // Set your width
+            IconButton(
+              icon: Icon(Icons.person,
+                  color: Colors.black), // Profile customization icon
+              onPressed: () {
+                // Navigate to the CustomizeProfilePage when the icon is tapped
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CustomizeProfilePage()),
+                );
+              },
             ),
           ],
         ),
@@ -354,10 +361,6 @@ class _DashboardScreenState extends State<DashboardScreen>
             icon: Icon(Icons.explore),
             label: 'Explore',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
@@ -365,18 +368,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           if (index != _selectedIndex) {
             setState(() {
               _selectedIndex = index;
-            });
-          }
-          if (index == 2) {
-            // When "Profile" is tapped, navigate to CustomizeProfilePage
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CustomizeProfilePage()),
-            ).then((_) {
-              // When returning from CustomizeProfilePage, ensure the index is set to 1
-              setState(() {
-                _selectedIndex = 1;
-              });
             });
           }
         },
