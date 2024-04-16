@@ -156,17 +156,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: Colors.black),
-            onPressed: () {
-              // Implement search functionality
-              // Navigate to the SearchPage when the search icon is clicked
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchPage()),
-              );
-            },
-          ),
-          IconButton(
             icon: Icon(Icons.notifications, color: Colors.black),
             onPressed: () {
               // Implement notification functionality
@@ -284,6 +273,12 @@ class _DashboardScreenState extends State<DashboardScreen>
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: TextField(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchPage()),
+                    );
+                  },
                   decoration: InputDecoration(
                     hintText: 'Search',
                     prefixIcon: Icon(Icons.search),
@@ -313,9 +308,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CategorySelection(
-                              category: category.name,
-                            ),
+                            builder: (context) =>
+                                SearchPage(initialSearch: category.name),
                           ),
                         );
                       },

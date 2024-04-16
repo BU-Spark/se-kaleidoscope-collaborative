@@ -20,8 +20,6 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CloudFirestoreService service =
-        CloudFirestoreService(FirebaseFirestore.instance);
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(

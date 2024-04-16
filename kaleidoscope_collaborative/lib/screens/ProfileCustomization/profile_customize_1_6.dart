@@ -4,7 +4,6 @@ import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 
 //import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
