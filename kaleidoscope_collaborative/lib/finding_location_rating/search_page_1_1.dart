@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'search_page_1_2.dart';
+import 'search_page_1_0.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'no_result_found.dart';
 
+//ADD PICTURE SUPPORT
+//COMPACT REVIEW CARD
+
 /**
- * TO DO: 
- * 
- * search_page_1_1.dart: 
- * - Accomodations needed and filter page is implemented closely to the figma wireframes. 
- * - the selection of accomodation logic is completed. 
+ * TO DO:
+ *
+ * search_page_1_1.dart:
+ * - Accomodations needed and filter page is implemented closely to the figma wireframes.
+ * - the selection of accomodation logic is completed.
  * - the confirmation of filered accomodations is completed.
- * - the routing to the ratings page is completed. 
- * TO BE COMPLETED: 
- * - directing the filter searches to the database to retrieve the information. 
+ * - the routing to the ratings page is completed.
+ * TO BE COMPLETED:
+ * - directing the filter searches to the database to retrieve the information.
  */
 class SearchPage1_1 extends StatefulWidget {
   final String query;
@@ -43,9 +47,9 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: AppBar(
           title: Text('Filter Page', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
@@ -63,7 +67,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
           children: [
             Padding(
               // padding: EdgeInsets.only(top: kToolbarHeight + 8),
-            padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(8),
 
               child: Container(
                 height: 40,
@@ -77,6 +81,9 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                     Expanded(
                       child: TextField(
                         controller: _searchController,
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -111,9 +118,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                     "Accomodation(s) Needed",
                     selectedFilters.isEmpty
                         ? []
-                        : selectedFilters
-                            .map((filter) => filter)
-                            .toList(),
+                        : selectedFilters.map((filter) => filter).toList(),
                   ),
                   _buildBoldedWordRowWithBoxes(
                     "Mobility",
@@ -173,89 +178,90 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
     );
   }
 
-void _showResults() async {
-  // Get the initial query
-  String initialQuery = widget.query;
+  void _showResults() async {
+    // Get the initial query
+    String initialQuery = widget.query;
 
-  // Check if coordinates are available
-  if (widget.coordinates != null) {
-    // Extract latitude and longitude
-    double? latitude = widget.coordinates!['lat'] as double?;
-    print("THIS IS THE LATITUDE: ");
-    print(latitude);
-    double? longitude = widget.coordinates!['lng'] as double?;
+    // Check if coordinates are available
+    if (widget.coordinates != null) {
+      // Extract latitude and longitude
+      double? latitude = widget.coordinates!['lat'] as double?;
+      print("THIS IS THE LATITUDE: ");
+      print(latitude);
+      double? longitude = widget.coordinates!['lng'] as double?;
 
-    // Check if latitude and longitude are not null
-    if (latitude != null && longitude != null) {
-      // Construct the API endpoint for nearby places
-      String nearbyPlacesUrl =
-          'http://localhost:3000/api/nearby/$latitude,$longitude/500/hospital';
+      // Check if latitude and longitude are not null
+      if (latitude != null && longitude != null) {
+        // Construct the API endpoint for nearby places
+        String nearbyPlacesUrl = 'http://10.0.2.2:8000/api/query/$initialQuery';
 
-      setState(() {
-        isLoading = true;
-      });
+        setState(() {
+          isLoading = true;
+        });
 
-      try {
-        // Send a request to get nearby places
-        final nearbyPlacesResponse = await http.get(Uri.parse(nearbyPlacesUrl));
+        try {
+          // Send a request to get nearby places
+          final nearbyPlacesResponse =
+              await http.get(Uri.parse(nearbyPlacesUrl));
 
-        if (nearbyPlacesResponse.statusCode == 200) {
-          // Parse the response JSON to get nearby places
-          List<dynamic> nearbyPlaces = json.decode(nearbyPlacesResponse.body);
-          // Display the nearby places's count 
-          print('Nearby places count: ${nearbyPlaces.length}'); 
+          if (nearbyPlacesResponse.statusCode == 200) {
+            // Parse the response JSON to get nearby places
+            List<dynamic> nearbyPlaces = json.decode(nearbyPlacesResponse.body);
+            // Display the nearby places's count
+            print('Nearby places count: ${nearbyPlaces.length}');
 
-          // Now you have the nearby places, you can navigate to the next page
-          // with the initial query, selected filters, and nearby places data
+            // Now you have the nearby places, you can navigate to the next page
+            // with the initial query, selected filters, and nearby places data
 
-          // If the nearby places is empty, navigate to the no result found page 
-          if (nearbyPlaces.isEmpty) {
-            // Navigate to NoResultFoundPage when no results are found
+            // If the nearby places is empty, navigate to the no result found page
+            if (nearbyPlaces.isEmpty) {
+              // Navigate to NoResultFoundPage when no results are found
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NoResultFoundPage(),
+                ),
+              );
+            }
+
+            // Navigate to SearchPage1_2 with the initial query, selected filters, and TOP 5 nearby places
+            if (nearbyPlaces.length > 5)
+              nearbyPlaces =
+                  nearbyPlaces.sublist(0, 5); // Get the top 5 nearby places
+            else
+              nearbyPlaces = nearbyPlaces.sublist(
+                  0, nearbyPlaces.length); // Get all nearby places
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NoResultFoundPage(),
+                builder: (context) => SearchPage1_2(
+                  initialQuery: initialQuery,
+                  selectedFilters: selectedFilters,
+                  nearbyPlaces: nearbyPlaces,
+                ),
               ),
             );
+          } else {
+            // Handle the error when getting nearby places
+            print(
+                'Error getting nearby places: ${nearbyPlacesResponse.statusCode}');
           }
-
-          // Navigate to SearchPage1_2 with the initial query, selected filters, and TOP 5 nearby places 
-          if (nearbyPlaces.length > 5) 
-            nearbyPlaces = nearbyPlaces.sublist(0, 5); // Get the top 5 nearby places 
-          else 
-            nearbyPlaces = nearbyPlaces.sublist(0, nearbyPlaces.length); // Get all nearby places
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchPage1_2(
-                initialQuery: initialQuery,
-                selectedFilters: selectedFilters,
-                nearbyPlaces: nearbyPlaces,
-              ),
-            ),
-          );
-        } else {
-          // Handle the error when getting nearby places
-          print('Error getting nearby places: ${nearbyPlacesResponse.statusCode}');
+        } catch (e) {
+          print('Error: $e');
+        } finally {
+          setState(() {
+            isLoading = false;
+          });
         }
-      } catch (e) {
-        print('Error: $e');
-      } finally {
-        setState(() {
-          isLoading = false;
-        });
+      } else {
+        // Handle the case where latitude or longitude is null
+        print('Error: Latitude or longitude is null.');
       }
     } else {
-      // Handle the case where latitude or longitude is null
-      print('Error: Latitude or longitude is null.');
+      // Handle the case where coordinates are null
+      print('Error: Coordinates are null.');
     }
-  } else {
-    // Handle the case where coordinates are null
-    print('Error: Coordinates are null.');
   }
-}
-
-
 
   Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
     return Container(
@@ -270,7 +276,8 @@ void _showResults() async {
           SizedBox(height: 8),
           Wrap(
             spacing: 8,
-            children: boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
+            children:
+                boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
           ),
         ],
       ),
@@ -294,7 +301,9 @@ void _showResults() async {
         margin: EdgeInsets.only(right: 8, bottom: 8),
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? Color.fromARGB(255, 222, 202, 251): Colors.grey[300],
+          color: isSelected
+              ? Color.fromARGB(255, 222, 202, 251)
+              : Colors.grey[300],
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
