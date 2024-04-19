@@ -6,7 +6,7 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 
 // Implementing Add a Review 4.1 - 4.2 : Text Review
 
-// TODO: 
+// TODO:
 //Route the back to business page to the business card
 class TextReviewPage extends StatefulWidget {
   final int overallRating;
@@ -16,8 +16,17 @@ class TextReviewPage extends StatefulWidget {
   final String OrganizationId;
   final String OrgImgLink;
   final Map<String, int> parameterRatings;
-  const TextReviewPage({Key? key,required this.overallRating,required this.parameterRatings, required this.OrganizationName, required this.OrganizationType, 
-  required this.UserId, required this.OrganizationId, required this.OrgImgLink}) : super(key: key);
+
+  const TextReviewPage(
+      {Key? key,
+      required this.overallRating,
+      required this.parameterRatings,
+      required this.OrganizationName,
+      required this.OrganizationType,
+      required this.UserId,
+      required this.OrganizationId,
+      required this.OrgImgLink})
+      : super(key: key);
 
   @override
   _TextReviewPageState createState() => _TextReviewPageState();
@@ -26,8 +35,7 @@ class TextReviewPage extends StatefulWidget {
 class _TextReviewPageState extends State<TextReviewPage> {
   final TextEditingController _controller = TextEditingController();
   bool _hasWrittenReview = false;
-   CloudFirestoreService? service;
-
+  CloudFirestoreService? service;
 
   @override
   void initState() {
@@ -36,26 +44,27 @@ class _TextReviewPageState extends State<TextReviewPage> {
     super.initState();
   }
 
- List<Map<String, dynamic>> prepareUserRatingData({
-  required String userId,
-  required String orgId,
-  required Map<String, int> ratings, // Assuming ratings will always be provided
-}) {
-  List<Map<String, dynamic>> data = [];
+  List<Map<String, dynamic>> prepareUserRatingData({
+    required String userId,
+    required String orgId,
+    required Map<String, int>
+        ratings, // Assuming ratings will always be provided
+  }) {
+    List<Map<String, dynamic>> data = [];
 
-  // Iterate through the ratings and create a map for each
-  ratings.forEach((accommodation, rating) {
-    Map<String, dynamic> entry = {
-      'user_id': userId,
-      'org_id': orgId,
-      'accommodation': accommodation,
-      'rating': rating,
-    };
-    data.add(entry);
-  });
+    // Iterate through the ratings and create a map for each
+    ratings.forEach((accommodation, rating) {
+      Map<String, dynamic> entry = {
+        'user_id': userId,
+        'org_id': orgId,
+        'accommodation': accommodation,
+        'rating': rating,
+      };
+      data.add(entry);
+    });
 
-  return data;
-}
+    return data;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +74,8 @@ class _TextReviewPageState extends State<TextReviewPage> {
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Write a Review Page', style: TextStyle(color: Colors.black)),
+        title:
+            Text('Write a Review Page', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -74,16 +84,18 @@ class _TextReviewPageState extends State<TextReviewPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-
             Row(
               children: <Widget>[
                 // Small Image on the top left corner
-                Image.asset(
-                  '${widget.OrgImgLink}',
-                  fit: BoxFit.cover,
-                  width: 117.0, 
-                  height: 99.0, 
+                FadeInImage.assetNetwork(
+                  // Pull the image FROM DB here, or BY default, our dummy picture
+                  placeholder: 'images/dental1.jpg',
+                  image: widget.OrgImgLink,
+                  width: 117.0,
+                  height: 99.0,
+                  fit: BoxFit.fill,
                 ),
+
                 SizedBox(width: 16.0),
                 // Organization Title and Type
                 Expanded(
@@ -112,22 +124,23 @@ class _TextReviewPageState extends State<TextReviewPage> {
                 ),
               ],
             ),
-                SizedBox(height: 20),
-            
-            Text('Write your review', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
+            Text('Write your review',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             TextField(
               controller: _controller,
               maxLines: 10,
               decoration: InputDecoration(
-                hintText: 'What did you like or dislike about your experience at this business?',
+                hintText:
+                    'What did you like or dislike about your experience at this business?',
                 // Border when the TextField is not in focus
                 enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey, width: 1.0),
-              ),
-              // Border when the TextField is in focus
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF6750A4), width: 2.0),
-              ),
+                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                ),
+                // Border when the TextField is in focus
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF6750A4), width: 2.0),
+                ),
               ),
               onChanged: (text) {
                 setState(() {
@@ -136,116 +149,85 @@ class _TextReviewPageState extends State<TextReviewPage> {
               },
             ),
             SizedBox(height: 20),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 ElevatedButton(
                   onPressed: () {
-                   
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SummaryReviewPage(
-                            overallRating: widget.overallRating,
-                            parameterRatings: widget.parameterRatings,
-                            writtenReview: "[Skipped]",
-                            OrganizationName: widget.OrganizationName,
-                            OrganizationType: widget.OrganizationType,
-                            UserId: widget.UserId,
-                            OrganizationId: widget.OrganizationId,
-                            OrgImgLink: widget.OrgImgLink,
-                          ),
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SummaryReviewPage(
+                          overallRating: widget.overallRating,
+                          parameterRatings: widget.parameterRatings,
+                          writtenReview: "[Skipped]",
+                          OrganizationName: widget.OrganizationName,
+                          OrganizationType: widget.OrganizationType,
+                          UserId: widget.UserId,
+                          OrganizationId: widget.OrganizationId,
+                          OrgImgLink: widget.OrgImgLink,
                         ),
-                      );
-      
-                   },
+                      ),
+                    );
+                  },
                   child: Text('Skip and Submit'),
                   style: kSmallButtonStyle,
                 ),
                 ElevatedButton(
                   // onPressed: () {
-                  onPressed: ()  async {
-                      Map<String, dynamic> userOverallRatingData = {
-                          'user_id': widget.UserId,
-                          'org_id': widget.OrganizationId,
-                          'accommodation': "Overall Rating", 
-                          'rating': widget.overallRating,
-                        };
-
-                      // Your existing text review data map
-                      Map<String, dynamic> userTextReviewData = {
-                        'user_id': widget.UserId,
-                        'org_id': widget.OrganizationId,
-                        'accommodation': "TextReview", 
-                        'review': _controller.text, // Changed 'rating' to 'review' for clarity
+                  onPressed: () async {
+                    // Add the user rating to the database
+                    try {
+                      Map<String, dynamic> userData = {
+                        'accommodations': widget.parameterRatings,
+                        'overallRating': widget.overallRating,
+                        'placeID': widget.OrganizationId,
+                        'textReview': _controller.text,
+                        'userID': widget.UserId,
+                        'userName': widget.UserId,
                       };
-
-                      // List of all user data maps to add to the database
-                      List<Map<String, dynamic>> allUserData = [];
-
-                      // Add the overall rating and text review to the list
-                      allUserData.add(userOverallRatingData);
-                      allUserData.add(userTextReviewData);
-
-                      // Prepare the accommodation ratings and add them to the list
-                      List<Map<String, dynamic>> accommodationRatings = prepareUserRatingData(
-                        userId: widget.UserId, 
-                        orgId: widget.OrganizationId, 
-                        ratings: widget.parameterRatings
-                      );
-
-                      allUserData.addAll(accommodationRatings);
-                  
-                  // Add the user rating to the database
-                  try {
-                    for (var userData in allUserData) {
-                      await service?.addUserRating(userData);
+                      await service?.addUserReview(userData);
+                    } catch (e) {
+                      // Handle errors here, possibly show an error message to the user
+                      print(
+                          e); // Use a proper way to log errors or show a dialog to the user
                     }
-                  } catch (e) {
-                    // Handle errors here, possibly show an error message to the user
-                  print(e); // Use a proper way to log errors or show a dialog to the user
-                  }
-                
 
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SummaryReviewPage(
-                        overallRating: widget.overallRating,
-                        parameterRatings: widget.parameterRatings,
-                        writtenReview: _controller.text,
-                        OrganizationName: widget.OrganizationName,
-                        OrganizationType: widget.OrganizationType,
-                        UserId: widget.UserId,
-                        OrganizationId: widget.OrganizationId,
-                        OrgImgLink: widget.OrgImgLink,
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SummaryReviewPage(
+                          overallRating: widget.overallRating,
+                          parameterRatings: widget.parameterRatings,
+                          writtenReview: _controller.text,
+                          OrganizationName: widget.OrganizationName,
+                          OrganizationType: widget.OrganizationType,
+                          UserId: widget.UserId,
+                          OrganizationId: widget.OrganizationId,
+                          OrgImgLink: widget.OrgImgLink,
+                        ),
                       ),
-                    ),
-                  );
-              },
+                    );
+                  },
                   child: Text('Submit'),
                   style: kSmallButtonStyle,
                 ),
-
               ],
-
             ),
             SizedBox(height: 16),
-
             Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      'Back to business page',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xFF6750A4),
-                      ),
-                    ),
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  'Back to business page',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Color(0xFF6750A4),
                   ),
                 ),
+              ),
+            ),
           ],
         ),
       ),
