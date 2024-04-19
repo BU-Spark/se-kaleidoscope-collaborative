@@ -3,13 +3,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'search_page_1_1.dart';
 import 'no_result_found.dart';
+
 /**
  * TO DO:
- * 
+ *
  * search_page_1_0.dart:
- * It is fully functionally. 
- * 
- * Update the UI wherever necessary. 
+ * It is fully functionally.
+ *
+ * Update the UI wherever necessary.
  */
 class SearchPage extends StatefulWidget {
   @override
@@ -28,9 +29,9 @@ class _SearchPageState extends State<SearchPage> {
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: AppBar(
           title: Text('Search Page', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
@@ -58,26 +59,25 @@ class _SearchPageState extends State<SearchPage> {
               child: Row(
                 children: [
                   Expanded(
-                    child: 
-                    TextField(
+                    child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocus,
                       decoration: InputDecoration(
-                      hintText: 'Type business, address, or name',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
+                        hintText: 'Type business, address, or name',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        contentPadding: EdgeInsets.symmetric(vertical: 15),
                       ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                      contentPadding: EdgeInsets.symmetric(vertical: 15),
-                    ),
                       onTap: () {
                         FocusScope.of(context).requestFocus(_searchFocus);
                       },
                       onSubmitted: (query) {
-                        // perform search is the correct one for searching place with address 
+                        // perform search is the correct one for searching place with address
                         // _performSearch();
                         _dummySearch();
                       },
@@ -107,52 +107,61 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  //  dummy perform search with set coordinates {lat: 42.3475186, lng: -71.1029006} 
+  //  dummy perform search with set coordinates {lat: 42.3475186, lng: -71.1029006}
 
-  void _dummySearch () async {
-      String query = _searchController.text;
-      var dummyCoordinates = {'lat': 42.34989710000001, 'lng': -71.10323009999999}; 
-      if (query.isNotEmpty) {
+  void _dummySearch() async {
+    String query = _searchController.text;
+    var dummyCoordinates = {
+      'lat': 42.34989710000001,
+      'lng': -71.10323009999999
+    };
+    if (query.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
           // builder: (context) => SearchPage1_1(query: query, coordinates: coordinates),
-          builder: (context) => SearchPage1_1(query: query, coordinates: dummyCoordinates),
+          builder: (context) =>
+              SearchPage1_1(query: query, coordinates: dummyCoordinates),
         ),
       );
-        setState(() {
+      setState(() {
         _searchHistory.add(query);
         _searchController.clear();
       });
     }
   }
 
-  // Searching for a place 
+  // Searching for a place
   void _performSearch() async {
     String query = _searchController.text;
     if (query.isNotEmpty) {
-        /**
-         * FOR THE SAKE OF THE DEMO, SINCE WE HAVE NOT YET ROUTED THE USER INFO WITH THE DB, 
-         * LET'S SEE A HARD-CODED STARTER LOCATION, WHICH IS CDS'S LOCATION
-         * {lat: 42.34989710000001, lng: -71.10323009999999}  
-         * 
-         * */ 
+      /**
+       * FOR THE SAKE OF THE DEMO, SINCE WE HAVE NOT YET ROUTED THE USER INFO WITH THE DB,
+       * LET'S SEE A HARD-CODED STARTER LOCATION, WHICH IS CDS'S LOCATION
+       * {lat: 42.34989710000001, lng: -71.10323009999999}
+       *
+       * */
       // Make an HTTP request to get coordinates based on the search query
-      var response = await http.get(Uri.parse('http://localhost:3000/api/coordinates/$query'));
+      var response = await http
+          .get(Uri.parse('http://10.0.2.2:8000/api/coordinates/$query'));
 
       if (response.statusCode == 200) {
         // Parse the response to get the coordinates
         var coordinates = json.decode(response.body);
-        print(coordinates); 
+        print(coordinates);
 
-        // Navigate to SearchPage1_1 with the query and coordinates, USING DUMMY COORDINATE FOR THE DEMO 
+        // Navigate to SearchPage1_1 with the query and coordinates, USING DUMMY COORDINATE FOR THE DEMO
 
-        var dummyCoordinates = {'lat': 42.34989710000001, 'lng': -71.10323009999999}; 
+        var dummyCoordinates = {
+          'lat': 42.34989710000001,
+          'lng': -71.10323009999999
+        };
         Navigator.push(
           context,
           MaterialPageRoute(
             // builder: (context) => SearchPage1_1(query: query, coordinates: coordinates),
-            builder: (context) => SearchPage1_1(query: query, coordinates: dummyCoordinates),
+            builder: (context) =>
+                SearchPage1_1(query: query, coordinates: dummyCoordinates),
           ),
         );
       } else {
@@ -199,10 +208,15 @@ class _SearchPageState extends State<SearchPage> {
                         InkWell(
                           onTap: () {
                             /**
-                             * TO DO: REPLACE THIS WITH THE ACTUAL COORDINATE FROM THE SEARCH 
-                             */
-                            var dummyCoordinates = {'lat': 42.34989710000001, 'lng': -71.10323009999999};  
-                            _navigateToSearchPage1_1(query: _searchHistory[index], coordinates: dummyCoordinates );
+                       * TO DO: REPLACE THIS WITH THE ACTUAL COORDINATE FROM THE SEARCH
+                       */
+                            var dummyCoordinates = {
+                              'lat': 42.34989710000001,
+                              'lng': -71.10323009999999
+                            };
+                            _navigateToSearchPage1_1(
+                                query: _searchHistory[index],
+                                coordinates: dummyCoordinates);
                           },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -235,11 +249,13 @@ class _SearchPageState extends State<SearchPage> {
         : Container();
   }
 
-  void _navigateToSearchPage1_1({required String query, Map<String, dynamic>? coordinates}) {
+  void _navigateToSearchPage1_1(
+      {required String query, Map<String, dynamic>? coordinates}) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchPage1_1(query: query, coordinates: coordinates),
+        builder: (context) =>
+            SearchPage1_1(query: query, coordinates: coordinates),
       ),
     );
   }
