@@ -22,67 +22,26 @@ Current API structure for the backend:
 
 // Run with ts-node address.ts 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 // Make sure to set your Google Maps API key in the .env file 
 const G_KEY = process.env.GOOGLE_MAPS_API_KEY;
+console.log(G_KEY);
 
 app.use(express.json());
 
 // Test locally, e.g. http://localhost:3000/api/coordinates/1600+Amphitheatre+Parkway,+Mountain+View,+CA 
-app.get('/api/coordinates/:address', async (req, res) => {
-  const address = req.params.address;
-  try {
-    const coordinates = await getCoordinates(address);
-    res.json(coordinates);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/distance/:origin/:destination', async (req, res) => {
-  const origin = req.params.origin;
-  const destination = req.params.destination;
-  try {
-    const distance = await getDistance(origin, destination);
-    res.json({ distance });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/nearby/:location/:radius/:type', async (req, res) => {
-  const location = req.params.location;
-  const radius = req.params.radius;
-  const type = req.params.type;
-  try {
-    const places = await getNearbyPlaces(location, radius, type);
-    res.json(places);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/place/:placeId', async (req, res) => {
-  const placeId = req.params.placeId;
-  try {
-    const placeDetails = await getPlaceDetails(placeId);
-    res.json(placeDetails);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Demo: returns all the nearby places of a certain type, e.g. http://localhost:3000/api/place_type/restaurant 
-app.get('/api/place_type/:place_type', async (req, res) => {
-  const place_type = req.params.place_type;
-  try {
-    const places = await getPlaceType(place_type);
-    res.json(places);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+app.get('/api/query/:query', async (req, res) => {
+    console.log("received request");
+    
+    const query = req.params.query;
+    try {
+      const results = await textSearch(query);
+      res.json(results);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 
 
 app.listen(port, () => {
@@ -90,6 +49,103 @@ app.listen(port, () => {
 });
 
 // Function calls to Google Maps API 
+
+async function getPhotoFromReference(photo_reference:string) {
+    const url = `https://maps.googleapis.com/maps/api/place/photo?photo_reference=${photo_reference}&key=${G_KEY}&maxheight=100&maxwidth=100`
+    const response = await axios.get(url);
+    const data = response.data;
+    const results = data.results
+    return results;
+
+}
+
+async function textSearch(query: string) {
+    const fields = 'places.currentOpeningHours,places.formatted_address,places.formatted_phone_number,places.rating,place.photos'
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=${G_KEY}&fields=${fields}`;
+    const response = await axios.get(url);
+    const data = response.data;
+    const results = data.results
+
+    console.log(results.length)
+    for (let i=0; i<results.length; i++) {
+        //Check if there's a photo field in result response
+        if (results[i]["photos"] != null) {
+            let photo = await getPhotoFromReference(results[i]["photos"][0]["photo_reference"])
+            results[i]["photo"] = photo
+        }
+        console.log(results[i])
+    }
+
+    return results;
+  }
+
+
+
+
+
+ //LEGACY CODE BELOW, NOT USED FOR ANYTHING
+
+ app.get('/api/coordinates/:address', async (req, res) => {
+    const address = req.params.address;
+    try {
+      const coordinates = await getCoordinates(address);
+      
+      res.json(coordinates);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  app.get('/api/distance/:origin/:destination', async (req, res) => {
+    const origin = req.params.origin;
+    const destination = req.params.destination;
+    try {
+      const distance = await getDistance(origin, destination);
+      res.json({ distance });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  app.get('/api/nearby/:location/:radius/:type', async (req, res) => {
+    const location = req.params.location;
+    const radius = Number(req.params.radius);
+    const type = req.params.type;
+    try {
+      const places = await getNearbyPlaces(location, radius, type);
+      res.json(places);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  app.get('/api/place/:placeId', async (req, res) => {
+    const placeId = req.params.placeId;
+    try {
+      const placeDetails = await getPlaceDetails(placeId);
+      console.log(placeDetails)
+      res.json(placeDetails);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+ // Demo: returns all the nearby places of a certain type, e.g. http://localhost:3000/api/place_type/restaurant 
+app.get('/api/place_type/:place_type', async (req, res) => {
+    const place_type = req.params.place_type;
+    try {
+      const places = await getPlaceType(place_type);
+      res.json(places);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+
+
+
+
+
 
 
 /**
