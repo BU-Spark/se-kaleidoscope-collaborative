@@ -4,9 +4,11 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kaleidoscope_collaborative/config/globals.dart'
+    as globals; // Import the globals
 
 // StatefulWidget for the Login Screen.
-class LoginScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -41,8 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // Add listeners to focus nodes to update UI on focus change.
-    _emailFocus.addListener(() { setState(() {}); });
-    _passwordFocus.addListener(() { setState(() {}); });
+    _emailFocus.addListener(() {
+      setState(() {});
+    });
+    _passwordFocus.addListener(() {
+      setState(() {});
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +74,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 117.0, // Set the width to match your design
                 height: 99.0, // Set the height to match your design
               ),
-              SizedBox(height: _emailFocus.hasFocus || _passwordFocus.hasFocus ? 20 : 48),
+              SizedBox(
+                  height: _emailFocus.hasFocus || _passwordFocus.hasFocus
+                      ? 20
+                      : 48),
 
               // TextField for email input.
               // TODO: Email text input validation on the front end
@@ -81,12 +90,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   labelText: 'Email',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: ()=> clearText(_emailTextController),
+                    onPressed: () => clearText(_emailTextController),
                   ),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    email = value; // Update email variable with the text field value
+                    email =
+                        value; // Update email variable with the text field value
                   });
                 },
                 controller: _emailTextController,
@@ -104,12 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   labelText: 'Password',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: ()=> clearText(_passwordTextController),
+                    onPressed: () => clearText(_passwordTextController),
                   ),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    password = value; // Update email variable with the text field value
+                    password =
+                        value; // Update email variable with the text field value
                   });
                 },
                 controller: _passwordTextController,
@@ -120,19 +131,23 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 child: Text('Log In'),
                 onPressed: () async {
-                  try{
+                  try {
                     // For registration
                     // final newUser = _auth.createUserWithEmailAndPassword(email: email, password: password);
                     // if(newUser!=null){
                     //   Navigator.push(context, MaterialPageRoute(builder: (context) => RegCompletePage()));
                     // }
 
-                    final existingUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                    if(existingUser!=null){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
+                    final existingUser = await _auth.signInWithEmailAndPassword(
+                        email: email, password: password);
+                    if (existingUser != null) {
+                      globals.userEmail = _emailTextController.text;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginCompletePage()));
                     }
-                  }
-                  catch(e){
+                  } catch (e) {
                     print(e);
                   }
                 },
@@ -142,14 +157,18 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('Forgot password?'),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen()));
                 },
               ),
               SizedBox(height: 16),
 
               const Row(
                 children: <Widget>[
-                  Expanded(child: Divider(
+                  Expanded(
+                      child: Divider(
                     color: Colors.black,
                     thickness: 1,
                   )),
@@ -157,7 +176,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Text('or'),
                   ),
-                  Expanded(child: Divider(
+                  Expanded(
+                      child: Divider(
                     color: Colors.black,
                     thickness: 1,
                   )),
@@ -169,8 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Facebook and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
                 child: Text('Log In with Facebook'),
-                onPressed: () {
-                },
+                onPressed: () {},
                 style: kButtonStyle,
               ),
               SizedBox(height: 16),
@@ -178,16 +197,14 @@ class _LoginScreenState extends State<LoginScreen> {
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Google and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
                 child: Text('Log In with Google'),
-                onPressed: () {
-                },
+                onPressed: () {},
                 style: kButtonStyle,
               ),
               SizedBox(height: 32),
 
               TextButton(
                 child: Text('Don’t have an account? Sign Up'),
-                onPressed: () {
-                },
+                onPressed: () {},
               ),
             ],
           ),
@@ -196,6 +213,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
-

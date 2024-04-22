@@ -6,13 +6,14 @@ import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart'
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
 
 // Make sure this import statement reflects the actual path to your customization.dart file
 
-class CustomizeProfilePage_1_7 extends StatelessWidget {
+class finished_customization_page extends StatelessWidget {
   final ProfileData profileData;
 
-  const CustomizeProfilePage_1_7({Key? key, required this.profileData})
+  const finished_customization_page({Key? key, required this.profileData})
       : super(key: key);
   //THIS METHOD IS USED TO DECODE THE ENCODE IMAGE
   Uint8List decodeImage(String base64String) {
@@ -161,37 +162,9 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
           MainAxisAlignment.end, // Aligns the button bar to the end of the row
       children: [
         OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Color(0xFF74777F), width: 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-            minimumSize: const Size(84, 40),
-          ),
-          child: const Text(
-            'back',
-            style: TextStyle(
-              color: Color(0xFF275EA7),
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              letterSpacing: 0.1,
-            ),
-          ),
-        ),
-        SizedBox(width: 16),
-        ElevatedButton(
-          onPressed: () async {
-            // Convert profileData to Map
-            Map<String, dynamic> profileDataMap = profileData.toMap();
-
+          onPressed: () {
             // Use CloudFirestoreService to add or update the profile data in Firestore
             try {
-              await CloudFirestoreService(FirebaseFirestore.instance)
-                  .addOrUpdateProfileData(
-                      profileDataMap); // Adjust method name as necessary
-
               // Navigate to the DashboardScreen or home screen after successful submission
               Navigator.pushAndRemoveUntil(
                 context,
@@ -206,6 +179,32 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                   e); // Consider using a more user-friendly way to handle errors
             }
           },
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: Color(0xFF74777F), width: 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
+            minimumSize: const Size(84, 40),
+          ),
+          child: const Text(
+            'home',
+            style: TextStyle(
+              color: Color(0xFF275EA7),
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ),
+        SizedBox(width: 16),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CustomizeProfilePage()));
+          },
           style: ElevatedButton.styleFrom(
             primary: Color(0xFF275EA7),
             onPrimary: Colors.white,
@@ -214,7 +213,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
             minimumSize: const Size(84, 40),
           ),
           child: const Text(
-            'home',
+            'edit',
             style: TextStyle(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w500,

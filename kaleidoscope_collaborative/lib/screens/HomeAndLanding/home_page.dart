@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
-
+import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/finished_customization_page.dart';
+import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
 
 // This class defines a category among the list of categories that should be displayed to the user when the user clicks on the explore tab
 class Category {
@@ -56,7 +58,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       final user = _auth.currentUser;
       if (user != null) {
         loggedInUser = user;
-        print(loggedInUser.email);
       }
     } catch (e) {
       print(e);
@@ -139,11 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   color: Colors.black), // Profile customization icon
               onPressed: () {
                 // Navigate to the CustomizeProfilePage when the icon is tapped
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CustomizeProfilePage()),
-                );
+                handleProfile();
               },
             ),
           ],
@@ -352,27 +349,108 @@ class _DashboardScreenState extends State<DashboardScreen>
       ),
       // Bottom navigation bar to navigate between different sections like 'Favorite', 'Explore', and 'Profile'.
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorite',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: (int index) {
-          if (index != _selectedIndex) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          }
-        },
-      ),
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorite',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.explore),
+              label: 'Explore',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: handleNavigationBasedOnProfile),
       // Rest of your code...
     );
+  }
+
+  void handleNavigationBasedOnProfile(int index) async {
+    setState(() {
+      _selectedIndex = index; // Update the selected index state
+    });
+
+    if (index == 2) {
+      // When "Profile" tab is selected
+      try {
+        CloudFirestoreService firestoreService =
+            CloudFirestoreService(FirebaseFirestore.instance);
+        bool profileExists = await firestoreService.profileDataExists();
+
+        if (profileExists) {
+          // Fetch the profile data from Firestore
+          DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
+              .collection('ProfileData')
+              .doc(loggedInUser
+                  .email) // Assuming loggedInUser.email is the document ID
+              .get();
+
+          if (profileSnapshot.exists) {
+            ProfileData profileData = ProfileData.fromFirestore(
+                profileSnapshot.data() as Map<String, dynamic>);
+            // Navigate to FinishedCustomizationPage with the fetched profile data
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        finished_customization_page(profileData: profileData)));
+          } else {
+            print("Profile data found, but unable to load.");
+            // Optionally handle the condition when data exists but couldn't be loaded
+          }
+        } else {
+          // Navigate to CustomizeProfilePage if profile does not exist
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CustomizeProfilePage()));
+        }
+      } catch (e) {
+        print("Error checking profile existence: $e");
+        // Optionally handle or log this error more gracefully
+      }
+    }
+  }
+
+  void handleProfile() async {
+    // When "Profile" tab is selected
+    try {
+      CloudFirestoreService firestoreService =
+          CloudFirestoreService(FirebaseFirestore.instance);
+      bool profileExists = await firestoreService.profileDataExists();
+
+      if (profileExists) {
+        // Fetch the profile data from Firestore
+        DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
+            .collection('ProfileData')
+            .doc(loggedInUser
+                .email) // Assuming loggedInUser.email is the document ID
+            .get();
+
+        if (profileSnapshot.exists) {
+          ProfileData profileData = ProfileData.fromFirestore(
+              profileSnapshot.data() as Map<String, dynamic>);
+          // Navigate to FinishedCustomizationPage with the fetched profile data
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      finished_customization_page(profileData: profileData)));
+        } else {
+          print("Profile data found, but unable to load.");
+          // Optionally handle the condition when data exists but couldn't be loaded
+        }
+      } else {
+        // Navigate to CustomizeProfilePage if profile does not exist
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => CustomizeProfilePage()));
+      }
+    } catch (e) {
+      print("Error checking profile existence: $e");
+      // Optionally handle or log this error more gracefully
+    }
   }
 }

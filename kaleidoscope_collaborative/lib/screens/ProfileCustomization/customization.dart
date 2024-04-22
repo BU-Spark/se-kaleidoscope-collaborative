@@ -43,4 +43,20 @@ class ProfileData {
       'uploaded_profile_picture': uploaded_profile_picture ?? "",
     };
   }
+
+  ProfileData.fromFirestore(Map<String, dynamic> firestoreData)
+      : name = firestoreData['name'],
+        age = firestoreData['age'],
+        gender = firestoreData['gender'],
+        occupation = firestoreData['occupation'],
+        relationship = firestoreData['relationship'],
+        disability_familiarity =
+            List<String>.from(firestoreData['disability_familiarity']),
+        accommodations = List<String>.from(firestoreData['accommodations']),
+        location_preference =
+            List<String>.from(firestoreData['location_preference']),
+        profile_picture_path = firestoreData['profile_picture_path'],
+        uploaded_profile_picture_status =
+            firestoreData['uploaded_profile_picture_status'],
+        uploaded_profile_picture = firestoreData['uploaded_profile_picture'];
 }
