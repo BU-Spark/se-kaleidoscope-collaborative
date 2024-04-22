@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
+import 'package:kaleidoscope_collaborative/models/profile.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_7.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -35,7 +35,6 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
     img.Image? originalImage =
         img.decodeImage(await File(imagePath).readAsBytes());
 
-    // Resize the image to a max 500x500 while keeping the aspect ratio
     img.Image resizedImage =
         img.copyResize(originalImage!, width: 500, height: 500);
 
@@ -87,7 +86,6 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 const Text(
                   "Tell us a bit about yourself!",
                   style: TextStyle(
@@ -99,7 +97,6 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                   ),
                   softWrap: true,
                 ),
-
                 const SizedBox(height: 20),
                 Container(
                   width: 232,
@@ -114,7 +111,6 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                     ),
                   ),
                 ),
-                // const SizedBox(height: 20),
                 Center(
                   child: Container(
                     height: 259,
@@ -138,7 +134,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                 ),
                 const SizedBox(height: 20),
                 _buildUploadContainer(context),
-                const SizedBox(height: 40), // Space before buttons
+                const SizedBox(height: 40),
                 _buildActionButtons(context, paths),
               ],
             ),
@@ -151,26 +147,26 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
   Widget _buildUploadContainer(BuildContext context) {
     return Center(
       child: Container(
-        width: 300.0, // Fixed width
-        height: 222.0, // Fixed height
+        width: 300.0,
+        height: 222.0,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(103, 80, 164, 0.11), // Background color
-          borderRadius: BorderRadius.circular(28.0), // Radius
+          color: Color.fromRGBO(103, 80, 164, 0.11),
+          borderRadius: BorderRadius.circular(28.0),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Icon(
-              Icons.mobile_friendly, // Replace with your desired icon
-              size: 30.0, // Icon size
-              color: Color.fromRGBO(103, 80, 164, 1), // Icon color
+              Icons.mobile_friendly,
+              size: 30.0,
+              color: Color.fromRGBO(103, 80, 164, 1),
             ),
             Text(
               isImageUploaded ? 'Successfully Uploaded' : 'Upload Image',
               style: TextStyle(
-                color: Color.fromRGBO(103, 80, 164, 1), // Text color
-                fontSize: 18.0, // Font size
-                fontWeight: FontWeight.bold, // Font weight
+                color: Color.fromRGBO(103, 80, 164, 1),
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
             Container(
@@ -179,8 +175,8 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                 'This image will appear to other Ditto users when you review locations!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color.fromRGBO(67, 71, 78, 1), // Text color
-                  fontSize: 13, // Font size
+                  color: Color.fromRGBO(67, 71, 78, 1),
+                  fontSize: 13,
                   letterSpacing: 0.25,
                 ),
               ),
@@ -193,14 +189,12 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                 if (image != null) {
                   setState(() {
                     selectedProfileImagePath = image.path;
-                    isImageUploaded = true; // Update the upload status
+                    isImageUploaded = true;
                   });
                 }
                 if (image != null) {
                   // Encode the image to base64
                   String base64Image = await resizeAndCompressImage(image.path);
-
-                  // Assuming you have an instance of ProfileData called profileData
                   // Update the instance with the encoded image
                   setState(() {
                     widget.profileData.uploaded_profile_picture = base64Image;
@@ -224,10 +218,8 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
 
   Widget _buildActionButtons(BuildContext context, paths) {
     return ButtonBar(
-      buttonPadding:
-          EdgeInsets.zero, // Removes padding between the buttons if necessary
-      alignment:
-          MainAxisAlignment.end, // Aligns the button bar to the end of the row
+      buttonPadding: EdgeInsets.zero,
+      alignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
           onPressed: () => Navigator.pop(context),
@@ -254,10 +246,8 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
           onPressed: () {
             // Check if selectedImagePath is null or empty; if so, use the first image path as default
             if (selectedImagePath == null || selectedImagePath!.isEmpty) {
-              selectedImagePath =
-                  paths[0]; // Use the first image path by default
+              selectedImagePath = paths[0];
             }
-            // At this point, selectedImagePath is guaranteed to be non-null and non-empty
 
             // Assign the selected or default image path to profileData
             widget.profileData.profile_picture_path = selectedImagePath!;
@@ -296,13 +286,12 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
     // This method will build the grid of profile images
     return GridView.builder(
       shrinkWrap: true,
-      physics:
-          NeverScrollableScrollPhysics(), // to prevent scrolling of the GridView
+      physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,
-        childAspectRatio: 1, // Assuming square images
+        childAspectRatio: 1,
       ),
       itemCount: paths.length,
       itemBuilder: (context, index) {

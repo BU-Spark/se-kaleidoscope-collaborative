@@ -1,16 +1,14 @@
-// The DashboardScreen is the main interface of the app after login, providing navigation to various categories, a search feature, notifications, and a user profile.
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
-import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
+import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/finished_customization_page.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
+import 'package:kaleidoscope_collaborative/models/profile.dart';
 
-// This class defines a category among the list of categories that should be displayed to the user when the user clicks on the explore tab
 class Category {
   final String imagePath;
   final String name;
@@ -25,7 +23,6 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
-  // TabController for managing tabs in the AppBar.
   TabController? _tabController;
   int _selectedIndex = 1;
   final _auth = FirebaseAuth.instance;
@@ -34,7 +31,6 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   late String first_name;
 
-  // List of categories to be displayed on the Dashboard.
   final List<Category> categories = [
     Category(imagePath: 'images/restaurant.jpg', name: 'Restaurant'),
     Category(imagePath: 'images/dojo.jpg', name: 'Dojo'),
@@ -48,8 +44,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   void initState() {
     super.initState();
     getCurrentUser();
-    // getCurrentUser();
-    // Initialize the TabController in initState
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -64,22 +58,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // Future function to fetch user name by email.
   Future<String> getUserNameByEmail(String? email) async {
     try {
-      // Assume 'User' is your collection where user data is stored
       QuerySnapshot querySnapshot = await _firestore
           .collection('User')
-          .where('email', isEqualTo: loggedInUser.email) // Filter by email
-          .limit(1) // Limit to only one result
+          .where('email', isEqualTo: loggedInUser.email)
+          .limit(1)
           .get();
 
-      // Check if the query returned any documents
       if (querySnapshot.docs.isNotEmpty) {
-        var userData = querySnapshot.docs.first.data()
-            as Map<String, dynamic>; // Cast to Map<String, dynamic>
-        first_name =
-            userData['first_name']; // Now you can use the '[]' operator
+        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        first_name = userData['first_name'];
       }
     } catch (e) {
       print(e.toString());
@@ -90,7 +79,6 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
-    // Dispose the TabController when the widget is disposed
     _tabController?.dispose();
     super.dispose();
   }
@@ -98,28 +86,26 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     if (_tabController == null) {
-      return Container(); // Display a loading indicator or empty container before TabController is initialized.
+      return Container();
     }
     return Scaffold(
-      // AppBar setup with a custom title, search, and notifications icons.
       appBar: AppBar(
         title: Row(
-          mainAxisSize: MainAxisSize.min, // Use min size of the Row
+          mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
-              // Expanded for the text to take all available space on the left
               child: Align(
-                alignment: Alignment.center, // Align text to center
+                alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: const TextSpan(
                     children: [
                       TextSpan(
-                        text: 'kaleidoscope\n', // The '\n' creates a new line
+                        text: 'kaleidoscope\n',
                         style: TextStyle(
                           color: Color(0xFF174177),
                           fontWeight: FontWeight.bold,
-                          fontSize: 20, // Adjust the font size as needed
+                          fontSize: 20,
                         ),
                       ),
                       TextSpan(
@@ -127,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         style: TextStyle(
                           color: Color(0xFF174177),
                           fontWeight: FontWeight.bold,
-                          fontSize: 20, // Adjust the font size as needed
+                          fontSize: 20,
                         ),
                       ),
                     ],
@@ -136,10 +122,8 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
             ),
             IconButton(
-              icon: Icon(Icons.person,
-                  color: Colors.black), // Profile customization icon
+              icon: Icon(Icons.person, color: Colors.black),
               onPressed: () {
-                // Navigate to the CustomizeProfilePage when the icon is tapped
                 handleProfile();
               },
             ),
@@ -178,17 +162,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                   TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
               unselectedLabelStyle:
                   TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-              indicatorSize: TabBarIndicatorSize
-                  .label, // This aligns the indicator to the width of the label
+              indicatorSize: TabBarIndicatorSize.label,
               indicator: const UnderlineTabIndicator(
-                // UnderlineTabIndicator is used for a line indicator
                 borderSide: BorderSide(
-                  color: Colors.deepPurple, // The color of the line
-                  width: 2.0, // The thickness of the line
+                  color: Colors.deepPurple,
+                  width: 2.0,
                 ),
-                insets: EdgeInsets.symmetric(
-                    horizontal:
-                        8.0), // This will control the width of the line, adjust as needed for your layout
+                insets: EdgeInsets.symmetric(horizontal: 8.0),
               ),
               tabs: const [
                 Tab(text: 'Explore'),
@@ -203,18 +183,16 @@ class _DashboardScreenState extends State<DashboardScreen>
           padding: EdgeInsets.zero,
           children: <Widget>[
             FutureBuilder<String>(
-              future: getUserNameByEmail(
-                  loggedInUser.email), // Future that returns the name
+              future: getUserNameByEmail(loggedInUser.email),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  // Check if the future is complete and has data
                   if (snapshot.hasData) {
                     return DrawerHeader(
                       decoration: const BoxDecoration(
                         color: Color(0xFF6750A4),
                       ),
                       child: Text(
-                        'Hi ${snapshot.data}', // Display the name from the snapshot
+                        'Hi ${snapshot.data}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -236,7 +214,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     );
                   }
                 } else {
-                  // While waiting for the future to complete, show a placeholder
                   return const DrawerHeader(
                     decoration: BoxDecoration(
                       color: Color(0xFF6750A4),
@@ -251,9 +228,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               title: Text('Sign Out'),
               onTap: () {
                 _auth.signOut().then((_) {
-                  // Close the drawer
                   Navigator.of(context).pop();
-                  // Navigate to the sign-in screen, replacing all routes
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => FirstScreen()),
@@ -264,15 +239,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           ],
         ),
       ),
-      // Body of the DashboardScreen consisting of a TabBarView to switch between 'Explore' and 'Review' sections.
       body: TabBarView(
-        controller:
-            _tabController, // Provide the TabController to the TabBarView
+        controller: _tabController,
         children: [
-          // Explore tab with a list of categories in a grid view.
-
           Column(
-            // Column configuration for Explore tab
             children: [
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -304,7 +274,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     mainAxisSpacing: 16,
                     childAspectRatio: 1 / 1,
                   ),
-                  itemCount: categories.length, // Number of items in your grid
+                  itemCount: categories.length,
                   itemBuilder: (context, index) {
                     var category = categories[index];
                     return GestureDetector(
@@ -343,7 +313,6 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
             ],
           ),
-          // Review tab content.
           Center(child: Text('Review Content')),
         ],
       ),
@@ -366,13 +335,12 @@ class _DashboardScreenState extends State<DashboardScreen>
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.amber[800],
           onTap: handleNavigationBasedOnProfile),
-      // Rest of your code...
     );
   }
 
   void handleNavigationBasedOnProfile(int index) async {
     setState(() {
-      _selectedIndex = index; // Update the selected index state
+      _selectedIndex = index;
     });
 
     if (index == 2) {
@@ -386,8 +354,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           // Fetch the profile data from Firestore
           DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
               .collection('ProfileData')
-              .doc(loggedInUser
-                  .email) // Assuming loggedInUser.email is the document ID
+              .doc(loggedInUser.email)
               .get();
 
           if (profileSnapshot.exists) {
@@ -401,7 +368,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                         finished_customization_page(profileData: profileData)));
           } else {
             print("Profile data found, but unable to load.");
-            // Optionally handle the condition when data exists but couldn't be loaded
           }
         } else {
           // Navigate to CustomizeProfilePage if profile does not exist
@@ -426,8 +392,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Fetch the profile data from Firestore
         DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
             .collection('ProfileData')
-            .doc(loggedInUser
-                .email) // Assuming loggedInUser.email is the document ID
+            .doc(loggedInUser.email)
             .get();
 
         if (profileSnapshot.exists) {
@@ -450,7 +415,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
     } catch (e) {
       print("Error checking profile existence: $e");
-      // Optionally handle or log this error more gracefully
     }
   }
 }

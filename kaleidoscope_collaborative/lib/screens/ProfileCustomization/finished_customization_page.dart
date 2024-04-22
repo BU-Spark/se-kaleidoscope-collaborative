@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
+import 'package:kaleidoscope_collaborative/models/profile.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
-import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
+import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
-
-// Make sure this import statement reflects the actual path to your customization.dart file
 
 class finished_customization_page extends StatelessWidget {
   final ProfileData profileData;
@@ -29,8 +27,7 @@ class finished_customization_page extends StatelessWidget {
           child: Form(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment
-                  .start, // Align text to the start (left side)
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 const SizedBox(height: 80),
                 const Text(
@@ -68,15 +65,13 @@ class finished_customization_page extends StatelessWidget {
                 const SizedBox(height: 20),
                 Center(
                   child: Container(
-                    width: 100, // Set the width as needed
-                    height: 100, // Set the height as needed
+                    width: 100,
+                    height: 100,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                          5), // Adjust the radius as needed
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          5), // Match the outer Container's borderRadius
+                      borderRadius: BorderRadius.circular(5),
                       child: profileData.uploaded_profile_picture_status == 1 &&
                               profileData.uploaded_profile_picture != null
                           ? Image.memory(
@@ -90,9 +85,8 @@ class finished_customization_page extends StatelessWidget {
                                   fit: BoxFit.cover,
                                 )
                               : Container(
-                                  color: Colors.grey, // Placeholder color
-                                  child: Icon(Icons.person,
-                                      size: 50), // Placeholder icon
+                                  color: Colors.grey,
+                                  child: Icon(Icons.person, size: 50),
                                 ),
                     ),
                   ),
@@ -156,27 +150,19 @@ class finished_customization_page extends StatelessWidget {
 
   Widget _buildActionButtons(BuildContext context) {
     return ButtonBar(
-      buttonPadding:
-          EdgeInsets.zero, // Removes padding between the buttons if necessary
-      alignment:
-          MainAxisAlignment.end, // Aligns the button bar to the end of the row
+      buttonPadding: EdgeInsets.zero,
+      alignment: MainAxisAlignment.end,
       children: [
         OutlinedButton(
           onPressed: () {
-            // Use CloudFirestoreService to add or update the profile data in Firestore
             try {
-              // Navigate to the DashboardScreen or home screen after successful submission
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        DashboardScreen()), // Ensure DashboardScreen is defined
+                MaterialPageRoute(builder: (context) => DashboardScreen()),
                 (Route<dynamic> route) => false,
               );
             } catch (e) {
-              // Handle errors here, possibly show an error message to the user
-              print(
-                  e); // Consider using a more user-friendly way to handle errors
+              print(e);
             }
           },
           style: OutlinedButton.styleFrom(

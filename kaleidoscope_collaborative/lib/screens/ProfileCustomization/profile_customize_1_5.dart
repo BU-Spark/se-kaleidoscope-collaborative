@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
+import 'package:kaleidoscope_collaborative/models/profile.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_6.dart';
 
 class CustomizeProfilePage_1_5 extends StatefulWidget {
@@ -57,7 +57,6 @@ class _CustomizeProfilePage_1_5State extends State<CustomizeProfilePage_1_5> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 const Text(
                   "Tell us a bit about yourself!",
                   style: TextStyle(
@@ -69,7 +68,6 @@ class _CustomizeProfilePage_1_5State extends State<CustomizeProfilePage_1_5> {
                   ),
                   softWrap: true,
                 ),
-
                 const SizedBox(height: 20),
                 Container(
                   width: 232,
@@ -85,7 +83,7 @@ class _CustomizeProfilePage_1_5State extends State<CustomizeProfilePage_1_5> {
                 ),
                 const SizedBox(height: 20),
                 ..._buildLocationPreferenceCheckboxes(),
-                const SizedBox(height: 40), // Space before buttons
+                const SizedBox(height: 40),
                 _buildActionButtons(context),
               ],
             ),

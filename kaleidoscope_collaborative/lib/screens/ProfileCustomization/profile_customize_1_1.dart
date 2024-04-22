@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_2.dart';
-import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/customization.dart';
+import 'package:kaleidoscope_collaborative/models/profile.dart';
 
 class CustomizeProfilePage_1_1 extends StatefulWidget {
   @override
@@ -82,7 +82,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
-        width: 210, // Fixed width for the text field
+        width: 210,
         child: TextFormField(
           controller: controller,
           decoration: InputDecoration(
@@ -109,7 +109,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
-        width: 210, // Fixed width for the age field
+        width: 210,
         child: TextFormField(
           controller: _ageController,
           decoration: InputDecoration(
@@ -140,7 +140,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
-        width: 210, // Fixed width for the dropdown
+        width: 210,
         child: DropdownButtonFormField<String>(
           decoration: InputDecoration(
             labelText: 'Gender',
@@ -194,11 +194,9 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
               final profileData = ProfileData(
                 name: _nameController.text,
                 age: int.parse(_ageController.text),
-                gender: selectedGender ??
-                    'Not specified', // Default or validated selection
+                gender: selectedGender ?? 'Not specified',
                 occupation: _occupationController.text,
               );
-
               // Navigate to the next page and pass the profileData
               Navigator.push(
                 context,
