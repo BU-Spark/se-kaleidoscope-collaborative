@@ -64,17 +64,23 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
       'images/defaultProfilePictures/default_image_5.png',
       'images/defaultProfilePictures/default_image_6.png',
     ];
-
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double container = width / 1.9;
+    double padding = width / 24;
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(padding),
           child: Form(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 40),
+                SizedBox(height: spacerHeight),
                 const Text(
                   'Customize Profile',
                   style: TextStyle(
@@ -85,7 +91,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                     letterSpacing: 0.1,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 const Text(
                   "Tell us a bit about yourself!",
                   style: TextStyle(
@@ -99,7 +105,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                 ),
                 const SizedBox(height: 20),
                 Container(
-                  width: 232,
+                  width: container,
                   child: const Text(
                     'Choose a Profile Picture!!!',
                     style: TextStyle(
@@ -118,9 +124,9 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                     child: _buildProfileImagesGrid(context, paths),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 Container(
-                  width: 232,
+                  width: container,
                   child: const Text(
                     'Or Upload Your Own!',
                     style: TextStyle(
@@ -132,9 +138,9 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 _buildUploadContainer(context),
-                const SizedBox(height: 40),
+                SizedBox(height: spacerHeight),
                 _buildActionButtons(context, paths),
               ],
             ),
@@ -217,6 +223,13 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
   }
 
   Widget _buildActionButtons(BuildContext context, paths) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double container = width / 1.9;
+    double padding = width / 24;
     return ButtonBar(
       buttonPadding: EdgeInsets.zero,
       alignment: MainAxisAlignment.end,
@@ -241,7 +254,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
             ),
           ),
         ),
-        SizedBox(width: 16),
+        SizedBox(width: padding),
         ElevatedButton(
           onPressed: () {
             // Check if selectedImagePath is null or empty; if so, use the first image path as default

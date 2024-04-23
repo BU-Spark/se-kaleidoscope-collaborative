@@ -26,18 +26,23 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double padding = width / 24;
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(padding),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 40),
-
+                SizedBox(height: spacerHeight),
                 const Text(
                   'Customize Profile',
                   style: TextStyle(
@@ -49,7 +54,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
                     letterSpacing: 0.1,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 const Text(
                   "Tell us a bit about yourself!",
                   style: TextStyle(
@@ -62,12 +67,12 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
                   ),
                   softWrap: true,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 _buildTextField(context, 'Name', _nameController),
                 _buildAgeField(),
                 _buildGenderDropdown(),
                 _buildTextField(context, 'Occupation', _occupationController),
-                const SizedBox(height: 40), // Increased space before buttons
+                SizedBox(height: spacerHeight),
                 _buildActionButtons(context),
               ],
             ),
@@ -79,10 +84,16 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
 
   Widget _buildTextField(
       BuildContext context, String label, TextEditingController controller) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double container = width / 1.9;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: textfieldHeight),
       child: Container(
-        width: 210,
+        width: container,
         child: TextFormField(
           controller: controller,
           decoration: InputDecoration(
@@ -106,10 +117,16 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
   }
 
   Widget _buildAgeField() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double container = width / 1.9;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: textfieldHeight),
       child: Container(
-        width: 210,
+        width: container,
         child: TextFormField(
           controller: _ageController,
           decoration: InputDecoration(
@@ -137,10 +154,16 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
   }
 
   Widget _buildGenderDropdown() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double container = width / 1.9;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: textfieldHeight),
       child: Container(
-        width: 210,
+        width: container,
         child: DropdownButtonFormField<String>(
           decoration: InputDecoration(
             labelText: 'Gender',

@@ -34,16 +34,24 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
+    double textfieldHeight = height / 104;
+    double container = width / 1.9;
+    double padding = width / 24;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(padding),
           child: Form(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 40),
+                SizedBox(height: spacerHeight),
                 const Text(
                   'Customize Profile',
                   style: TextStyle(
@@ -54,7 +62,7 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
                     letterSpacing: 0.1,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 const Text(
                   "Tell us a bit about yourself!",
                   style: TextStyle(
@@ -66,9 +74,9 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
                   ),
                   softWrap: true,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 Container(
-                  width: 232,
+                  width: container,
                   child: const Text(
                     'What is your relationship with the disability community?',
                     style: TextStyle(
@@ -80,9 +88,9 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: halfSpacerHeight),
                 ..._buildRelationshipCheckboxes(),
-                const SizedBox(height: 40),
+                SizedBox(height: spacerHeight),
                 _buildActionButtons(context),
               ],
             ),

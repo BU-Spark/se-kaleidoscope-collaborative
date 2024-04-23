@@ -5,16 +5,22 @@ import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_
 class CustomizeProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double spacerHeight = height / 21;
+    double halfSpacerHeight = height / 42;
     double screenWidth = MediaQuery.of(context).size.width;
     double containerWidth = screenWidth * (2 / 3);
+    double padding = width / 24;
+    print(padding);
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(padding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 40),
+            SizedBox(height: spacerHeight),
             Text(
               'Customize Profile',
               style: TextStyle(
@@ -26,7 +32,7 @@ class CustomizeProfilePage extends StatelessWidget {
                 letterSpacing: 0.1,
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: halfSpacerHeight),
             Container(
               width: containerWidth,
               child: Text(
