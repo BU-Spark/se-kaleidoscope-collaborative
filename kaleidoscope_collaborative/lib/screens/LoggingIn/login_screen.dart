@@ -1,13 +1,14 @@
 // This is the Login Screen for user authentication with email and password, and options for social media login.
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
-import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/firebase_options.dart';
+
 
 // StatefulWidget for the Login Screen.
 class LoginScreen extends StatefulWidget{
@@ -15,53 +16,6 @@ class LoginScreen extends StatefulWidget{
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
-
-Future<UserCredential?> signInWithFacebook() async {
-  final LoginResult loginResult = await FacebookAuth.instance.login();
-  if (loginResult.status == LoginStatus.success) {
-    final AccessToken accessToken = loginResult.accessToken!;
-    // Create a credential to sign in with Firebase
-    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(accessToken.token);
-    // Use the credential to sign in with Firebase and return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  } else if (loginResult.status == LoginStatus.cancelled) {
-    print('Facebook login was cancelled by the user.');
-    return null;
-  } else {
-    final errorMessage = loginResult.message ?? 'Unknown error occurred.';
-    print('Facebook login failed: $errorMessage');
-    throw FirebaseAuthException(
-      code: 'ERROR_FACEBOOK_LOGIN_FAILED',
-      message: errorMessage,
-    );
-  }
-}
-
-Future<void> signInWithGoogle(BuildContext context) async {
-  final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: DefaultFirebaseOptions.currentPlatform.iosClientId ?? '181675201017-kva2g5btcr9n70itatmtffa27h4sss3u.apps.googleusercontent.com', 
-  );
-
-  try {
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    if (googleUser != null) {
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      if (userCredential.user != null) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginCompletePage()));
-      }
-    }
-  } catch (error) {
-    print('Google sign-in failed: $error');
-    // Handle the error e.g., show a dialog or a snackbar
-  }
-}
-
 
 // State class for LoginScreen.
 class _LoginScreenState extends State<LoginScreen> {
@@ -76,46 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordTextController = TextEditingController();
   final _emailTextController = TextEditingController();
 
-
-  // Declare a nullable String variable to hold the error message
-  String? _errorMessageEmail;
-  String? _errorMessagePassword;
-
-
   // Function to clear text in a text field.
   void clearText(TextEditingController controller) {
     controller.clear();
   }
-
-  
-  //  Function to handle login button press.
-  void showLoginFailedDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Login Failed'),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-
 
   // Dispose focus nodes and controllers when the widget is disposed.
   @override
   void dispose() {
     _emailFocus.dispose();
     _passwordFocus.dispose();
-    _passwordTextController.dispose();
-    _emailTextController.dispose();
     super.dispose();
   }
 
@@ -160,7 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
-                  // errorText: _errorMessageEmail,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: ()=> clearText(_emailTextController),
@@ -184,25 +107,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
-                  errorText: _errorMessagePassword,
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: ()=> clearText(_passwordTextController),
                   ),
                 ),
-                // onChanged: (value) {
-                //   setState(() {
-                //     password = value; // Update email variable with the text field value
-                //   });
-                // },
-                // controller: _passwordTextController,
                 onChanged: (value) {
-                  if (_errorMessagePassword != null) {
-                    setState(() {
-                      _errorMessagePassword = null;
-                    });
-                  }
+                  setState(() {
+                    password = value; // Update email variable with the text field value
+                  });
                 },
+                controller: _passwordTextController,
               ),
               SizedBox(height: 32),
 
@@ -211,27 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text('Log In'),
                 onPressed: () async {
                   try{
-                    // For registration
-                    // final newUser = _auth.createUserWithEmailAndPassword(email: email, password: password);
-                    // if(newUser!=null){
-                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => RegCompletePage()));
-                    // }
-
                     final existingUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
                     if(existingUser!=null){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
                     }
                   }
-                  on FirebaseAuthException catch (e) {
-                    if (e.code == 'user-not-found') {
-                      setState(() {
-                        _errorMessageEmail = "The email address or password you entered is incorrect";
-                      });
-                    } else if (e.code == 'wrong-password') {
-                      setState(() {
-                        _errorMessagePassword = "The email address or password you entered is incorrect";
-                      });
-                    }
+                  catch(e){
+                    print(e);
                   }
                 },
                 style: kButtonStyle,
@@ -316,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) =>  SignupLandingPage()));
                 },
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 32),
             ],
           ),
         ),
@@ -325,5 +226,49 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
+Future<UserCredential?> signInWithFacebook() async {
+  final LoginResult loginResult = await FacebookAuth.instance.login();
+  if (loginResult.status == LoginStatus.success) {
+    final AccessToken accessToken = loginResult.accessToken!;
+    // Create a credential to sign in with Firebase
+    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(accessToken.token);
+    // Use the credential to sign in with Firebase and return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  } else if (loginResult.status == LoginStatus.cancelled) {
+    print('Facebook login was cancelled by the user.');
+    return null;
+  } else {
+    final errorMessage = loginResult.message ?? 'Unknown error occurred.';
+    print('Facebook login failed: $errorMessage');
+    throw FirebaseAuthException(
+      code: 'ERROR_FACEBOOK_LOGIN_FAILED',
+      message: errorMessage,
+    );
+  }
+}
 
+Future<void> signInWithGoogle(BuildContext context) async {
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    clientId: DefaultFirebaseOptions.currentPlatform.iosClientId ?? '181675201017-kva2g5btcr9n70itatmtffa27h4sss3u.apps.googleusercontent.com', 
+  );
+
+  try {
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      if (userCredential.user != null) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginCompletePage()));
+      }
+    }
+  } catch (error) {
+    print('Google sign-in failed: $error');
+    // Handle the error e.g., show a dialog or a snackbar
+  }
+}
 

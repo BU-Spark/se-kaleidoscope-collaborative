@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/email_verification.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/phone_verification.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 import 'identity_verification.dart';
@@ -23,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final FocusNode _fnameFocus = FocusNode();
   final FocusNode _lnameFocus = FocusNode();
   final TextEditingController _birthdayTextController = TextEditingController();
-  final FocusNode _usernameFocus = FocusNode();
+  // final FocusNode _usernameFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmPasswordFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
@@ -33,7 +35,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   final _fnameTextController = TextEditingController();
   final _lnameTextController = TextEditingController();
-  final _usernameTextController = TextEditingController();
+  // final _usernameTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _confirmPasswordTextController = TextEditingController();
   final _emailTextController = TextEditingController();
@@ -89,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _fnameFocus.dispose();
     _lnameFocus.dispose();
     _birthdayTextController.dispose();
-    _usernameFocus.dispose();
+    // _usernameFocus.dispose();
     _passwordFocus.dispose();
     _confirmPasswordFocus.dispose();
     _emailFocus.dispose();
@@ -98,7 +100,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _confirmPhoneNumberFocus.dispose();
     _fnameTextController.dispose();
     _lnameTextController.dispose();
-    _usernameTextController.dispose();
+    // _usernameTextController.dispose();
     _passwordTextController.dispose();
     _confirmPasswordTextController.dispose();
     _emailTextController.dispose();
@@ -132,6 +134,28 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
+  void _submitForm() async {
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: _emailTextController.text.trim(), password: _passwordTextController.text.trim(),
+      );
+
+      // send an email verification
+
+      User? user = userCredential.user;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+  
+
+      // navigate to the EmailVerificationPage
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => EmailVerificationPage(email: _emailTextController.text.trim()),
+        ));
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to sign up: $e.message')),
+      );
+    }
+  }
+
   Future<void> _selectBirthday(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -153,7 +177,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     _fnameFocus.addListener(() { setState(() {}); });
     _lnameFocus.addListener(() { setState(() {}); });
-    _usernameFocus.addListener(() { setState(() {}); });
+    // _usernameFocus.addListener(() { setState(() {}); });
     _passwordFocus.addListener(() { setState(() {}); });
     _confirmPasswordFocus.addListener(() { setState(() {}); });
     _emailFocus.addListener(() { setState(() {}); });
@@ -186,7 +210,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   width: 117.0, 
                   height: 99.0, 
                 ),
-                SizedBox(height: _fnameFocus.hasFocus || _lnameFocus.hasFocus || _usernameFocus.hasFocus ? 20 : 48),
+                SizedBox(height: _fnameFocus.hasFocus || _lnameFocus.hasFocus ? 20 : 48),
 
                 // First Name input
                 TextField(
@@ -201,7 +225,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   controller: _fnameTextController,
                 ),
-                SizedBox(height: 16),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
 
                 // Last Name input
                 TextField(
@@ -216,7 +242,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   controller: _lnameTextController,
                 ),
-                SizedBox(height: 16),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
 
                 // Birthday input
                 GestureDetector(
@@ -233,24 +261,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
-
-                // UserName input
-                TextField(
-                  focusNode: _usernameFocus,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Username',
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: ()=> clearText(_usernameTextController),
-                    ),
-                  ),
-                  controller: _usernameTextController,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
                 ),
-                SizedBox(height: 32),
 
-                // Password input
                 TextField(
                   focusNode: _passwordFocus,
                   obscureText: true,
@@ -267,7 +281,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   // },
                   controller: _passwordTextController,
                 ),
-                SizedBox(height: 16),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
 
                 // Confirm Password input
                 TextField(
@@ -310,7 +326,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   onTap: () => setEmailActive(),
                 ),
-                SizedBox(height: 16),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
 
                 // Confirm Email input
                 TextField(
@@ -362,7 +380,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     enabled: isPhoneNumberActive,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Phone Number',
+                      labelText: 'Phone Number (optional)',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: ()=> clearText(_phoneNumberTextController),
@@ -373,7 +391,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   onTap: () => setPhoneNumberActive(),
                 ),
-                SizedBox(height: 16),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
 
                 // Confirm Phone Number input
                 TextField(
@@ -381,7 +401,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   enabled: isPhoneNumberActive,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: ' Confirm Phone Number',
+                    labelText: ' Confirm Phone Number (optional)',
                     errorText: _phoneNumberMatch ? null : 'Phone numbers do not match',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -398,102 +418,52 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 ElevatedButton(
                   child: Text('Submit'),
+                  onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch)))
+                      ? () async {
+                          if (isEmailActive && _emailMatch) {
+                            // Navigate to Email Verification page
+                            final emailVerificationSuccessful = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EmailVerificationPage(
+                                  email: _emailTextController.text, // Corrected this line
+                                ),
+                              ),
+                            );
 
-                  onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch))) ? ()  async {
-
-                    if (isEmailActive) {
-                      // If email is the chosen method, validate emails.
-                      bool verificationSuccessful = false;
-
-                      // Navigate to the Identity Verification page and await the result
-                      verificationSuccessful = await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod: _emailTextController.text, resendCode: 'Email')),
-                      );
-
-
-                      if (verificationSuccessful) {
-
-                        Map<String, dynamic> userData = {
-                          'first_name': _fnameTextController.text,
-                          'last_name': _lnameTextController.text,
-                          'username': _usernameTextController.text,
-                          'password': _passwordTextController.text,
-                          'email': _emailTextController.text,
-                          'phone_number': _phoneNumberTextController.text,
-                        };
-                        // Proceed with Firebase registration and Firestore data addition
-                        try {
-                          // Add user data to Firestore
-                          await service?.addUserData(userData);
-
-                          // For Firebase Auth registration
-                            final newUser = _auth.createUserWithEmailAndPassword(email: _emailTextController.text, password: _passwordTextController.text);
-                            if(newUser!=null){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
+                            if (emailVerificationSuccessful ?? false) { // Handle possible null value
+                              // Handle email verification success
+                              // You can navigate to the next screen or perform further actions
+                            } else {
+                              // Handle email verification failure
                             }
-                          // Go to the identity verification page after adding the user
-                        } catch (e) {
-                          print('Error during Firebase signup: $e');
-                        }
-                      } else {
-                        // Handle verification failure
-                        print('Identity verification failed');
-                      }
-                    } else {
-                      // If phone number is the chosen method, validate phone numbers.
+                          } else if (isPhoneNumberActive && _phoneNumberMatch) {
+                            // Navigate to Phone Verification page
+                            final phoneVerificationSuccessful = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PhoneVerificationPage(
+                                  phoneNumber: _phoneNumberTextController.text,
+                                  resendCode: 'SMS',
+                                ),
+                              ),
+                            );
 
-                      bool verificationSuccessful = false;
-                      // Send a verification code to the given phone number
-                      await _auth.verifyPhoneNumber(
-                        phoneNumber: _phoneNumberTextController.text,
-                        verificationCompleted: (PhoneAuthCredential credential) async {
-                          // Auto-resolve the SMS verification code
-                        },
-                        verificationFailed: (FirebaseAuthException e) {
-                          // Handle verification failure
-                          print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
-                        },
-                        codeSent: (String verificationId, int? resendToken) async {
-                          // Code has been sent to the user, navigate to the code verification page
-                          verificationSuccessful = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => IdentityVerificationPage(verificationMethod:_phoneNumberTextController.text, resendCode: 'SMS')),
-                          );
-
-                          // Check the result of the code verification
-                          if (verificationSuccessful) {
-                            Map<String, dynamic> userData = {
-                              'first_name': _fnameTextController.text,
-                              'last_name': _lnameTextController.text,
-                              'birthday': _birthdayTextController.text,
-                              'username': _usernameTextController.text,
-                              'password': _passwordTextController.text,
-                              'email': _emailTextController.text,
-                              'phone_number': _phoneNumberTextController.text,
-                            };
-
-                            await service?.addUserData(userData);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
-
+                            if (phoneVerificationSuccessful ?? false) { // Handle possible null value
+                              // Handle phone verification success
+                              // You can navigate to the next screen or perform further actions
+                            } else {
+                              // Handle phone verification failure
+                            }
                           } else {
-                            // Handle verification failure
+                            // Neither email nor phone number match
+                            // Handle the mismatch error
                           }
-                        },
-                        codeAutoRetrievalTimeout: (String verificationId) {
-                          // Auto-retrieval time has lapsed
-                        },
-                      );
-                    }
-
-                  } : null,
-
-
-                  style: kButtonStyle,
+                        }
+                      : null, // Disable button if conditions are not met
+                  style: kButtonStyle, // Your custom button style
                 ),
                 SizedBox(height: 32),
-
-
               ],
             ),
           ),
