@@ -185,7 +185,45 @@ class _SignupScreenState extends State<SignupScreen> {
     _phoneNumberFocus.addListener(() { setState(() {}); });
     _confirmPhoneNumberFocus.addListener(() { setState(() {}); });
 
+  void showEmailVerificationFailedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Email Verification Failed'),
+          content: Text('We were unable to verify your email. Please try the verification process again.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+  void showPhoneVerificationFailedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Phone Verification Failed'),
+          content: Text('We were unable to verify your phone number. Please try the verification process again.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -276,9 +314,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       onPressed: ()=> clearText(_passwordTextController),
                     ),
                   ),
-                  // onChanged: (value) {
-                  //   _validatePasswords();
-                  // },
                   controller: _passwordTextController,
                 ),
                 SizedBox(
@@ -430,13 +465,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                             );
-
-                            if (emailVerificationSuccessful ?? false) { // Handle possible null value
-                              // Handle email verification success
-                              // You can navigate to the next screen or perform further actions
-                            } else {
-                              // Handle email verification failure
-                            }
                           } else if (isPhoneNumberActive && _phoneNumberMatch) {
                             // Navigate to Phone Verification page
                             final phoneVerificationSuccessful = await Navigator.push(
@@ -448,16 +476,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                             );
-
-                            if (phoneVerificationSuccessful ?? false) { // Handle possible null value
-                              // Handle phone verification success
-                              // You can navigate to the next screen or perform further actions
-                            } else {
-                              // Handle phone verification failure
-                            }
-                          } else {
-                            // Neither email nor phone number match
-                            // Handle the mismatch error
                           }
                         }
                       : null, // Disable button if conditions are not met
