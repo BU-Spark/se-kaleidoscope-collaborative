@@ -51,15 +51,16 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  void getCurrentUser() async{
-    try{
+  void getCurrentUser() async {
+    try {
       final user = _auth.currentUser;
-      if(user!=null){
-        loggedInUser = user;
-        print(loggedInUser.email);
+      if (user != null) {
+        setState(() {
+          loggedInUser = user; // This will only be set if there is a current user
+        });
+        print(loggedInUser?.email); // Use ?. since loggedInUser is nullable
       }
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
   }
@@ -366,4 +367,3 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 }
-

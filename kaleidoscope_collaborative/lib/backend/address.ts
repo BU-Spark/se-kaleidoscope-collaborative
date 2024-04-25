@@ -1,6 +1,8 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
+import path from 'path';
+import fs from 'fs/promises';
 
 dotenv.config();
 
@@ -25,7 +27,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Make sure to set your Google Maps API key in the .env file 
-const G_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+// const G_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+const G_KEY='AIzaSyCqi_7MNOwxuYcfPvrk2F7IUN5juYYvTPk'
 
 app.use(express.json());
 
@@ -53,7 +58,8 @@ app.get('/api/distance/:origin/:destination', async (req, res) => {
 
 app.get('/api/nearby/:location/:radius/:type', async (req, res) => {
   const location = req.params.location;
-  const radius = req.params.radius;
+  // const radius = req.params.radius;
+  const radius = parseInt(req.params.radius, 50);
   const type = req.params.type;
   try {
     const places = await getNearbyPlaces(location, radius, type);
@@ -97,12 +103,25 @@ app.listen(port, () => {
  * 
  * @returns { lat: number, lng: number}  
  */ 
+// async function getCoordinates(address: string) {
+//   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${G_KEY}`;
+//   const response = await axios.get(url);
+//   const data = response.data;
+//   const coordinates = data.results[0].geometry.location;
+//   return coordinates;
+// }
+
 async function getCoordinates(address: string) {
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${G_KEY}`;
   const response = await axios.get(url);
   const data = response.data;
-  const coordinates = data.results[0].geometry.location;
-  return coordinates;
+  console.log(data);  // Log the full response data to debug
+  if (data.results && data.results.length > 0) {
+    const coordinates = data.results[0].geometry.location;
+    return coordinates;
+  } else {
+    throw new Error('No results found for the specified address.');
+  }
 }
 
 
@@ -177,6 +196,21 @@ async function getPlaceDetails(placeId: string) {
   const placeDetails = data.result;
   return placeDetails;
 }
+
+const placeDetailsSamplePath = path.join(__dirname, 'placeDetails_sample.json');
+
+app.get('/api/place_details_sample', async (req, res) => {
+  try {
+    // Read the contents of the JSON file.
+    const placeDetailsSample = await fs.readFile(placeDetailsSamplePath, 'utf-8');
+    
+    // Parse the JSON data and send it as a response.
+    res.json(JSON.parse(placeDetailsSample));
+  } catch (error) {
+    // If there's an error, such as the file not existing, send a 500 server error.
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 

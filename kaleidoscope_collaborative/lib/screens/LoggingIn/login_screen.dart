@@ -4,6 +4,11 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
+import 'package:kaleidoscope_collaborative/screens/firebase_options.dart';
+
 
 // StatefulWidget for the Login Screen.
 class LoginScreen extends StatefulWidget{
@@ -121,12 +126,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text('Log In'),
                 onPressed: () async {
                   try{
-                    // For registration
-                    // final newUser = _auth.createUserWithEmailAndPassword(email: email, password: password);
-                    // if(newUser!=null){
-                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => RegCompletePage()));
-                    // }
-
                     final existingUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
                     if(existingUser!=null){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
@@ -169,7 +168,32 @@ class _LoginScreenState extends State<LoginScreen> {
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Facebook and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
                 child: Text('Log In with Facebook'),
-                onPressed: () {
+                onPressed: () async {
+                  try {
+                    final UserCredential? userCredential = await signInWithFacebook();
+                    if (userCredential != null && context.mounted) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
+                    } else {
+                    }
+                  } catch (e) {
+                    // If an error occurs, log the error and show a dialog or a toast to the user.
+                    print('Facebook login error: $e');
+                    if (context.mounted) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Login Error'),
+                          content: Text('Failed to sign in with Facebook. Please try again.'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('OK'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }
                 },
                 style: kButtonStyle,
               ),
@@ -179,6 +203,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 child: Text('Log In with Google'),
                 onPressed: () {
+                  signInWithGoogle(context).catchError((error) {
+                    print('Google sign-in failed: $error');
+                  });
                 },
                 style: kButtonStyle,
               ),
@@ -187,8 +214,10 @@ class _LoginScreenState extends State<LoginScreen> {
               TextButton(
                 child: Text('Don’t have an account? Sign Up'),
                 onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  SignupLandingPage()));
                 },
               ),
+              SizedBox(height: 32),
             ],
           ),
         ),
@@ -197,5 +226,49 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
+Future<UserCredential?> signInWithFacebook() async {
+  final LoginResult loginResult = await FacebookAuth.instance.login();
+  if (loginResult.status == LoginStatus.success) {
+    final AccessToken accessToken = loginResult.accessToken!;
+    // Create a credential to sign in with Firebase
+    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(accessToken.token);
+    // Use the credential to sign in with Firebase and return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+  } else if (loginResult.status == LoginStatus.cancelled) {
+    print('Facebook login was cancelled by the user.');
+    return null;
+  } else {
+    final errorMessage = loginResult.message ?? 'Unknown error occurred.';
+    print('Facebook login failed: $errorMessage');
+    throw FirebaseAuthException(
+      code: 'ERROR_FACEBOOK_LOGIN_FAILED',
+      message: errorMessage,
+    );
+  }
+}
 
+Future<void> signInWithGoogle(BuildContext context) async {
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    clientId: DefaultFirebaseOptions.currentPlatform.iosClientId ?? '181675201017-kva2g5btcr9n70itatmtffa27h4sss3u.apps.googleusercontent.com', 
+  );
+
+  try {
+    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      if (userCredential.user != null) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginCompletePage()));
+      }
+    }
+  } catch (error) {
+    print('Google sign-in failed: $error');
+    // Handle the error e.g., show a dialog or a snackbar
+  }
+}
 
