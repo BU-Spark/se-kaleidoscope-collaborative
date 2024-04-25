@@ -10,7 +10,7 @@ import 'package:flutter_verification_code/flutter_verification_code.dart';
 class PhoneVerificationPage extends StatefulWidget {
   final String phoneNumber;
   final String resendCode;
-  const PhoneVerificationPage({super.key, required this.phoneNumber, required this.resendCode});
+  const PhoneVerificationPage({super.key, required this.phoneNumber, required this.resendCode, required String verificationMethod});
 
   @override
   _IdentityVerificationPageState createState() => _IdentityVerificationPageState();
@@ -86,7 +86,7 @@ class _IdentityVerificationPageState extends State<PhoneVerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Identity Verification', style: TextStyle(color: Colors.black)),
+        title: Text('Phone Verification', style: TextStyle(color: Colors.black)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),

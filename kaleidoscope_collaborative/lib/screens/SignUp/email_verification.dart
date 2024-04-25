@@ -5,6 +5,7 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:flutter_verification_code/flutter_verification_code.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signup1_1.dart';
 
@@ -16,7 +17,7 @@ import 'package:kaleidoscope_collaborative/screens/SignUp/signup1_1.dart';
 
 class EmailVerificationPage extends StatefulWidget {
   final String email;
-  EmailVerificationPage({Key? key, required this.email}) : super(key: key);
+  EmailVerificationPage({Key? key, required this.email, required String verificationMethod, required String resendCode}) : super(key: key);
 
   @override
   _EmailVerificationPageState createState() => _EmailVerificationPageState();
@@ -39,14 +40,16 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     // Call this before checking email verification status
     await _auth.currentUser?.reload();
     User? user = _auth.currentUser;
+    
     if (user != null && user.emailVerified) {
       _timer?.cancel();
       // Navigate to your desired route upon verification
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/verificationComplete');
     }
   }
 
   Future<void> _resendEmail() async {
+    print("thi;");
     User? user = _auth.currentUser;
     if (user != null && !user.emailVerified) {
       await user.sendEmailVerification();
@@ -86,10 +89,10 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 await FirebaseAuth.instance.signOut();
                 // Navigate to the SignupScreen
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => SignupScreen(), // This should be your signup screen widget
+                  builder: (context) => LoginScreen(), // This should be your signup screen widget
                 ));
               },
-              child: Text('Cancel and sign out'),
+              child: Text('Cancel and sign in'),
             ),
           ],
         ),

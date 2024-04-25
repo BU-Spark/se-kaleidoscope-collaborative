@@ -113,17 +113,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 onPressed: passwordReset,
                 style: kButtonStyle,
               ),
-              const SizedBox(height: 16),
-              // Divider with 'or' text to offer an alternative method.
-              const Row(children: <Widget>[
-                Expanded(child: Divider(color: Colors.black)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('or'),
-                ),
-                Expanded(child: Divider(color: Colors.black)),
-              ]),
-              const SizedBox(height: 16),
             ],
           ),
         ),

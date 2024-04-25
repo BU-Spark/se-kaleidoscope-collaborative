@@ -140,14 +140,13 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       // send an email verification
-
       User? user = userCredential.user;
       if (user != null && !user.emailVerified) {
         await user.sendEmailVerification();
   
 
       // navigate to the EmailVerificationPage
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => EmailVerificationPage(email: _emailTextController.text.trim()),
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => EmailVerificationPage(email: _emailTextController.text.trim(), verificationMethod: _emailTextController.text, resendCode: 'Email',),
         ));
       }
     } on FirebaseAuthException catch (e) {
@@ -453,32 +452,92 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 ElevatedButton(
                   child: Text('Submit'),
-                  onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch)))
-                      ? () async {
-                          if (isEmailActive && _emailMatch) {
-                            // Navigate to Email Verification page
-                            final emailVerificationSuccessful = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EmailVerificationPage(
-                                  email: _emailTextController.text, // Corrected this line
-                                ),
-                              ),
-                            );
-                          } else if (isPhoneNumberActive && _phoneNumberMatch) {
-                            // Navigate to Phone Verification page
-                            final phoneVerificationSuccessful = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PhoneVerificationPage(
-                                  phoneNumber: _phoneNumberTextController.text,
-                                  resendCode: 'SMS',
-                                ),
-                              ),
-                            );
-                          }
+
+                  onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch))) ? ()  async {
+
+                    if (isEmailActive) {
+                      _submitForm();
+                      // If email is the chosen method, validate emails.
+                      bool verificationSuccessful = false;
+
+                      // Navigate to the Identity Verification page and await the result
+                      verificationSuccessful = await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EmailVerificationPage(verificationMethod: _emailTextController.text, resendCode: 'Email', email: _emailTextController.text)),
+                      );
+
+
+                      if (verificationSuccessful) {
+
+                        Map<String, dynamic> userData = {
+                          'first_name': _fnameTextController.text,
+                          'last_name': _lnameTextController.text,
+                          'password': _passwordTextController.text,
+                          'email': _emailTextController.text,
+                          'phone_number': _phoneNumberTextController.text,
+                        };
+                        // Proceed with Firebase registration and Firestore data addition
+                        try {
+                          // Add user data to Firestore
+                          await service?.addUserData(userData);
+
+                          // For Firebase Auth registration
+                            final newUser = _auth.createUserWithEmailAndPassword(email: _emailTextController.text, password: _passwordTextController.text);
+                            if(newUser!=null){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
+                            }
+                          // Go to the identity verification page after adding the user
+                        } catch (e) {
+                          print('Error during Firebase signup: $e');
                         }
-                      : null, // Disable button if conditions are not met
+                      } else {
+                        // Handle verification failure
+                        print('Identity verification failed');
+                      }
+                    } else {
+                      // If phone number is the chosen method, validate phone numbers.
+
+                      bool verificationSuccessful = false;
+                      // Send a verification code to the given phone number
+                      await _auth.verifyPhoneNumber(
+                        phoneNumber: _phoneNumberTextController.text,
+                        verificationCompleted: (PhoneAuthCredential credential) async {
+                          // Auto-resolve the SMS verification code
+                        },
+                        verificationFailed: (FirebaseAuthException e) {
+                          // Handle verification failure
+                          print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+                        },
+                        codeSent: (String verificationId, int? resendToken) async {
+                          // Code has been sent to the user, navigate to the code verification page
+                          verificationSuccessful = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PhoneVerificationPage(verificationMethod:_phoneNumberTextController.text, resendCode: 'SMS', phoneNumber: _phoneNumberTextController.text,)),
+                          );
+
+                          // Check the result of the code verification
+                          if (verificationSuccessful) {
+                            Map<String, dynamic> userData = {
+                              'first_name': _fnameTextController.text,
+                              'last_name': _lnameTextController.text,
+                              'password': _passwordTextController.text,
+                              'email': _emailTextController.text,
+                              'phone_number': _phoneNumberTextController.text,
+                            };
+
+                            await service?.addUserData(userData);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
+
+                          } else {
+                            // Handle verification failure
+                          }
+                        },
+                        codeAutoRetrievalTimeout: (String verificationId) {
+                          // Auto-retrieval time has lapsed
+                        },
+                      );
+                    }
+                  } : null, // Disable button if conditions are not met
                   style: kButtonStyle, // Your custom button style
                 ),
                 SizedBox(height: 32),
