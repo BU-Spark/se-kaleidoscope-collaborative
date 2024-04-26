@@ -184,7 +184,8 @@ void _showResults() async {
     print("THIS IS THE LATITUDE: ");
     print(latitude);
     double? longitude = widget.coordinates!['lng'] as double?;
-
+    print("THIS IS THE LATITUDE: ");
+    print(latitude);
     // Check if latitude and longitude are not null
     if (latitude != null && longitude != null) {
       // Construct the API endpoint for nearby places

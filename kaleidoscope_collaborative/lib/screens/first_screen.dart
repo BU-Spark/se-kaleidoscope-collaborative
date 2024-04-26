@@ -4,7 +4,8 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_pag
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
-
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
+import 'package:kaleidoscope_collaborative/screens/SignUp/signup1_1.dart';
 
 // import search bar 
 
@@ -67,6 +68,7 @@ class _FirstScreenState extends State<FirstScreen> {
               TextButton(
                 child: Text('Skip for now'),
                 onPressed: () {
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
                 },
               ),
 

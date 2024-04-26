@@ -1,4 +1,5 @@
 // This is the Forgot Password Screen for users to reset their password using email or phone number.
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/password_reset_verification.dart';
@@ -28,6 +29,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     _emailTextController.dispose();
     _phoneTextController.dispose();
     super.dispose();
+  }
+
+  Future passwordReset() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailTextController.text.trim());
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text('Password reset link sent! Check your email')
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(content: Text(e.message.toString()),
+        ); 
+      });
+    }
   }
 
   @override
@@ -86,44 +109,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               SizedBox(height: 16),
               // Button to send reset instructions to the entered email.
               ElevatedButton(
-                child: Text('Send Email'),
-                onPressed: () {         //TODO: Integrate the function to send a verification code to the user provided email id
-                  String email = _emailTextController.text;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: email,  verification_type: 'email',)));   //TODO: Pass the verification code sent to user as a parameter to the password_reset_verification.dart page (VerificationCodeScreen).
-                },
-                style: kButtonStyle,
-              ),
-              const SizedBox(height: 16),
-              // Divider with 'or' text to offer an alternative method.
-              const Row(children: <Widget>[
-                Expanded(child: Divider(color: Colors.black)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('or'),
-                ),
-                Expanded(child: Divider(color: Colors.black)),
-              ]),
-              const SizedBox(height: 16),
-              // TextField for entering the phone number.
-              TextField(
-                controller: _phoneTextController,
-                decoration: InputDecoration(
-                  labelText: 'Phone number',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () => clearText(_phoneTextController),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              // Button to send reset instructions to the entered phone number.
-              ElevatedButton(
-                child: Text('Send to Phone'),
-                onPressed: () {        //TODO: Integrate the function to send a verification code to the user provided phone number
-                  String number = _phoneTextController.text;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationCodeScreen(unique_id: number, verification_type: "text",)));    //TODO: Pass the verification code sent to user as a parameter to the password_reset_verification.dart page (VerificationCodeScreen).
-                },
+                child: Text('Reset Password'),
+                onPressed: passwordReset,
                 style: kButtonStyle,
               ),
             ],

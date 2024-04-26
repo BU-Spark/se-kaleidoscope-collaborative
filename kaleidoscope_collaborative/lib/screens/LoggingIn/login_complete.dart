@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+
 
 // StatefulWidget for the Login Complete Page.
 class LoginCompletePage extends StatefulWidget {
@@ -47,6 +51,7 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
       print(e);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

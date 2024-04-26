@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'signup1_1.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 
 // Implementing the 1.0 Sign Up Landing Page
 
@@ -10,7 +13,26 @@ class SignupLandingPage extends StatefulWidget{
   _SignupLandingPageState createState() => _SignupLandingPageState();
 }
 
+
 class _SignupLandingPageState extends State<SignupLandingPage> {
+    void showLoginFailedDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Login Failed'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +94,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Sign Up with Facebook'),
+              child: Text('Log In with Facebook'),
               style: kButtonStyle
             ),
             SizedBox(height: 16),
@@ -80,7 +102,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Sign Up with Google'),
+              child: Text('Log In with Google'),
               style: kButtonStyle
             ),
           ],

@@ -51,7 +51,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        loggedInUser = user;
+        setState(() {
+          loggedInUser = user; // This will only be set if there is a current user
+        });
+
       }
     } catch (e) {
       print(e);
