@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
-import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_2_1.dart';
 
 // Implementing Add a Review 3.1.1 - 3.5.2 : Rating Page - for each accommodation
 
@@ -25,50 +24,50 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Accommodation Rating Page', style: TextStyle(color: Colors.black)),
+        title: const Text('Accommodation Rating Page', style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
                 Image.asset(
-                  '${widget.OrgImgLink}',
+                  widget.OrgImgLink,
                   fit: BoxFit.cover,
                   width: 117.0,
                   height: 99.0,
                 ),
-                SizedBox(width: 16.0), 
+                const SizedBox(width: 16.0), 
                 // Organization Title and Type
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
+                        widget.OrganizationName,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
+                        widget.OrganizationType,
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 48),
+                      const SizedBox(height: 48),
                     ],
                   ),
                 ),
@@ -78,16 +77,16 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
             Text(
               'How would you rate ${widget.parameterName} at this business?',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
             
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -102,11 +101,11 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                       Icon(
 
                         index < parameterRating ? Icons.circle : Icons.circle,
-                        color: index < parameterRating ? Color(0xFF6750A4) : Colors.grey,
+                        color: index < parameterRating ? const Color(0xFF6750A4) : Colors.grey,
                         size: 60, 
                       ),
                       // Star icon on top of the circle
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.star,
@@ -124,7 +123,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                 );
               }),
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -134,28 +133,28 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                     // Implement skip logic
                      Navigator.pop(context, null); // Return null to indicate skipping
                   },
-                  child: Text('Skip'),
                   style: kSmallButtonStyle,
+                  child: const Text('Skip'),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     // Implement next logic
                     Navigator.pop(context, parameterRating); // Return the rating
                   },
-                  child: Text('Next'),
                   style: kSmallButtonStyle,
+                  child: const Text('Next'),
                 ),
 
               ],
 
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             Align(
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
+                    child: const Text(
                       'Back to business page',
                       style: TextStyle(
                         decoration: TextDecoration.underline,

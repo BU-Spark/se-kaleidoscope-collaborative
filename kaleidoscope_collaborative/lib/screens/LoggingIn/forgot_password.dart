@@ -2,7 +2,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/password_reset_verification.dart';
 
 // StatefulWidget for the Forgot Password Screen.
 class ForgotPasswordScreen extends StatefulWidget {
@@ -37,7 +36,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return const AlertDialog(
             content: Text('Password reset link sent! Check your email')
           );
         },
@@ -59,10 +58,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       appBar: AppBar(
         // AppBar with back button and title.
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Forgot Password', style: TextStyle(color: Colors.black)),
+        title: const Text('Forgot Password', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -79,7 +78,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 width: 117.0,
                 height: 99.0,
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               // Title for the forgot password screen.
               const Text(
                 'Forgot password',
@@ -99,19 +98,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 controller: _emailTextController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () => clearText(_emailTextController),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Button to send reset instructions to the entered email.
               ElevatedButton(
-                child: Text('Reset Password'),
                 onPressed: passwordReset,
                 style: kButtonStyle,
+                child: const Text('Reset Password'),
               ),
             ],
           ),

@@ -4,14 +4,17 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:kaleidoscope_collaborative/config/globals.dart'
+    as globals; // Import the globals
+
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/firebase_options.dart';
 
-
 // StatefulWidget for the Login Screen.
-class LoginScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -46,17 +49,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     // Add listeners to focus nodes to update UI on focus change.
-    _emailFocus.addListener(() { setState(() {}); });
-    _passwordFocus.addListener(() { setState(() {}); });
+    _emailFocus.addListener(() {
+      setState(() {});
+    });
+    _passwordFocus.addListener(() {
+      setState(() {});
+    });
 
     return Scaffold(
       appBar: AppBar(
         // AppBar with back button
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Log in', style: TextStyle(color: Colors.black)),
+        title: const Text('Log in', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -73,7 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 117.0, // Set the width to match your design
                 height: 99.0, // Set the height to match your design
               ),
-              SizedBox(height: _emailFocus.hasFocus || _passwordFocus.hasFocus ? 20 : 48),
+              SizedBox(
+                  height: _emailFocus.hasFocus || _passwordFocus.hasFocus
+                      ? 20
+                      : 48),
 
               // TextField for email input.
               // TODO: Email text input validation on the front end
@@ -82,22 +92,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: false,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelText: 'Email',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: ()=> clearText(_emailTextController),
+                    onPressed: () => clearText(_emailTextController),
                   ),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    email = value; // Update email variable with the text field value
+                    email =
+                        value; // Update email variable with the text field value
                   });
                 },
                 controller: _emailTextController,
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // TODO: Password input validation on the front end
               // TextField for password input.
@@ -105,50 +116,57 @@ class _LoginScreenState extends State<LoginScreen> {
                 focusNode: _passwordFocus,
                 obscureText: true,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   labelText: 'Password',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: ()=> clearText(_passwordTextController),
+                    onPressed: () => clearText(_passwordTextController),
                   ),
                 ),
                 onChanged: (value) {
                   setState(() {
-                    password = value; // Update email variable with the text field value
+                    password =
+                        value; // Update email variable with the text field value
                   });
                 },
                 controller: _passwordTextController,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Button for user login.
               ElevatedButton(
-                child: Text('Log In'),
                 onPressed: () async {
-                  try{
-                    final existingUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                    if(existingUser!=null){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
-                    }
-                  }
-                  catch(e){
+                  try {
+                    final existingUser = await _auth.signInWithEmailAndPassword(
+                        email: email, password: password);
+                    globals.userEmail = _emailTextController.text;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginCompletePage()));
+                                    } catch (e) {
                     print(e);
                   }
                 },
                 style: kButtonStyle,
+                child: const Text('Log In'),
               ),
               // Button to navigate to Forgot Password screen.
               TextButton(
-                child: Text('Forgot password?'),
+                child: const Text('Forgot password?'),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordScreen()));
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               const Row(
                 children: <Widget>[
-                  Expanded(child: Divider(
+                  Expanded(
+                      child: Divider(
                     color: Colors.black,
                     thickness: 1,
                   )),
@@ -156,25 +174,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Text('or'),
                   ),
-                  Expanded(child: Divider(
+                  Expanded(
+                      child: Divider(
                     color: Colors.black,
                     thickness: 1,
                   )),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // TODO: Implement login using facebook:
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Facebook and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
-                child: Text('Log In with Facebook'),
                 onPressed: () async {
                   try {
-                    final UserCredential? userCredential = await signInWithFacebook();
+                    final UserCredential? userCredential =
+                        await signInWithFacebook();
                     if (userCredential != null && context.mounted) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
-                    } else {
-                    }
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginCompletePage()));
+                    } else {}
                   } catch (e) {
                     // If an error occurs, log the error and show a dialog or a toast to the user.
                     print('Facebook login error: $e');
@@ -182,11 +203,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: Text('Login Error'),
-                          content: Text('Failed to sign in with Facebook. Please try again.'),
+                          title: const Text('Login Error'),
+                          content: const Text(
+                              'Failed to sign in with Facebook. Please try again.'),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('OK'),
+                              child: const Text('OK'),
                               onPressed: () => Navigator.of(context).pop(),
                             ),
                           ],
@@ -196,28 +218,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 style: kButtonStyle,
+                child: const Text('Log In with Facebook'),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // TODO: Implement login using google:
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Google and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
-                child: Text('Log In with Google'),
                 onPressed: () {
                   signInWithGoogle(context).catchError((error) {
                     print('Google sign-in failed: $error');
                   });
                 },
                 style: kButtonStyle,
+                child: const Text('Log In with Google'),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               TextButton(
-                child: Text('Don’t have an account? Sign Up'),
+                child: const Text('Don’t have an account? Sign Up'),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  SignupLandingPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupLandingPage()));
                 },
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -231,7 +257,8 @@ Future<UserCredential?> signInWithFacebook() async {
   if (loginResult.status == LoginStatus.success) {
     final AccessToken accessToken = loginResult.accessToken!;
     // Create a credential to sign in with Firebase
-    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(accessToken.token);
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(accessToken.token);
     // Use the credential to sign in with Firebase and return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   } else if (loginResult.status == LoginStatus.cancelled) {
@@ -249,21 +276,25 @@ Future<UserCredential?> signInWithFacebook() async {
 
 Future<void> signInWithGoogle(BuildContext context) async {
   final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: DefaultFirebaseOptions.currentPlatform.iosClientId ?? '181675201017-kva2g5btcr9n70itatmtffa27h4sss3u.apps.googleusercontent.com', 
+    clientId: DefaultFirebaseOptions.currentPlatform.iosClientId ??
+        '181675201017-kva2g5btcr9n70itatmtffa27h4sss3u.apps.googleusercontent.com',
   );
 
   try {
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
     if (googleUser != null) {
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
       if (userCredential.user != null) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginCompletePage()));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const LoginCompletePage()));
       }
     }
   } catch (error) {
@@ -271,4 +302,3 @@ Future<void> signInWithGoogle(BuildContext context) async {
     // Handle the error e.g., show a dialog or a snackbar
   }
 }
-

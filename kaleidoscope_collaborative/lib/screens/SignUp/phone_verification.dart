@@ -1,9 +1,6 @@
-import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
-import 'package:flutter_verification_code/flutter_verification_code.dart';
 
 // Implementing Register New User 1.3.0 - 1.3.3 : Identity Verification Page
 
@@ -17,9 +14,9 @@ class PhoneVerificationPage extends StatefulWidget {
 }
 
 class _IdentityVerificationPageState extends State<PhoneVerificationPage> {
-  List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
   bool _isCodeIncorrect = false;
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   late String _verificationId;
 
   @override
@@ -78,7 +75,9 @@ class _IdentityVerificationPageState extends State<PhoneVerificationPage> {
 
   @override
   void dispose() {
-    _controllers.forEach((controller) => controller.dispose());
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -86,31 +85,31 @@ class _IdentityVerificationPageState extends State<PhoneVerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Phone Verification', style: TextStyle(color: Colors.black)),
+        title: const Text('Phone Verification', style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(height: 40),
-            Text(
+            const SizedBox(height: 40),
+            const Text(
               'Enter Verification Code',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
-            SizedBox(height: 70),
+            const SizedBox(height: 70),
             Text(
               'Verification Code sent to ${widget.phoneNumber}',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.0)),
-            SizedBox(height: 16),
+              style: const TextStyle(fontSize: 16.0)),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(6, (index) {
@@ -119,7 +118,7 @@ class _IdentityVerificationPageState extends State<PhoneVerificationPage> {
                   child: TextField(
                     controller: _controllers[index],
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       errorText: _isCodeIncorrect && index == 5 ? 'Incorrect code' : null,
                     ),
                     keyboardType: TextInputType.number,
@@ -137,15 +136,15 @@ class _IdentityVerificationPageState extends State<PhoneVerificationPage> {
                 );
               }),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Did not receive the text?',
               textAlign: TextAlign.center,),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _sendCodeToPhoneNumber,
-              child: Text('Resend SMS'),
-              style: kButtonStyle
+              style: kButtonStyle,
+              child: const Text('Resend SMS')
             ),
           ],
         ),

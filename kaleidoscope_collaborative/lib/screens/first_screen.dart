@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
-import 'package:kaleidoscope_collaborative/screens/SignUp/signup1_1.dart';
 
 // import search bar 
 
@@ -23,7 +19,7 @@ class _FirstScreenState extends State<FirstScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Kaleidoscope Collaborative', style: TextStyle(color: Colors.black)),
+        title: const Text('Kaleidoscope Collaborative', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
       ),
       body: SafeArea(
@@ -35,7 +31,7 @@ class _FirstScreenState extends State<FirstScreen> {
             children: <Widget>[
               const Spacer(),
               Image.asset("images/text_logo.jpg"), // Your logo asset
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               const Text(
                 'Discover Disability Inclusive\nServices Around You!',
                 textAlign: TextAlign.center,
@@ -46,7 +42,7 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupLandingPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupLandingPage()));
                 },
                 style: kButtonStyle,
                 child: const Text(
@@ -54,10 +50,10 @@ class _FirstScreenState extends State<FirstScreen> {
                   style: kButtonTextStyle,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
                 style: kButtonStyle,
                 child: const Text(
@@ -66,13 +62,13 @@ class _FirstScreenState extends State<FirstScreen> {
                 ),
               ),
               TextButton(
-                child: Text('Skip for now'),
+                child: const Text('Skip for now'),
                 onPressed: () {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
                 },
               ),
 
-              Spacer(),
+              const Spacer(),
             ],
           ),
         ),

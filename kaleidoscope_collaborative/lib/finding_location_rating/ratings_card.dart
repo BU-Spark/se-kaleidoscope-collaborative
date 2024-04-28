@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import './search_page_1_0.dart';
 
-/**
- * This page displays the dummy rating card format for the establishment. 
- * Feel free to modify the UI and formatting as needed, as this is referencing figma wireframe: ratings card in finding location/rating 
- */
+/// This page displays the dummy rating card format for the establishment. 
+/// Feel free to modify the UI and formatting as needed, as this is referencing figma wireframe: ratings card in finding location/rating 
 class RatingPage extends StatefulWidget
  
 {
+  const RatingPage({super.key});
+
   @override
   _RatingPageState createState() => _RatingPageState();
 }
@@ -57,13 +57,13 @@ class _RatingPageState extends State<RatingPage> {
               ),
             ),       
             const SizedBox(height: 20), // Add spacing between the existing content and the FeatureBoxes
-            FeatureBoxes(),
+            const FeatureBoxes(),
             // an elevated button that navigates to the search page
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchPage()),
+                  MaterialPageRoute(builder: (context) => const SearchPage()),
                 );
               },
               child: const Text('Search Page'),
@@ -83,7 +83,7 @@ class ExpandableText extends StatefulWidget {
   final String initialText;
   final String expandedText;
 
-  const ExpandableText({required this.initialText, required this.expandedText});
+  const ExpandableText({super.key, required this.initialText, required this.expandedText});
 
   @override
   _ExpandableTextState createState() => _ExpandableTextState();
@@ -99,7 +99,7 @@ class _ExpandableTextState extends State<ExpandableText> {
       children: [
         Text(
           isExpanded ? widget.expandedText : widget.initialText,
-          style: TextStyle(fontSize: 22),
+          style: const TextStyle(fontSize: 22),
         ),
         TextButton(
           onPressed: () {
@@ -150,7 +150,7 @@ class _RatingBarState extends State<RatingBar> {
           const Padding(
             padding: EdgeInsets.only(left: 15),
           ),
-          SizedBox(height: 20), // Add spacing between the existing content and the FeatureBoxes
+          const SizedBox(height: 20), // Add spacing between the existing content and the FeatureBoxes
       ],
       
     );
@@ -161,6 +161,8 @@ class _RatingBarState extends State<RatingBar> {
 // Feature boxes  and the rectangle: 
 
 class FeatureBoxes extends StatelessWidget {
+  const FeatureBoxes({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -179,13 +181,13 @@ class MyRectangle extends StatelessWidget {
   final String title;
   final String imagePath; // Path to the image asset
 
-  const MyRectangle({required this.title, required this.imagePath});
+  const MyRectangle({super.key, required this.title, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8),
@@ -199,11 +201,11 @@ class MyRectangle extends StatelessWidget {
             height: 80, // Adjust the height of the image
             width: 80, // Adjust the width of the image
           ),
-          SizedBox(width: 16), // Add spacing between image and title
+          const SizedBox(width: 16), // Add spacing between image and title
           // Title on the right
           Text(
             title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),

@@ -7,6 +7,8 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_pag
 // Implementing Register New User 1.4 : Identity Verified Page
 
 class IdentityVerifiedPage extends StatefulWidget {
+  const IdentityVerifiedPage({super.key});
+
   @override
   _IdentityVerifiedPageState createState() => _IdentityVerifiedPageState();
 }
@@ -28,10 +30,10 @@ class _IdentityVerifiedPageState extends State<IdentityVerifiedPage> {
       if (user != null) {
         loggedInUser = user;
         print(loggedInUser.email);
-        Timer(Duration(seconds: 1), () {
+        Timer(const Duration(seconds: 1), () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => OnboardingScreen()),
+            MaterialPageRoute(builder: (context) => const OnboardingScreen()),
           );
         });
       }
@@ -44,10 +46,10 @@ class _IdentityVerifiedPageState extends State<IdentityVerifiedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Identity Verified Page', style: TextStyle(color: Colors.black)),
+        title: const Text('Identity Verified Page', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Center(
         child: Column(
@@ -56,16 +58,16 @@ class _IdentityVerifiedPageState extends State<IdentityVerifiedPage> {
             GestureDetector(
               onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => OnboardingScreen()),
+                MaterialPageRoute(builder: (context) => const OnboardingScreen()),
               ),
-              child: Icon(
+              child: const Icon(
                 MaterialCommunityIcons.check_circle_outline,
                 color: Colors.green,
                 size: 80.0,
               ),
             ),
-            SizedBox(height: 24),
-            Text(
+            const SizedBox(height: 24),
+            const Text(
               'Identity Verified',
               style: TextStyle(
                 color: Colors.black,
