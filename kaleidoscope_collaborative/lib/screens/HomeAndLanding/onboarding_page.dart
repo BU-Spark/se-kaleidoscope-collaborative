@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
+
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -84,38 +86,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   TextButton(
                     onPressed: () {
                       _pageController.previousPage(
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
                     },
-                    child: Text('Back'),
                     style: TextButton.styleFrom(
-                      primary: Colors.deepPurple,
+                      foregroundColor: Colors.deepPurple,
                     ),
+                    child: const Text('Back'),
                   ),
 
                 if (_currentPage < _numPages - 1)
                   TextButton(
                     onPressed: () {
                       _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
                     },
-                    child: Text('Next'),
                     style: TextButton.styleFrom(
-                      primary: Colors.deepPurple,
+                      foregroundColor: Colors.deepPurple,
                     ),
+                    child: const Text('Next'),
                   ),
                 if (_currentPage == _numPages - 1)
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardScreen()));
                     },
-                    child: Text('Finish'),
                     style: TextButton.styleFrom(
-                      primary: Colors.deepPurple,
+                      foregroundColor: Colors.deepPurple,
                     ),
+                    child: const Text('Finish'),
                   ),
               ],
             ),
@@ -142,7 +144,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             content,
             textAlign: TextAlign.center,
@@ -151,7 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               color: Colors.grey,
             ),
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           Image.asset(imagePath, height: 300),
         ],
       ),
@@ -161,7 +163,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // Helper function to build the dot indicators for the onboarding page.
   Widget buildDot(int index, BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 200),
       height: 10,
       width: _currentPage == index ? 20 : 10,
       margin: const EdgeInsets.symmetric(horizontal: 5),

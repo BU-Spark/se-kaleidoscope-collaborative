@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
-import 'ratings_card.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 
 
-/**
- * TO DO: 
- * 
- * # 5. search_page_1_3.dart: 
- * - the endpoint of the selected dummy card from search_page_1_2.dart. 
- * TO BE COMPLETED: 
- * -route the logic with database to retrieve the information of the selected location. 
- * - update the UI and formatting 
- */
+/// TO DO: 
+/// 
+/// # 5. search_page_1_3.dart: 
+/// - the endpoint of the selected dummy card from search_page_1_2.dart. 
+/// TO BE COMPLETED: 
+/// -route the logic with database to retrieve the information of the selected location. 
+/// - update the UI and formatting 
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, dynamic> result;
   final Map<String, dynamic> placeDetails;
 
-  SearchPage1_3({required this.result, required this.placeDetails});
+  const SearchPage1_3({super.key, required this.result, required this.placeDetails});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(result['name'] ?? '', style: TextStyle(color: Colors.black)),
+        title: Text(result['name'] ?? '', style: const TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -50,9 +47,9 @@ class SearchPage1_3 extends StatelessWidget {
                 children: [
                   Text(
                     result['name'] ?? '',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   if (placeDetails.isNotEmpty) ...[
                     if (placeDetails['current_opening_hours'] != null &&
                         placeDetails['current_opening_hours']['weekday_text'] != null)
@@ -82,13 +79,13 @@ class SearchPage1_3 extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: placeDetails['name'],  OrganizationId: placeDetails['place_id'] ,OrganizationType: 'temp', UserId: '123', OrgImgLink: 'images/dentist.jpg')),
               );
             },
-              child: Text("Add a Review"),
                style: kSmallButtonStyle,
+              child: const Text("Add a Review"),
               
             ),
             
             // Display the content of RatingPage directly
-            RatingPageContent(),
+            const RatingPageContent(),
           ],
         ),
       ),
@@ -98,21 +95,23 @@ class SearchPage1_3 extends StatelessWidget {
 
 // Extracted widget for RatingPage content
 class RatingPageContent extends StatelessWidget {
+  const RatingPageContent({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Text("Community Reviews", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
         SizedBox(height: 5),
         Text(
           'Joe Smith',
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 5),
+        SizedBox(height: 5),
          RatingBar(),
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(left: 20, right: 45), // Adjust the horizontal padding as needed
           child: 
           ExpandableText(
@@ -132,7 +131,7 @@ class ExpandableText extends StatefulWidget {
   final String initialText;
   final String expandedText;
 
-  const ExpandableText({required this.initialText, required this.expandedText});
+  const ExpandableText({super.key, required this.initialText, required this.expandedText});
 
   @override
   _ExpandableTextState createState() => _ExpandableTextState();
@@ -148,7 +147,7 @@ class _ExpandableTextState extends State<ExpandableText> {
       children: [
         Text(
           isExpanded ? widget.expandedText : widget.initialText,
-          style: TextStyle(fontSize: 12), // Adjusted font size
+          style: const TextStyle(fontSize: 12), // Adjusted font size
         ),
         TextButton(
           onPressed: () {
@@ -203,6 +202,8 @@ class _RatingBarState extends State<RatingBar> {
 
 // Feature boxes
 class FeatureBoxes extends StatelessWidget {
+  const FeatureBoxes({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -221,13 +222,13 @@ class MyRectangle extends StatelessWidget {
   final String title;
   final String imagePath; // Path to the image asset
 
-  const MyRectangle({required this.title, required this.imagePath});
+  const MyRectangle({super.key, required this.title, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.blue),
         borderRadius: BorderRadius.circular(8),
@@ -241,11 +242,11 @@ class MyRectangle extends StatelessWidget {
             height: 80, // Adjust the height of the image
             width: 80, // Adjust the width of the image
           ),
-          SizedBox(width: 16), // Add spacing between image and title
+          const SizedBox(width: 16), // Add spacing between image and title
           // Title on the right
           Text(
             title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),

@@ -18,7 +18,7 @@ class categoryItem {
 class CategorySelection extends StatefulWidget {
   final String category;
 
-  CategorySelection({Key? key, required this.category}) : super(key: key);
+  const CategorySelection({Key? key, required this.category}) : super(key: key);
 
   @override
   _CategorySelectionState createState() => _CategorySelectionState();
@@ -60,9 +60,9 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
 
   // Fetching/Querying data from Firestore to display the list of category items based on the category chosen by the user.
   void getCategoryItems(String category) async {
-    FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
-      QuerySnapshot querySnapshot = await _firestore
+      QuerySnapshot querySnapshot = await firestore
           .collection('Organization')
           .where('org_type', isEqualTo: category) // Filter by the category type
           .get();
@@ -164,7 +164,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
           ],
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFFFFFBFE),
+        backgroundColor: const Color(0xFFFFFBFE),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -177,15 +177,15 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
           },
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Align(
             alignment: Alignment.centerLeft,
             child: TabBar(
               controller: _tabController,
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
-              labelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
-              unselectedLabelStyle: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+              labelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+              unselectedLabelStyle: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
               indicatorSize: TabBarIndicatorSize.label, // This aligns the indicator to the width of the label
               indicator: const UnderlineTabIndicator( // UnderlineTabIndicator is used for a line indicator
                 borderSide: BorderSide(
@@ -250,8 +250,8 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
               },
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Sign Out'),
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Sign Out'),
               onTap: () {
                 _auth.signOut().then((_) {
                   // Close the drawer
@@ -259,7 +259,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
                   // Navigate to the sign-in screen, replacing all routes
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => FirstScreen()),
+                    MaterialPageRoute(builder: (context) => const FirstScreen()),
                   );
                 });
               },
@@ -276,16 +276,16 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
           Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
+                    prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    fillColor: Color(0xFFEEEEEE),
+                    fillColor: const Color(0xFFEEEEEE),
                     filled: true,
                   ),
                 ),
@@ -294,7 +294,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
                 // This section creates a GridView that dynamically displays items based on the 'category_items' list. Each item is represented as a Card within the grid.
 // The GridView uses a builder method to construct each item, allowing for efficient memory usage and smooth scrolling with potentially large datasets.
                 child: GridView.builder(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
@@ -341,7 +341,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
             ],
           ),
           // Your widgets for the Review tab
-          Center(child: Text('Review Content')),
+          const Center(child: Text('Review Content')),
         ],
       ),
       // Displays the bottom navigation bar of the screen
@@ -368,7 +368,7 @@ class _CategorySelectionState extends State<CategorySelection> with SingleTicker
             if(index == 1) { // assuming this is the index for 'Explore'
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardScreen(),),
+                MaterialPageRoute(builder: (context) => const DashboardScreen(),),
               );
             }
           });

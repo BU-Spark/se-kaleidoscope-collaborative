@@ -3,19 +3,17 @@ import 'search_page_1_3.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-/**
- * TO DO: 
- * search_page_1_2.dart: 
- * - boilerplate template for the search result item page with the location card implemented.
- * TO BE COMPLETED: 
- * - the location card is not currently being populated with the information from the database. 
- */
+/// TO DO: 
+/// search_page_1_2.dart: 
+/// - boilerplate template for the search result item page with the location card implemented.
+/// TO BE COMPLETED: 
+/// - the location card is not currently being populated with the information from the database. 
 class SearchPage1_2 extends StatelessWidget {
   final String initialQuery;
   final List<String> selectedFilters;
   final List<dynamic> nearbyPlaces;
 
-  SearchPage1_2({required this.initialQuery, 
+  const SearchPage1_2({super.key, required this.initialQuery, 
   required this.selectedFilters, 
   required this.nearbyPlaces
   });
@@ -24,14 +22,14 @@ class SearchPage1_2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Search Results', style: TextStyle(color: Colors.black)),
+          title: const Text('Search Results', style: TextStyle(color: Colors.black)),
           leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
-              child: Icon(Icons.history),
+              child: const Icon(Icons.history),
               onTap: () {},
             ),
           ],
@@ -115,17 +113,17 @@ Widget _buildDummyGroup(BuildContext context) {
                 children: [
                   Text(
                     result['name'] ?? '',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   // Additional details from the new API call
                   FutureBuilder(
                     future: fetchPlaceDetails(result['place_id']),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Text("Loading additional details...");
+                        return const Text("Loading additional details...");
                       } else if (snapshot.hasError) {
-                        return Text("Error loading additional details");
+                        return const Text("Error loading additional details");
                       } else {
                         // Access additional details from the snapshot.data, check for null values
                         Map<String, dynamic> placeDetails = snapshot.data ?? {};

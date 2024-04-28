@@ -3,6 +3,8 @@ import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_
 import 'package:kaleidoscope_collaborative/models/profile.dart';
 
 class CustomizeProfilePage_1_1 extends StatefulWidget {
+  const CustomizeProfilePage_1_1({super.key});
+
   @override
   _CustomizeProfilePage_1_1State createState() =>
       _CustomizeProfilePage_1_1State();
@@ -92,7 +94,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
     double container = width / 1.9;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: textfieldHeight),
-      child: Container(
+      child: SizedBox(
         width: container,
         child: TextFormField(
           controller: controller,
@@ -125,7 +127,7 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
     double container = width / 1.9;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: textfieldHeight),
-      child: Container(
+      child: SizedBox(
         width: container,
         child: TextFormField(
           controller: _ageController,
@@ -162,10 +164,10 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
     double container = width / 1.9;
     return Padding(
       padding: EdgeInsets.symmetric(vertical: textfieldHeight),
-      child: Container(
+      child: SizedBox(
         width: container,
         child: DropdownButtonFormField<String>(
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Gender',
             border: OutlineInputBorder(),
             floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -231,10 +233,9 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
             }
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFF275EA7),
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
             elevation: 0,
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             minimumSize: const Size(84, 40),
           ),
           child: const Text(

@@ -5,7 +5,6 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart
 import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import 'dart:typed_data';
 import 'dart:convert';
-import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
 
 class CustomizeProfilePage_1_7 extends StatelessWidget {
   final ProfileData profileData;
@@ -92,7 +91,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                                 )
                               : Container(
                                   color: Colors.grey,
-                                  child: Icon(Icons.person, size: 50),
+                                  child: const Icon(Icons.person, size: 50),
                                 ),
                     ),
                   ),
@@ -102,7 +101,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                 const SizedBox(height: 7),
                 profileData.relationship != ""
                     ? _displayText(
-                        '${profileData.relationship}', 11.0, FontWeight.w400)
+                        profileData.relationship, 11.0, FontWeight.w400)
                     : _displayText('None', 11.0, FontWeight.w400),
                 const SizedBox(height: 7),
                 _displayText(
@@ -110,7 +109,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                 const SizedBox(height: 7),
                 profileData.disability_familiarity.isNotEmpty
                     ? _displayText(
-                        '${profileData.disability_familiarity.join(', ')}',
+                        profileData.disability_familiarity.join(', '),
                         11.0,
                         FontWeight.w400)
                     : _displayText('None', 11.0, FontWeight.w400),
@@ -118,7 +117,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                 _displayText("Accommodations:", 12.0, FontWeight.bold),
                 const SizedBox(height: 7),
                 profileData.accommodations.isNotEmpty
-                    ? _displayText('${profileData.accommodations.join(', ')}',
+                    ? _displayText(profileData.accommodations.join(', '),
                         11.0, FontWeight.w400)
                     : _displayText('None', 11.0, FontWeight.w400),
                 const SizedBox(height: 7),
@@ -127,7 +126,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                 const SizedBox(height: 7),
                 profileData.location_preference.isNotEmpty
                     ? _displayText(
-                        '${profileData.location_preference.join(', ')}',
+                        profileData.location_preference.join(', '),
                         11.0,
                         FontWeight.w400)
                     : _displayText('None', 11.0, FontWeight.w400),
@@ -200,7 +199,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
               // Navigate to the DashboardScreen or home screen after successful submission
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardScreen()),
+                MaterialPageRoute(builder: (context) => const DashboardScreen()),
                 (Route<dynamic> route) => false,
               );
             } catch (e) {
@@ -208,10 +207,9 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
             }
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFF275EA7),
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
             elevation: 0,
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             minimumSize: const Size(84, 40),
           ),
           child: const Text(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/category_selection.dart';
 import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
@@ -17,6 +16,8 @@ class Category {
 }
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -125,7 +126,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
             ),
             IconButton(
-              icon: Icon(Icons.person, color: Colors.black),
+              icon: const Icon(Icons.person, color: Colors.black),
               onPressed: () {
                 handleProfile();
               },
@@ -133,7 +134,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           ],
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFFFFFBFE),
+        backgroundColor: const Color(0xFFFFFBFE),
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -147,14 +148,14 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications, color: Colors.black),
+            icon: const Icon(Icons.notifications, color: Colors.black),
             onPressed: () {
               // Implement notification functionality
             },
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Align(
             alignment: Alignment.centerLeft,
             child: TabBar(
@@ -162,9 +163,9 @@ class _DashboardScreenState extends State<DashboardScreen>
               labelColor: Colors.black,
               unselectedLabelColor: Colors.grey,
               labelStyle:
-                  TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
               unselectedLabelStyle:
-                  TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+                  const TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
               indicatorSize: TabBarIndicatorSize.label,
               indicator: const UnderlineTabIndicator(
                 borderSide: BorderSide(
@@ -227,14 +228,14 @@ class _DashboardScreenState extends State<DashboardScreen>
               },
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Sign Out'),
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Sign Out'),
               onTap: () {
                 _auth.signOut().then((_) {
                   Navigator.of(context).pop();
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => FirstScreen()),
+                    MaterialPageRoute(builder: (context) => const FirstScreen()),
                   );
                 });
               },
@@ -248,29 +249,29 @@ class _DashboardScreenState extends State<DashboardScreen>
           Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SearchPage()),
+                      MaterialPageRoute(builder: (context) => const SearchPage()),
                     );
                   },
                   decoration: InputDecoration(
                     hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
+                    prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
                     ),
-                    fillColor: Color(0xFFEEEEEE),
+                    fillColor: const Color(0xFFEEEEEE),
                     filled: true,
                   ),
                 ),
               ),
               Expanded(
                 child: GridView.builder(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16,
@@ -316,7 +317,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               ),
             ],
           ),
-          Center(child: Text('Review Content')),
+          const Center(child: Text('Review Content')),
         ],
       ),
       // Bottom navigation bar to navigate between different sections like 'Favorite', 'Explore', and 'Profile'.
@@ -375,7 +376,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         } else {
           // Navigate to CustomizeProfilePage if profile does not exist
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CustomizeProfilePage()));
+              MaterialPageRoute(builder: (context) => const CustomizeProfilePage()));
         }
       } catch (e) {
         print("Error checking profile existence: $e");
@@ -414,7 +415,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       } else {
         // Navigate to CustomizeProfilePage if profile does not exist
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CustomizeProfilePage()));
+            MaterialPageRoute(builder: (context) => const CustomizeProfilePage()));
       }
     } catch (e) {
       print("Error checking profile existence: $e");

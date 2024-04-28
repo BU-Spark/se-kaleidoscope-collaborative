@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/email_verification.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/phone_verification.dart';
-import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 
 import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 import 'identity_verification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:intl/intl.dart';
-
 
 // Implementing the 1.1 -  1.2.3 Sign Up Page
 
@@ -53,9 +51,7 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _phoneNumberMatch = true;
   bool _emailOrPhoneNumberMatch = false;
 
-
   DateTime? _selectedBirthday;
-
 
   @override
   void initState() {
@@ -139,21 +135,29 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _submitForm() async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: _emailTextController.text.trim(), password: _passwordTextController.text.trim(),
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: _emailTextController.text.trim(),
+        password: _passwordTextController.text.trim(),
       );
 
       // send an email verification
       User? user = userCredential.user;
       if (user != null && !user.emailVerified) {
         await user.sendEmailVerification();
-  
 
-      // navigate to the EmailVerificationPage
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => EmailVerificationPage(email: _emailTextController.text.trim(), verificationMethod: _emailTextController.text, resendCode: 'Email',),
+        // navigate to the EmailVerificationPage
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => EmailVerificationPage(
+            email: _emailTextController.text.trim(),
+            verificationMethod: _emailTextController.text,
+            resendCode: 'Email',
+          ),
         ));
       }
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to sign up: $e.message')),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign up: $e.message')),
       );
     }
   }
@@ -176,64 +180,81 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _fnameFocus.addListener(() {
+      setState(() {});
+    });
+    _lnameFocus.addListener(() {
+      setState(() {});
+    });
+    //_usernameFocus.addListener(() { setState(() {}); });
+    _passwordFocus.addListener(() {
+      setState(() {});
+    });
+    _confirmPasswordFocus.addListener(() {
+      setState(() {});
+    });
+    _emailFocus.addListener(() {
+      setState(() {});
+    });
+    _confirmEmailFocus.addListener(() {
+      setState(() {});
+    });
+    _phoneNumberFocus.addListener(() {
+      setState(() {});
+    });
+    _confirmPhoneNumberFocus.addListener(() {
+      setState(() {});
+    });
 
+    void showEmailVerificationFailedDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Email Verification Failed'),
+            content: const Text(
+                'We were unable to verify your email. Please try the verification process again.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
-    _fnameFocus.addListener(() { setState(() {}); });
-    _lnameFocus.addListener(() { setState(() {}); });
-    _usernameFocus.addListener(() { setState(() {}); });
-    _passwordFocus.addListener(() { setState(() {}); });
-    _confirmPasswordFocus.addListener(() { setState(() {}); });
-    _emailFocus.addListener(() { setState(() {}); });
-    _confirmEmailFocus.addListener(() { setState(() {}); });
-    _phoneNumberFocus.addListener(() { setState(() {}); });
-    _confirmPhoneNumberFocus.addListener(() { setState(() {}); });
+    void showPhoneVerificationFailedDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Phone Verification Failed'),
+            content: const Text(
+                'We were unable to verify your phone number. Please try the verification process again.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
-  void showEmailVerificationFailedDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Email Verification Failed'),
-          content: Text('We were unable to verify your email. Please try the verification process again.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showPhoneVerificationFailedDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Phone Verification Failed'),
-          content: Text('We were unable to verify your phone number. Please try the verification process again.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('1.1 Sign Up', style: TextStyle(color: Colors.black)),
+        title: const Text('1.1 Sign Up', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -253,17 +274,14 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
 
                 SizedBox(
-                    height: _fnameFocus.hasFocus ||
-                            _lnameFocus.hasFocus ||
-                            _usernameFocus.hasFocus
-                        ? 20
-                        : 48),
+                    height:
+                        _fnameFocus.hasFocus || _lnameFocus.hasFocus ? 20 : 48),
 
                 // First Name input
                 TextField(
                   focusNode: _fnameFocus,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'First Name',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -280,7 +298,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _lnameFocus,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Last Name',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -308,8 +326,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   onTap: () => _selectBirthday(context),
                   child: AbsorbPointer(
                     child: TextField(
-                      controller: _birthdayTextController, // Use the controller here
-                      decoration: InputDecoration(
+                      controller:
+                          _birthdayTextController, // Use the controller here
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Birthday',
                         suffixIcon: Icon(Icons.calendar_today),
@@ -326,7 +345,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   focusNode: _passwordFocus,
                   obscureText: true,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: 'Password',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -344,7 +363,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   focusNode: _confirmPasswordFocus,
                   obscureText: true,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: ' Confirm Password',
                     errorText:
                         _passwordsMatch ? null : 'Passwords do not match',
@@ -359,7 +378,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     _validatePasswords();
                   },
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Email input
                 GestureDetector(
@@ -367,7 +386,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     focusNode: _emailFocus,
                     enabled: isEmailActive,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       labelText: 'Email',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
@@ -388,7 +407,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   focusNode: _confirmEmailFocus,
                   enabled: isEmailActive,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: ' Confirm Email',
                     errorText: _emailMatch ? null : 'Email ids do not match',
                     suffixIcon: IconButton(
@@ -402,7 +421,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                   onTap: () => setEmailActive(),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Divider with 'or'
                 const Row(
@@ -423,7 +442,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     )),
                   ],
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 // Phone Number input
                 GestureDetector(
@@ -431,7 +450,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     focusNode: _phoneNumberFocus,
                     enabled: isPhoneNumberActive,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       labelText: 'Phone Number (optional)',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
@@ -452,11 +471,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   focusNode: _confirmPhoneNumberFocus,
                   enabled: isPhoneNumberActive,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-
+                    border: const OutlineInputBorder(),
                     labelText: ' Confirm Phone Number (optional)',
-                    errorText: _phoneNumberMatch ? null : 'Phone numbers do not match',
-
+                    errorText:
+                        _phoneNumberMatch ? null : 'Phone numbers do not match',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () =>
@@ -469,86 +487,60 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                   onTap: () => setPhoneNumberActive(),
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
 
                 ElevatedButton(
-                  child: Text('Submit'),
+                  onPressed: (_emailOrPhoneNumberMatch &&
+                          (_passwordsMatch &&
+                              (_emailMatch || _phoneNumberMatch)))
+                      ? () async {
+                          if (isEmailActive) {
+                            _submitForm();
+                            // If email is the chosen method, validate emails.
+                            bool verificationSuccessful = false;
 
-                  onPressed: (_emailOrPhoneNumberMatch && (_passwordsMatch && (_emailMatch || _phoneNumberMatch))) ? ()  async {
+                            // Navigate to the Identity Verification page and await the result
+                            verificationSuccessful = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EmailVerificationPage(
+                                      verificationMethod:
+                                          _emailTextController.text,
+                                      resendCode: 'Email',
+                                      email: _emailTextController.text)),
+                            );
 
-                    if (isEmailActive) {
-                      _submitForm();
-                      // If email is the chosen method, validate emails.
-                      bool verificationSuccessful = false;
+                            if (verificationSuccessful) {
+                              Map<String, dynamic> userData = {
+                                'first_name': _fnameTextController.text,
+                                'last_name': _lnameTextController.text,
+                                'password': _passwordTextController.text,
+                                'email': _emailTextController.text,
+                                'phone_number': _phoneNumberTextController.text,
+                              };
+                              // Proceed with Firebase registration and Firestore data addition
+                              try {
+                                // Add user data to Firestore
+                                await service?.addUserData(userData);
 
-                      // Navigate to the Identity Verification page and await the result
-                      verificationSuccessful = await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EmailVerificationPage(verificationMethod: _emailTextController.text, resendCode: 'Email', email: _emailTextController.text)),
-                      );
-
-
-                      if (verificationSuccessful) {
-
-                        Map<String, dynamic> userData = {
-                          'first_name': _fnameTextController.text,
-                          'last_name': _lnameTextController.text,
-                          'password': _passwordTextController.text,
-                          'email': _emailTextController.text,
-                          'phone_number': _phoneNumberTextController.text,
-                        };
-                        // Proceed with Firebase registration and Firestore data addition
-                        try {
-                          // Add user data to Firestore
-                          await service?.addUserData(userData);
-
-                          // For Firebase Auth registration
-                            final newUser = _auth.createUserWithEmailAndPassword(email: _emailTextController.text, password: _passwordTextController.text);
-                            if(newUser!=null){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
+                                // For Firebase Auth registration
+                                final newUser =
+                                    _auth.createUserWithEmailAndPassword(
+                                        email: _emailTextController.text,
+                                        password: _passwordTextController.text);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const IdentityVerifiedPage()));
+                                                              // Go to the identity verification page after adding the user
+                              } catch (e) {
+                                print('Error during Firebase signup: $e');
+                              }
+                            } else {
+                              // Handle verification failure
+                              print('Identity verification failed');
                             }
-                          // Go to the identity verification page after adding the user
-                        } catch (e) {
-                          print('Error during Firebase signup: $e');
-                        }
-                      } else {
-                        // Handle verification failure
-                        print('Identity verification failed');
-                      }
-                    } else {
-                      // If phone number is the chosen method, validate phone numbers.
-
-                      bool verificationSuccessful = false;
-                      // Send a verification code to the given phone number
-                      await _auth.verifyPhoneNumber(
-                        phoneNumber: _phoneNumberTextController.text,
-                        verificationCompleted: (PhoneAuthCredential credential) async {
-                          // Auto-resolve the SMS verification code
-                        },
-                        verificationFailed: (FirebaseAuthException e) {
-                          // Handle verification failure
-                          print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
-                        },
-                        codeSent: (String verificationId, int? resendToken) async {
-                          // Code has been sent to the user, navigate to the code verification page
-                          verificationSuccessful = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PhoneVerificationPage(verificationMethod:_phoneNumberTextController.text, resendCode: 'SMS', phoneNumber: _phoneNumberTextController.text,)),
-                          );
-
-                          // Check the result of the code verification
-                          if (verificationSuccessful) {
-                            Map<String, dynamic> userData = {
-                              'first_name': _fnameTextController.text,
-                              'last_name': _lnameTextController.text,
-                              'password': _passwordTextController.text,
-                              'email': _emailTextController.text,
-                              'phone_number': _phoneNumberTextController.text,
-                            };
-
-                            await service?.addUserData(userData);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => IdentityVerifiedPage()));
-
                           } else {
                             // If phone number is the chosen method, validate phone numbers.
 
@@ -572,11 +564,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          IdentityVerificationPage(
-                                              verificationMethod:
-                                                  _phoneNumberTextController
-                                                      .text,
-                                              resendCode: 'SMS')),
+                                          PhoneVerificationPage(
+                                            verificationMethod:
+                                                _phoneNumberTextController.text,
+                                            resendCode: 'SMS',
+                                            phoneNumber:
+                                                _phoneNumberTextController.text,
+                                          )),
                                 );
 
                                 // Check the result of the code verification
@@ -584,7 +578,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                   Map<String, dynamic> userData = {
                                     'first_name': _fnameTextController.text,
                                     'last_name': _lnameTextController.text,
-                                    'username': _usernameTextController.text,
                                     'password': _passwordTextController.text,
                                     'email': _emailTextController.text,
                                     'phone_number':
@@ -596,9 +589,69 @@ class _SignupScreenState extends State<SignupScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              IdentityVerifiedPage()));
+                                              const IdentityVerifiedPage()));
                                 } else {
-                                  // Handle verification failure
+                                  // If phone number is the chosen method, validate phone numbers.
+
+                                  bool verificationSuccessful = false;
+                                  // Send a verification code to the given phone number
+                                  await _auth.verifyPhoneNumber(
+                                    phoneNumber:
+                                        _phoneNumberTextController.text,
+                                    verificationCompleted:
+                                        (PhoneAuthCredential credential) async {
+                                      // Auto-resolve the SMS verification code
+                                    },
+                                    verificationFailed:
+                                        (FirebaseAuthException e) {
+                                      // Handle verification failure
+                                      print(
+                                          'Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+                                    },
+                                    codeSent: (String verificationId,
+                                        int? resendToken) async {
+                                      // Code has been sent to the user, navigate to the code verification page
+                                      verificationSuccessful =
+                                          await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                IdentityVerificationPage(
+                                                    verificationMethod:
+                                                        _phoneNumberTextController
+                                                            .text,
+                                                    resendCode: 'SMS')),
+                                      );
+
+                                      // Check the result of the code verification
+                                      if (verificationSuccessful) {
+                                        Map<String, dynamic> userData = {
+                                          'first_name':
+                                              _fnameTextController.text,
+                                          'last_name':
+                                              _lnameTextController.text,
+                                          'password':
+                                              _passwordTextController.text,
+                                          'email': _emailTextController.text,
+                                          'phone_number':
+                                              _phoneNumberTextController.text,
+                                        };
+
+                                        await service?.addUserData(userData);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const IdentityVerifiedPage()));
+                                      } else {
+                                        // Handle verification failure
+                                      }
+                                    },
+                                    codeAutoRetrievalTimeout:
+                                        (String verificationId) {
+                                      // Auto-retrieval time has lapsed
+                                    },
+                                  );
                                 }
                               },
                               codeAutoRetrievalTimeout:
@@ -607,18 +660,12 @@ class _SignupScreenState extends State<SignupScreen> {
                               },
                             );
                           }
-
-                        },
-                        codeAutoRetrievalTimeout: (String verificationId) {
-                          // Auto-retrieval time has lapsed
-                        },
-                      );
-                    }
-                  } : null, // Disable button if conditions are not met
-                  style: kButtonStyle, // Your custom button style
-
+                        }
+                      : null, // Disable button if conditions are not met
+                  style: kButtonStyle,
+                  child: const Text('Submit'), // Your custom button style
                 ),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
               ],
             ),
           ),

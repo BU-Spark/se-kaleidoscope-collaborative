@@ -1,11 +1,9 @@
 import UIKit
 import Flutter
-
 import FBSDKCoreKit
 import GoogleSignIn
 
 // import GoogleMaps
-
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -13,7 +11,6 @@ import GoogleSignIn
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-
     // Initialize the Facebook SDK
     ApplicationDelegate.shared.application(
       application,

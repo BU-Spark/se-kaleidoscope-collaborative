@@ -23,16 +23,16 @@ class _AddReviewPageState extends State<AddReviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Review Page', style: TextStyle(color: Colors.black)),
+        title: const Text('Review Page', style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0, // Removes the shadow under the app bar
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -40,33 +40,33 @@ class _AddReviewPageState extends State<AddReviewPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  '${widget.OrgImgLink}',
+                  widget.OrgImgLink,
                   fit: BoxFit.cover,
                   width: 117.0, 
                   height: 99.0, 
                 ),
-                SizedBox(width: 16.0), 
+                const SizedBox(width: 16.0), 
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
+                        widget.OrganizationName,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
+                        widget.OrganizationType,
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 48),
+                      const SizedBox(height: 48),
                     ],
                   ),
                 ),
@@ -76,8 +76,8 @@ class _AddReviewPageState extends State<AddReviewPage> {
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 20),
-            Text(
+                const SizedBox(height: 20),
+            const Text(
               'How would you rate this business?',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -85,7 +85,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
             
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -100,11 +100,11 @@ class _AddReviewPageState extends State<AddReviewPage> {
                       Icon(
 
                         index < overallRating ? Icons.circle : Icons.circle,
-                        color: index < overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        color: index < overallRating ? const Color(0xFF6750A4) : Colors.grey,
                         size: 60, 
                       ),
                       // Star icon on top of the circle
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.star,
@@ -122,7 +122,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                 );
               }),
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
 
             ElevatedButton(
               onPressed: () {
@@ -136,16 +136,16 @@ class _AddReviewPageState extends State<AddReviewPage> {
                   ),
                 );
               },
-              child: Text('Next'),
               style: kSmallButtonStyle,
+              child: const Text('Next'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             Align(
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
+                    child: const Text(
                       'Back to business page',
                       style: TextStyle(
                         decoration: TextDecoration.underline,

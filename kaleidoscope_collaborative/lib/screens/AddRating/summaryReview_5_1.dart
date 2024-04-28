@@ -33,9 +33,9 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Review Summary', style: TextStyle(color: Colors.black)),
+        title: const Text('Review Summary', style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
@@ -52,44 +52,44 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
             Row(
               children: <Widget>[
                 Image.asset(
-                  '${widget.OrgImgLink}',
+                  widget.OrgImgLink,
                   fit: BoxFit.cover,
                   width: 117.0,
                   height: 99.0,
                 ),
-                SizedBox(width: 16.0), 
+                const SizedBox(width: 16.0), 
                 // Organization Title and Type
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
+                        widget.OrganizationName,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
+                        widget.OrganizationType,
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 48),
+                      const SizedBox(height: 48),
                     ],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text('Your review has been submitted successfully!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text('Here\'s a summary of your review:', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
-            Text('Overall Rating', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            const Text('Your review has been submitted successfully!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text('Here\'s a summary of your review:', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 20),
+            const Text('Overall Rating', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             // Display stars for overall rating
             Row(
               children: List.generate(5, (index) {
@@ -101,11 +101,11 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                       Icon(
 
                         index < widget.overallRating ? Icons.circle : Icons.circle,
-                        color: index < widget.overallRating ? Color(0xFF6750A4) : Colors.grey,
+                        color: index < widget.overallRating ? const Color(0xFF6750A4) : Colors.grey,
                         size: 30, 
                       ),
                       // Star icon on top of the circle
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.star,
@@ -118,9 +118,9 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                   onPressed: null,);
               }),
             ),
-            SizedBox(height: 10),
-            Text('Accommodation Rating', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 5),
+            const SizedBox(height: 10),
+            const Text('Accommodation Rating', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 5),
             
             // Display parameter ratings
             Column(
@@ -139,11 +139,11 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                       Icon(
 
                         index < entry.value ? Icons.circle : Icons.circle,
-                        color: index < entry.value ? Color(0xFF6750A4) : Colors.grey,
+                        color: index < entry.value ? const Color(0xFF6750A4) : Colors.grey,
                         size: 30, 
                       ),
                       // Star icon on top of the circle
-                      Align(
+                      const Align(
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.star,
@@ -161,13 +161,13 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
               }).toList(),
             ),
             if (widget.writtenReview != null) ...[
-              SizedBox(height: 20),
-              Text('Written Review', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              const Text('Written Review', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
              TextField(
                 controller: TextEditingController(text: widget.writtenReview),
                 maxLines: 10,
                 enabled: false, // This makes the TextField non-editable
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey, width: 1.0),
                   ),
@@ -177,7 +177,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                 ),
               ),
             ],
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
 
             Row(
@@ -187,26 +187,26 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                   onPressed: () {
                    // todo: route back to business card
                    },
-                  child: Text('Back to Business'),
                   style: kSmallButtonStyle,
+                  child: const Text('Back to Business'),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DashboardScreen(),
+                          builder: (context) => const DashboardScreen(),
                         ),
                       );
               },
-                  child: Text('Homepage'),
                   style: kSmallButtonStyle,
+                  child: const Text('Homepage'),
                 ),
 
               ],
 
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
           ],
         ),

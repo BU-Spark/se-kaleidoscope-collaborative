@@ -4,6 +4,8 @@ import 'create_password.dart'; // Make sure to create this new page in your proj
 
 // StatefulWidget for the Verification Complete Screen.
 class VerificationComplete extends StatefulWidget {
+  const VerificationComplete({super.key});
+
   @override
   _VerificationCompleteState createState() => _VerificationCompleteState();
 }
@@ -14,8 +16,8 @@ class _VerificationCompleteState extends State<VerificationComplete> {
   void initState() {
     super.initState();
     // Automatically navigate to CreatePassword screen after a 3-second delay.
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CreatePassword()));
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const CreatePassword()));
     });
   }
 
@@ -24,7 +26,7 @@ class _VerificationCompleteState extends State<VerificationComplete> {
     return Scaffold(
       appBar: AppBar(
         // AppBar with a title indicating the current screen.
-        title: Text('2.5 Verification Page'),
+        title: const Text('2.5 Verification Page'),
         centerTitle: true,
       ),
       body: const Center(

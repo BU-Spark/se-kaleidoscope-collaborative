@@ -4,19 +4,17 @@ import 'dart:convert';
 import 'search_page_1_1.dart';
 import 'no_result_found.dart';
 
-/**
- * TO DO:
- * 
- * search_page_1_0.dart:
- * It is fully functionally. 
- * 
- * Update the UI wherever necessary. 
- */
+/// TO DO:
+/// 
+/// search_page_1_0.dart:
+/// It is fully functionally. 
+/// 
+/// Update the UI wherever necessary. 
 class SearchPage extends StatefulWidget {
   final String?
       initialSearch; // Optional parameter to take initial search string
 
-  SearchPage({this.initialSearch});
+  const SearchPage({super.key, this.initialSearch});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -25,7 +23,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
-  List<String> _searchHistory = [];
+  final List<String> _searchHistory = [];
 
   @override
   void initState() {
@@ -39,16 +37,16 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: AppBar(
-          title: Text('Search Page', style: TextStyle(color: Colors.black)),
+          title: const Text('Search Page', style: TextStyle(color: Colors.black)),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
-              child: Icon(Icons.history),
+              child: const Icon(Icons.history),
               onTap: () {},
             ),
           ],
@@ -61,14 +59,14 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Padding(
             // padding: EdgeInsets.only(top: kToolbarHeight + 8),
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Container(
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Expanded(
@@ -79,14 +77,14 @@ class _SearchPageState extends State<SearchPage> {
                           true, // Ensures that the text field is focused when navigated to
                       decoration: InputDecoration(
                         hintText: 'Type business, address, or name',
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
                         fillColor: Colors.grey[200],
-                        contentPadding: EdgeInsets.symmetric(vertical: 15),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15),
                       ),
                       onTap: () {
                         FocusScope.of(context).requestFocus(_searchFocus);
@@ -97,7 +95,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.search),
+                    icon: const Icon(Icons.search),
                     onPressed: () {
                       // _performSearch();
                       _dummySearch();
@@ -107,9 +105,9 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildRecentSearches(),
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(top: 16),
             child: Center(
               child: Text('Search results go here'),
@@ -185,7 +183,7 @@ class _SearchPageState extends State<SearchPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => NoResultFoundPage(),
+            builder: (context) => const NoResultFoundPage(),
           ),
         );
       }
@@ -202,8 +200,8 @@ class _SearchPageState extends State<SearchPage> {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
                   'Recent Searches',
                   style: TextStyle(
@@ -212,7 +210,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Container(
                 child: Column(
                   children: List.generate(_searchHistory.length, (index) {
@@ -240,7 +238,7 @@ class _SearchPageState extends State<SearchPage> {
                                   label: Text(_searchHistory[index]),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.clear),
+                                  icon: const Icon(Icons.clear),
                                   onPressed: () {
                                     setState(() {
                                       _searchHistory.removeAt(index);
@@ -251,7 +249,7 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                           ),
                         ),
-                        Divider(height: 1, color: Colors.grey),
+                        const Divider(height: 1, color: Colors.grey),
                       ],
                     );
                   }),

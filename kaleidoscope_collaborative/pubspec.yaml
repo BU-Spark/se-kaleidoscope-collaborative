@@ -48,8 +48,6 @@ dependencies:
   google_sign_in: ^5.4.4
   location: ^4.3.0
   intl: ^0.17.0
-  http: any 
-
 
 dev_dependencies:
   flutter_test:

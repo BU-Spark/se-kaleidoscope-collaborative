@@ -5,7 +5,7 @@ import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_
 class CustomizeProfilePage_1_4 extends StatefulWidget {
   final ProfileData profileData;
 
-  CustomizeProfilePage_1_4({Key? key, required this.profileData})
+  const CustomizeProfilePage_1_4({Key? key, required this.profileData})
       : super(key: key);
 
   @override
@@ -76,7 +76,7 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
                   softWrap: true,
                 ),
                 SizedBox(height: halfSpacerHeight),
-                Container(
+                SizedBox(
                   width: container,
                   child: const Text(
                     'Which accommodations do you frequently interact with?',
@@ -102,14 +102,14 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
   }
 
   List<Widget> _buildAcommadationCheckboxes() {
-    Color checkboxBackgroundColor = Color.fromRGBO(250, 249, 253, 1);
+    Color checkboxBackgroundColor = const Color.fromRGBO(250, 249, 253, 1);
     return acommadation.keys.map((String key) {
       return Container(
         color: checkboxBackgroundColor,
         child: CheckboxListTile(
           title: Text(
             key,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color.fromRGBO(26, 27, 30, 1),
               fontSize: 16,
               letterSpacing: 0.5,
@@ -170,10 +170,9 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
             );
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFF275EA7),
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
             elevation: 0,
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             minimumSize: const Size(84, 40),
           ),
           child: const Text(

@@ -1,10 +1,6 @@
-import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
-import 'package:flutter_verification_code/flutter_verification_code.dart';
-import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 
 // Implementing Register New User 1.3.0 - 1.3.3 : Identity Verification Page
 
@@ -21,10 +17,10 @@ class IdentityVerificationPage extends StatefulWidget{
 }
 
 class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
-  List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(6, (index) => TextEditingController());
   bool _isCodeIncorrect = false;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   late String _verificationId;
 
   @override
@@ -121,7 +117,9 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   @override
   void dispose() {
     // Dispose the controllers when the state is disposed
-    _controllers.forEach((controller) => controller.dispose());
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -226,20 +224,20 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Identity Verification'),
+        title: const Text('Identity Verification'),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               widget.verificationMethod == 'phone-number' ? 'Enter Verification Code' : 'Check your email',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
-            SizedBox(height: 16),
+              style: const TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
             if (widget.verificationMethod == 'phone-number')
               _phoneVerificationUI(),
             if (widget.verificationMethod == 'email')
@@ -251,7 +249,7 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
   }
 
   Widget _phoneVerificationUI() {
-    return Column(
+    return const Column(
       children: [
         // UI Components for phone verification...
       ],
@@ -261,16 +259,16 @@ class _IdentityVerificationPageState extends State<IdentityVerificationPage> {
 Widget _emailVerificationUI() {
   return Scaffold(
       appBar: AppBar(
-        title: Text('Identity Verification Page',style: TextStyle(color:Colors.black)),
+        title: const Text('Identity Verification Page',style: TextStyle(color:Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0, // Removes the shadow under the app bar
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -280,19 +278,19 @@ Widget _emailVerificationUI() {
               width: 117.0, // Set the width to match your design
               height: 99.0, // Set the height to match your design
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
 
-            Text(
+            const Text(
               'Enter Verification Code',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.bold)),
-              SizedBox(height: 70), 
+              const SizedBox(height: 70), 
 
             Text(
               'Verification Code sent to ${widget.verificationMethod}',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.0)),
-              SizedBox(height: 16),
+              style: const TextStyle(fontSize: 16.0)),
+              const SizedBox(height: 16),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -302,7 +300,7 @@ Widget _emailVerificationUI() {
                     child: TextField(
                       controller: _controllers[index],
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         errorText: _isCodeIncorrect && index == 5 ? 'Incorrect code' : null, // Show error on the last box only
                       ),
                       keyboardType: TextInputType.number,
@@ -323,28 +321,28 @@ Widget _emailVerificationUI() {
                 }),
               ),
 
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Did not receive the text?',
               textAlign: TextAlign.center,),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
             // Resend SMS
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Resend ${widget.resendCode}'),
-              style: kButtonStyle
+              style: kButtonStyle,
+              child: Text('Resend ${widget.resendCode}')
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
 
             // Try another verification method
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Try another verification method'),
-              style: kButtonStyle
+              style: kButtonStyle,
+              child: const Text('Try another verification method')
             ),
           ],
         ),

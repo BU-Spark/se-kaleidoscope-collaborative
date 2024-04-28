@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 
 
 // StatefulWidget for the Login Complete Page.
 class LoginCompletePage extends StatefulWidget {
-  LoginCompletePage({Key? key,}) : super(key: key);
+  const LoginCompletePage({Key? key,}) : super(key: key);
 
   @override
   _LoginCompletePageState createState() => _LoginCompletePageState();
@@ -39,10 +37,10 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
         // Print the email of the logged-in user to the console.
         print(loggedInUser.email);
         // After a short delay, navigate to the Dashboard screen.
-        Timer(Duration(seconds: 1), () {
+        Timer(const Duration(seconds: 1), () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => DashboardScreen()),
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
           );
         });
       }
@@ -59,7 +57,7 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
       appBar: AppBar(
         // AppBar with back button and white background.
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
@@ -75,7 +73,7 @@ class _LoginCompletePageState extends State<LoginCompletePage> {
               width: 117.0,
               height: 99.0,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Welcome message displaying the user's email.
             Text(
               'Welcome ${loggedInUser.email}!',

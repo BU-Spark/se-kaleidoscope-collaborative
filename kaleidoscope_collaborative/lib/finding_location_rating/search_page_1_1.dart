@@ -4,29 +4,27 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'no_result_found.dart';
 
-/**
- * TO DO: 
- * 
- * search_page_1_1.dart: 
- * - Accomodations needed and filter page is implemented closely to the figma wireframes. 
- * - the selection of accomodation logic is completed. 
- * - the confirmation of filered accomodations is completed.
- * - the routing to the ratings page is completed. 
- * TO BE COMPLETED: 
- * - directing the filter searches to the database to retrieve the information. 
- */
+/// TO DO: 
+/// 
+/// search_page_1_1.dart: 
+/// - Accomodations needed and filter page is implemented closely to the figma wireframes. 
+/// - the selection of accomodation logic is completed. 
+/// - the confirmation of filered accomodations is completed.
+/// - the routing to the ratings page is completed. 
+/// TO BE COMPLETED: 
+/// - directing the filter searches to the database to retrieve the information. 
 class SearchPage1_1 extends StatefulWidget {
   final String query;
   final Map<String, dynamic>? coordinates;
 
-  SearchPage1_1({required this.query, required this.coordinates});
+  const SearchPage1_1({super.key, required this.query, required this.coordinates});
 
   @override
   _SearchPage1_1State createState() => _SearchPage1_1State();
 }
 
 class _SearchPage1_1State extends State<SearchPage1_1> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<String> selectedFilters = [];
   bool isLoading = false;
 
@@ -40,16 +38,16 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: AppBar(
-          title: Text('Filter Page', style: TextStyle(color: Colors.black)),
+          title: const Text('Filter Page', style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             GestureDetector(
-              child: Icon(Icons.history),
+              child: const Icon(Icons.history),
               onTap: () {},
             ),
           ],
@@ -63,7 +61,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
           children: [
             Padding(
               // padding: EdgeInsets.only(top: kToolbarHeight + 8),
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
 
               child: Container(
                 height: 40,
@@ -71,13 +69,13 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                margin: EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     Expanded(
                       child: TextField(
                         controller: _searchController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
                         ),
@@ -85,7 +83,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.search),
+                      icon: const Icon(Icons.search),
                       onPressed: () {
                         // Handle search as needed
                       },
@@ -94,19 +92,19 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text("Filters", style: TextStyle(fontSize: 18)),
-                  SizedBox(height: 8),
-                  Text(
+                  const Text("Filters", style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 8),
+                  const Text(
                     "Please select the accommodation you need. Pre-selected accommodations are based on your profile.",
                     style: TextStyle(fontSize: 14),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildBoldedWordRowWithBoxes(
                     "Accomodation(s) Needed",
                     selectedFilters.isEmpty
@@ -159,12 +157,12 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Color(0xFF6750A4),
+        color: const Color(0xFF6750A4),
         child: TextButton(
           onPressed: () {
             _showResults();
           },
-          child: Text(
+          child: const Text(
             "Show Results",
             style: TextStyle(color: Colors.white),
           ),
@@ -215,16 +213,17 @@ void _showResults() async {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NoResultFoundPage(),
+                builder: (context) => const NoResultFoundPage(),
               ),
             );
           }
 
           // Navigate to SearchPage1_2 with the initial query, selected filters, and TOP 5 nearby places 
-          if (nearbyPlaces.length > 5) 
+          if (nearbyPlaces.length > 5) {
             nearbyPlaces = nearbyPlaces.sublist(0, 5); // Get the top 5 nearby places 
-          else 
+          } else {
             nearbyPlaces = nearbyPlaces.sublist(0, nearbyPlaces.length); // Get all nearby places
+          }
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -260,15 +259,15 @@ void _showResults() async {
 
   Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             word,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             children: boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
@@ -292,10 +291,10 @@ void _showResults() async {
         });
       },
       child: Container(
-        margin: EdgeInsets.only(right: 8, bottom: 8),
-        padding: EdgeInsets.all(8),
+        margin: const EdgeInsets.only(right: 8, bottom: 8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? Color.fromARGB(255, 222, 202, 251): Colors.grey[300],
+          color: isSelected ? const Color.fromARGB(255, 222, 202, 251): Colors.grey[300],
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -305,7 +304,7 @@ void _showResults() async {
               box,
               style: TextStyle(color: isSelected ? Colors.black : Colors.black),
             ),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             if (isSelected)
               GestureDetector(
                 onTap: () {
@@ -313,7 +312,7 @@ void _showResults() async {
                     selectedFilters.remove(box);
                   });
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.clear,
                   color: Colors.black,
                   size: 16,

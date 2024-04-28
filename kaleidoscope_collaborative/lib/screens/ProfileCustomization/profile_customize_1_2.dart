@@ -5,7 +5,7 @@ import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_
 class CustomizeProfilePage_1_2 extends StatefulWidget {
   final ProfileData profileData;
 
-  CustomizeProfilePage_1_2({Key? key, required this.profileData})
+  const CustomizeProfilePage_1_2({Key? key, required this.profileData})
       : super(key: key);
 
   @override
@@ -75,7 +75,7 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
                   softWrap: true,
                 ),
                 SizedBox(height: halfSpacerHeight),
-                Container(
+                SizedBox(
                   width: container,
                   child: const Text(
                     'What is your relationship with the disability community?',
@@ -101,14 +101,14 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
   }
 
   List<Widget> _buildRelationshipCheckboxes() {
-    Color checkboxBackgroundColor = Color.fromRGBO(250, 249, 253, 1);
+    Color checkboxBackgroundColor = const Color.fromRGBO(250, 249, 253, 1);
     return relationships.keys.map((String key) {
       return Container(
         color: checkboxBackgroundColor,
         child: CheckboxListTile(
           title: Text(
             key,
-            style: TextStyle(
+            style: const TextStyle(
               color: Color.fromRGBO(26, 27, 30, 1),
               fontSize: 16,
               letterSpacing: 0.5,
@@ -152,7 +152,7 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
           onPressed: () {
             String selectedRelationship = relationships.entries
                 .firstWhere((entry) => entry.value,
-                    orElse: () => MapEntry("", false))
+                    orElse: () => const MapEntry("", false))
                 .key;
             // Update the profileData with the selected relationship
             widget.profileData.relationship = selectedRelationship;
@@ -166,10 +166,9 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
             );
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFF275EA7),
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
             elevation: 0,
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             minimumSize: const Size(84, 40),
           ),
           child: const Text(

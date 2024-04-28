@@ -36,7 +36,7 @@ class _CreatePasswordState extends State<CreatePassword> {
       appBar: AppBar(
         // AppBar with back button.
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         // title: Text('Create new password', style: TextStyle(color: Colors.black)),
@@ -56,28 +56,28 @@ class _CreatePasswordState extends State<CreatePassword> {
                 width: 117.0,
                 height: 99.0,
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               // Title for the password reset screen.
               const Text(
                 'Create New Password',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               // Instruction text for creating a new password.
               const Text(
                 'Your new password must be different from previously used passwords.',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               // Password requirements description.
               Text(
                 'Password should be: 7-10 Characters in length; 1 capital letter; 1 number; 1 special character',
                 style: TextStyle(color: Colors.grey[700]),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               // TextField for the new password.
               // TODO: Implement the logic to distinguish the new password from previously used passwords.
               // TODO: Also add input password text validation (password should be 7-10 Characters in length; 1 capital letter; 1 number; 1 special character)
@@ -85,38 +85,38 @@ class _CreatePasswordState extends State<CreatePassword> {
                 controller: _newPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                     onPressed: () => clearText(_newPasswordController),
                   ),
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // TextField for confirming the new password.
               TextField(
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                     onPressed: () => clearText(_confirmPasswordController),
                   ),
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               // Button to submit the new password.
               // TODO: Check if _newPasswordController.text and _confirmPasswordController.text match. If it matches go to PasswordConfirmedScreen (reset_complete.dart) or else display error message.
               ElevatedButton(
-                child: Text('Reset Password'),
                 onPressed: () {
                   // Navigate to the password confirmed screen upon successful reset.
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PasswordConfirmedScreen()));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const PasswordConfirmedScreen()));
                 },
                 style: kButtonStyle,
+                child: const Text('Reset Password'),
               ),
             ],
           ),

@@ -103,7 +103,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
               deselectItem(category, item);
             }
           },
-          backgroundColor: Color.fromARGB(255, 222, 202, 251), // Light violet purple color
+          backgroundColor: const Color.fromARGB(255, 222, 202, 251), // Light violet purple color
         );
       }).toList(),
     );
@@ -112,7 +112,7 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
   // Function to build the list of chips for category items
   Widget buildCategoryChips(String category) {
     List<String>? items = categoryItems[category];
-    if (items == null || items.isEmpty) return SizedBox.shrink();
+    if (items == null || items.isEmpty) return const SizedBox.shrink();
 
     return Wrap(
       spacing: 8.0,
@@ -131,9 +131,9 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Choose Rating Parameters Page', style: TextStyle(color: Colors.black)),
+        title: const Text('Choose Rating Parameters Page', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -144,34 +144,34 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
             Row(
               children: <Widget>[
                 Image.asset(
-                  '${widget.OrgImgLink}',
+                  widget.OrgImgLink,
                   fit: BoxFit.cover,
                   width: 117.0,
                   height: 99.0,
                 ),
-                SizedBox(width: 16.0), 
+                const SizedBox(width: 16.0), 
                 // Organization Title and Type
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
+                        widget.OrganizationName,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
+                        widget.OrganizationType,
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 48),
+                      const SizedBox(height: 48),
                     ],
                   ),
                 ),
@@ -181,26 +181,26 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'What accommodation(s) have you observed here?',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Current selection',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             buildCurrentSelection(),
             for (String category in categoryItems.keys) ...[
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 category,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               buildCategoryChips(category),
             ],
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -213,8 +213,8 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                       OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId, OrgImgLink: widget.OrgImgLink)), 
                     );
                   },
-                  child: Text('Skip'),
                   style: kSmallButtonStyle,
+                  child: const Text('Skip'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -239,19 +239,19 @@ class _ChooseRatingParametersPageState extends State<ChooseRatingParametersPage>
                       OrganizationName: widget.OrganizationName, OrganizationType: widget.OrganizationType, UserId: widget.UserId, OrganizationId: widget.OrganizationId, OrgImgLink: widget.OrgImgLink)), 
                     );    
                  },
-                  child: Text('Next'),
                   style: kSmallButtonStyle,
+                  child: const Text('Next'),
                 ),
 
               ],
 
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Align(
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
+                    child: const Text(
                       'Back to business page',
                       style: TextStyle(
                         decoration: TextDecoration.underline,

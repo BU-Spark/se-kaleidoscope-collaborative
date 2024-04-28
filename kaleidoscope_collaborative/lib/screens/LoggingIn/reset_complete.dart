@@ -1,13 +1,13 @@
 // This screen confirms the successful password reset and redirects to the Onboarding screen after a brief delay.
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 
-import 'login_complete.dart';
 
 // StatefulWidget for the Password Confirmed Screen.
 class PasswordConfirmedScreen extends StatefulWidget {
+  const PasswordConfirmedScreen({super.key});
+
   @override
   _PasswordConfirmedScreenState createState() => _PasswordConfirmedScreenState();
 }
@@ -19,10 +19,10 @@ class _PasswordConfirmedScreenState extends State<PasswordConfirmedScreen> {
   void initState() {
     super.initState();
     // Automatically navigate to OnboardingScreen after a 3-second delay.
-    Timer(Duration(seconds: 1), () {
+    Timer(const Duration(seconds: 1), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => FirstScreen()),
+        MaterialPageRoute(builder: (context) => const FirstScreen()),
       );
     });
   }
@@ -32,7 +32,7 @@ class _PasswordConfirmedScreenState extends State<PasswordConfirmedScreen> {
     return Scaffold(
       appBar: AppBar(
         // AppBar with a title indicating the current screen.
-        title: Text('2.9 Forgot Password'),
+        title: const Text('2.9 Forgot Password'),
         centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

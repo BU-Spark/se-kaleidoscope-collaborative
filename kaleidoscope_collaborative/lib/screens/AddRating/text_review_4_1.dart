@@ -70,11 +70,11 @@ class _TextReviewPageState extends State<TextReviewPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title:
-            Text('Write a Review Page', style: TextStyle(color: Colors.black)),
+            const Text('Write a Review Page', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -87,46 +87,46 @@ class _TextReviewPageState extends State<TextReviewPage> {
               children: <Widget>[
                 // Small Image on the top left corner
                 Image.asset(
-                  '${widget.OrgImgLink}',
+                  widget.OrgImgLink,
                   fit: BoxFit.cover,
                   width: 117.0,
                   height: 99.0,
                 ),
-                SizedBox(width: 16.0),
+                const SizedBox(width: 16.0),
                 // Organization Title and Type
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
+                        widget.OrganizationName,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
+                        widget.OrganizationType,
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w400,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 48),
+                      const SizedBox(height: 48),
                     ],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            Text('Write your review',
+            const SizedBox(height: 20),
+            const Text('Write your review',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             TextField(
               controller: _controller,
               maxLines: 10,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText:
                     'What did you like or dislike about your experience at this business?',
                 // Border when the TextField is not in focus
@@ -144,7 +144,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                 });
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -166,8 +166,8 @@ class _TextReviewPageState extends State<TextReviewPage> {
                       ),
                     );
                   },
-                  child: Text('Skip and Submit'),
                   style: kSmallButtonStyle,
+                  child: const Text('Skip and Submit'),
                 ),
                 ElevatedButton(
                   // onPressed: () {
@@ -231,17 +231,17 @@ class _TextReviewPageState extends State<TextReviewPage> {
                       ),
                     );
                   },
-                  child: Text('Submit'),
                   style: kSmallButtonStyle,
+                  child: const Text('Submit'),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Align(
               alignment: Alignment.center,
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text(
+                child: const Text(
                   'Back to business page',
                   style: TextStyle(
                     decoration: TextDecoration.underline,

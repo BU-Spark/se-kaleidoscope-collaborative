@@ -25,11 +25,11 @@ class TemporaryRatingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Temporary Rating Card',style: TextStyle(color:Colors.black)),
+        title: const Text('Temporary Rating Card',style: TextStyle(color:Colors.black)),
 
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Center(
         child: Column(
@@ -39,17 +39,17 @@ class TemporaryRatingCard extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: this.OrganizationName, 
-                    OrganizationType: this.OrganizationType, UserId: this.UserId, OrganizationId: this.OrganizationId, OrgImgLink: this.OrgImgLink,)),
+                    MaterialPageRoute(builder: (context) => AddReviewPage(OrganizationName: OrganizationName, 
+                    OrganizationType: OrganizationType, UserId: UserId, OrganizationId: OrganizationId, OrgImgLink: OrgImgLink,)),
                   );
                 },
                 style: kButtonStyle,
-                child: Text(
+                child: const Text(
                   'Add Review',
                   style: kButtonTextStyle,
                 ),
               ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),

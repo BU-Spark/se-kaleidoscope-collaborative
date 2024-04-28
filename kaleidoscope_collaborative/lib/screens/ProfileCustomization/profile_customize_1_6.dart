@@ -17,7 +17,7 @@ class ProfilePicture {
 class CustomizeProfilePage_1_6 extends StatefulWidget {
   final ProfileData profileData;
 
-  CustomizeProfilePage_1_6({Key? key, required this.profileData})
+  const CustomizeProfilePage_1_6({Key? key, required this.profileData})
       : super(key: key);
 
   @override
@@ -104,7 +104,7 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                   softWrap: true,
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: container,
                   child: const Text(
                     'Choose a Profile Picture!!!',
@@ -118,14 +118,14 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                   ),
                 ),
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     height: 259,
                     width: 300,
                     child: _buildProfileImagesGrid(context, paths),
                   ),
                 ),
                 SizedBox(height: halfSpacerHeight),
-                Container(
+                SizedBox(
                   width: container,
                   child: const Text(
                     'Or Upload Your Own!',
@@ -156,26 +156,26 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
         width: 300.0,
         height: 222.0,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(103, 80, 164, 0.11),
+          color: const Color.fromRGBO(103, 80, 164, 0.11),
           borderRadius: BorderRadius.circular(28.0),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Icon(
+            const Icon(
               Icons.mobile_friendly,
               size: 30.0,
               color: Color.fromRGBO(103, 80, 164, 1),
             ),
             Text(
               isImageUploaded ? 'Successfully Uploaded' : 'Upload Image',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color.fromRGBO(103, 80, 164, 1),
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Container(
+            const SizedBox(
               width: 234,
               child: Text(
                 'This image will appear to other Ditto users when you review locations!',
@@ -189,9 +189,9 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
             ),
             ElevatedButton(
               onPressed: () async {
-                final ImagePicker _picker = ImagePicker();
+                final ImagePicker picker = ImagePicker();
                 final XFile? image =
-                    await _picker.pickImage(source: ImageSource.gallery);
+                    await picker.pickImage(source: ImageSource.gallery);
                 if (image != null) {
                   setState(() {
                     selectedProfileImagePath = image.path;
@@ -210,11 +210,10 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
                   });
                 }
               },
-              child: Text('Upload Image'),
               style: ElevatedButton.styleFrom(
-                primary: Color.fromRGBO(103, 80, 164, 1),
-                onPrimary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: const Color.fromRGBO(103, 80, 164, 1),
               ),
+              child: const Text('Upload Image'),
             ),
           ],
         ),
@@ -275,10 +274,9 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
             );
           },
           style: ElevatedButton.styleFrom(
-            primary: Color(0xFF275EA7),
-            onPrimary: Colors.white,
+            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
             elevation: 0,
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             minimumSize: const Size(84, 40),
           ),
           child: const Text(
@@ -299,8 +297,8 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
     // This method will build the grid of profile images
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 10,
         crossAxisSpacing: 10,

@@ -3,6 +3,8 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_1.dart';
 
 class CustomizeProfilePage extends StatelessWidget {
+  const CustomizeProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -21,7 +23,7 @@ class CustomizeProfilePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: spacerHeight),
-            Text(
+            const Text(
               'Customize Profile',
               style: TextStyle(
                 fontFamily: 'Roboto',
@@ -33,9 +35,9 @@ class CustomizeProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: halfSpacerHeight),
-            Container(
+            SizedBox(
               width: containerWidth,
-              child: Text(
+              child: const Text(
                 "These questions will make your experience with [app name] better by adding preset filters and other benefits...",
                 style: TextStyle(
                   fontFamily: 'Roboto',
@@ -58,12 +60,19 @@ class CustomizeProfilePage extends StatelessWidget {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DashboardScreen()),
+                              builder: (context) => const DashboardScreen()),
                           (Route<dynamic> route) =>
                               false, // Remove all routes beneath the new route
                         );
                       },
-                      child: Text(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFF74777F), width: 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        minimumSize: const Size(84, 40),
+                      ),
+                      child: const Text(
                         'home',
                         style: TextStyle(
                           color: Color(0xFF275EA7),
@@ -74,23 +83,23 @@ class CustomizeProfilePage extends StatelessWidget {
                           letterSpacing: 0.1,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Color(0xFF74777F), width: 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        minimumSize: Size(84, 40),
-                      ),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CustomizeProfilePage_1_1()),
+                              builder: (context) => const CustomizeProfilePage_1_1()),
                         );
                       },
-                      child: Text(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF275EA7),
+                        side: const BorderSide(color: Color(0xFF275EA7), width: 1),
+                        elevation: 0,
+                        shape: const StadiumBorder(),
+                        minimumSize: const Size(84, 40),
+                      ),
+                      child: const Text(
                         'Ready?',
                         style: TextStyle(
                           fontFamily: 'Roboto',
@@ -99,13 +108,6 @@ class CustomizeProfilePage extends StatelessWidget {
                           height: 20 / 14,
                           letterSpacing: 0.1,
                         ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF275EA7),
-                        side: BorderSide(color: Color(0xFF275EA7), width: 1),
-                        elevation: 0,
-                        shape: StadiumBorder(),
-                        minimumSize: Size(84, 40),
                       ),
                     ),
                   ],
