@@ -36,7 +36,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
       appBar: AppBar(
         // AppBar with back button.
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
@@ -54,7 +54,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 'images/logo.jpg',
                 height: 99.0,
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               // Title for entering the verification code.
               const Text(
                 'Enter Verification Code',
@@ -63,13 +63,13 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               ),
               // Display where the verification code was sent.
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
                   'Password reset verification sent to\n${widget.unique_id}',
                   textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               // PIN code text field.
               PinCodeTextField(
                 appContext: context,
@@ -78,12 +78,17 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 onChanged: (String value) {
                   // Navigate to verification complete screen when code is filled.
                   if (value.length == 4) {
+<<<<<<< HEAD
                     Future.delayed(Duration(milliseconds: 100), () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
                                   VerificationComplete())); // TODO: Compare the verification code sent to user with the user's input into PinCodeTextField. If the codes match navigate to VerificationComplete page. Or else display an error message.
+=======
+                    Future.delayed(const Duration(milliseconds: 100), () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const VerificationComplete()));    // TODO: Compare the verification code sent to user with the user's input into PinCodeTextField. If the codes match navigate to VerificationComplete page. Or else display an error message.
+>>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
                     });
                   }
                 },
@@ -101,30 +106,30 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 keyboardType: TextInputType.number,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               // Option to resend the verification code.
               Text(
                 'Did not receive the ${widget.verification_type}?',
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Button to resend email.
               ElevatedButton(
-                child: Text('Resend Email'),
                 onPressed: () {
                   //TODO: Implement resend logic (same as the logic implemented in forgot password page)
                 },
                 style: kButtonStyle,
+                child: const Text('Resend Email'),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Button to change email address.
               ElevatedButton(
-                child: Text('Try another email address'),
                 onPressed: () {
                   // TODO: Go back to forgot password page
                 },
                 style: kButtonStyle,
+                child: const Text('Try another email address'),
               ),
             ],
           ),

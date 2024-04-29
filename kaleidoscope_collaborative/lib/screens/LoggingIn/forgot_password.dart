@@ -1,7 +1,7 @@
 // This is the Forgot Password Screen for users to reset their password using email or phone number.
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/password_reset_verification.dart';
 
 // StatefulWidget for the Forgot Password Screen.
 class ForgotPasswordScreen extends StatefulWidget {
@@ -30,16 +30,38 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
+  Future passwordReset() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailTextController.text.trim());
+      showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            content: Text('Password reset link sent! Check your email')
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(content: Text(e.message.toString()),
+        ); 
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         // AppBar with back button and title.
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Forgot Password', style: TextStyle(color: Colors.black)),
+        title: const Text('Forgot Password', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -56,7 +78,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 width: 117.0,
                 height: 99.0,
               ),
-              SizedBox(height: 48),
+              const SizedBox(height: 48),
               // Title for the forgot password screen.
               const Text(
                 'Forgot password',
@@ -76,69 +98,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 controller: _emailTextController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () => clearText(_emailTextController),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Button to send reset instructions to the entered email.
               ElevatedButton(
-                child: Text('Send Email'),
-                onPressed: () {
-                  //TODO: Integrate the function to send a verification code to the user provided email id
-                  String email = _emailTextController.text;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => VerificationCodeScreen(
-                                unique_id: email,
-                                verification_type: 'email',
-                              ))); //TODO: Pass the verification code sent to user as a parameter to the password_reset_verification.dart page (VerificationCodeScreen).
-                },
+                onPressed: passwordReset,
                 style: kButtonStyle,
-              ),
-              const SizedBox(height: 16),
-              // Divider with 'or' text to offer an alternative method.
-              const Row(children: <Widget>[
-                Expanded(child: Divider(color: Colors.black)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('or'),
-                ),
-                Expanded(child: Divider(color: Colors.black)),
-              ]),
-              const SizedBox(height: 16),
-              // TextField for entering the phone number.
-              TextField(
-                controller: _phoneTextController,
-                decoration: InputDecoration(
-                  labelText: 'Phone number',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () => clearText(_phoneTextController),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-              // Button to send reset instructions to the entered phone number.
-              ElevatedButton(
-                child: Text('Send to Phone'),
-                onPressed: () {
-                  //TODO: Integrate the function to send a verification code to the user provided phone number
-                  String number = _phoneTextController.text;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => VerificationCodeScreen(
-                                unique_id: number,
-                                verification_type: "text",
-                              ))); //TODO: Pass the verification code sent to user as a parameter to the password_reset_verification.dart page (VerificationCodeScreen).
-                },
-                style: kButtonStyle,
+                child: const Text('Reset Password'),
               ),
             ],
           ),

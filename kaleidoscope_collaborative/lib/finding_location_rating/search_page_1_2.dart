@@ -101,9 +101,9 @@ class SearchPage1_2 extends StatelessWidget {
                 children: [
                   Text(
                     result['name'] ?? '',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   // Additional details from the new API call
                   Builder(builder: (context) {
                     var date = DateTime.now();

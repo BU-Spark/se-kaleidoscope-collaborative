@@ -42,7 +42,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: AppBar(
           title: Text('Filter Page', style: TextStyle(color: Colors.black)),
           leading: IconButton(
@@ -51,7 +51,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
           ),
           actions: [
             GestureDetector(
-              child: Icon(Icons.history),
+              child: const Icon(Icons.history),
               onTap: () {},
             ),
           ],
@@ -73,7 +73,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                margin: EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     Expanded(
@@ -90,7 +90,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.search),
+                      icon: const Icon(Icons.search),
                       onPressed: () {
                         // Handle search as needed
                       },
@@ -99,19 +99,19 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text("Filters", style: TextStyle(fontSize: 18)),
-                  SizedBox(height: 8),
-                  Text(
+                  const Text("Filters", style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 8),
+                  const Text(
                     "Please select the accommodation you need. Pre-selected accommodations are based on your profile.",
                     style: TextStyle(fontSize: 14),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildBoldedWordRowWithBoxes(
                     "Accomodation(s) Needed",
                     selectedFilters.isEmpty
@@ -162,7 +162,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: Color(0xFF6750A4),
+        color: const Color(0xFF6750A4),
         child: TextButton(
           onPressed: () {
             print(selectedFilters);
@@ -178,7 +178,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
               ),
             );
           },
-          child: Text(
+          child: const Text(
             "Show Results",
             style: TextStyle(color: Colors.white),
           ),
@@ -189,15 +189,15 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
 
   Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             word,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             children:
@@ -222,8 +222,8 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         });
       },
       child: Container(
-        margin: EdgeInsets.only(right: 8, bottom: 8),
-        padding: EdgeInsets.all(8),
+        margin: const EdgeInsets.only(right: 8, bottom: 8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected
               ? Color.fromARGB(255, 222, 202, 251)
@@ -237,7 +237,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
               box,
               style: TextStyle(color: isSelected ? Colors.black : Colors.black),
             ),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             if (isSelected)
               GestureDetector(
                 onTap: () {
@@ -245,7 +245,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                     selectedFilters.remove(box);
                   });
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.clear,
                   color: Colors.black,
                   size: 16,

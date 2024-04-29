@@ -15,7 +15,6 @@ class TextReviewPage extends StatefulWidget {
   final String OrganizationId;
   final String OrgImgLink;
   final Map<String, int> parameterRatings;
-
   const TextReviewPage(
       {Key? key,
       required this.overallRating,
@@ -35,7 +34,6 @@ class TextReviewPage extends StatefulWidget {
 class _TextReviewPageState extends State<TextReviewPage> {
   final TextEditingController _controller = TextEditingController();
   bool _hasWrittenReview = false;
-
 
 
   List<Map<String, dynamic>> prepareUserRatingData({
@@ -122,6 +120,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                   },
                   child: Text('Skip'),
                   style: kSmallButtonStyle,
+                  child: const Text('Skip and Submit'),
                 ),
                 ElevatedButton(
                   // onPressed: () {
@@ -144,6 +143,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                   },
                   child: Text('Submit'),
                   style: kSmallButtonStyle,
+                  child: const Text('Submit'),
                 ),
               ],
             ),

@@ -10,21 +10,40 @@ class SignupLandingPage extends StatefulWidget{
   _SignupLandingPageState createState() => _SignupLandingPageState();
 }
 
+
 class _SignupLandingPageState extends State<SignupLandingPage> {
+    void showLoginFailedDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Login Failed'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign up Landing Page',style: TextStyle(color:Colors.black)),
+        title: const Text('Sign up Landing Page',style: TextStyle(color:Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         backgroundColor: Colors.white,
         elevation: 0, 
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,10 +53,10 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
               width: 117.0, 
               height: 99.0, 
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
 
             // Title
-            Text(
+            const Text(
               'Sign Up',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -45,18 +64,18 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
 
             ElevatedButton(
               onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignupScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
               },
-              child: Text('Sign Up in App'),
-              style: kButtonStyle
+              style: kButtonStyle,
+              child: const Text('Sign Up in App')
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-            Row(
+            const Row(
               children: <Widget>[
                 Expanded(child: Divider(thickness: 1)),
                 Padding(
@@ -66,22 +85,22 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
                 Expanded(child: Divider(thickness: 1)),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             // Sign Up with Facebook Button
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Sign Up with Facebook'),
-              style: kButtonStyle
+              style: kButtonStyle,
+              child: const Text('Log In with Facebook')
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
 
             ElevatedButton(
               onPressed: () {
               },
-              child: Text('Sign Up with Google'),
-              style: kButtonStyle
+              style: kButtonStyle,
+              child: const Text('Log In with Google')
             ),
           ],
         ),

@@ -34,7 +34,7 @@ class _FirstScreenState extends State<FirstScreen> {
             children: <Widget>[
               const Spacer(),
               Image.asset("images/text_logo.jpg"), // Your logo asset
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               const Text(
                 'Discover Disability Inclusive\nServices Around You!',
                 textAlign: TextAlign.center,
@@ -56,7 +56,7 @@ class _FirstScreenState extends State<FirstScreen> {
                   style: kButtonTextStyle,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
@@ -69,16 +69,13 @@ class _FirstScreenState extends State<FirstScreen> {
                 ),
               ),
               TextButton(
-                child: Text('Skip for now'),
+                child: const Text('Skip for now'),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashboardScreen()));
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
                 },
               ),
 
-              Spacer(),
+              const Spacer(),
             ],
           ),
         ),

@@ -37,7 +37,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
     return Scaffold(
       appBar: const CustomAppBar(AppBarText: 'Accommodation Rating Page',),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

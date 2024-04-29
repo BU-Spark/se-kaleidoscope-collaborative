@@ -30,7 +30,6 @@ console.log(G_KEY);
 
 app.use(express.json());
 
-// Test locally, e.g. http://localhost:3000/api/coordinates/1600+Amphitheatre+Parkway,+Mountain+View,+CA 
 app.get('/api/query/:query/:lat/:lng', async (req, res) => {
     console.log("received request");
 

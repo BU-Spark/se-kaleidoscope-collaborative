@@ -27,7 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: const Size.fromHeight(kToolbarHeight),
         child: AppBar(
           title: Text('Search Page', style: TextStyle(color: Colors.black)),
           leading: IconButton(
@@ -36,7 +36,7 @@ class _SearchPageState extends State<SearchPage> {
           ),
           actions: [
             GestureDetector(
-              child: Icon(Icons.history),
+              child: const Icon(Icons.history),
               onTap: () {},
             ),
           ],
@@ -49,20 +49,22 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Padding(
             // padding: EdgeInsets.only(top: kToolbarHeight + 8),
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Container(
               height: 40,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _searchController,
                       focusNode: _searchFocus,
+                      autofocus:
+                          true, // Ensures that the text field is focused when navigated to
                       decoration: InputDecoration(
                         hintText: 'Type business, address, or name',
                         prefixIcon: Icon(Icons.search),
@@ -83,7 +85,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.search),
+                    icon: const Icon(Icons.search),
                     onPressed: () {
                       _getSearch();
                     },
@@ -92,9 +94,9 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildRecentSearches(),
-          Padding(
+          const Padding(
             padding: EdgeInsets.only(top: 16),
             child: Center(
               child: Text('Search results go here'),

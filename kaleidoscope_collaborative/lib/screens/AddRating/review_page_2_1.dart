@@ -119,8 +119,7 @@ class _ChooseRatingParametersPageState
               deselectItem(category, item);
             }
           },
-          backgroundColor:
-              Color.fromARGB(255, 222, 202, 251), // Light violet purple color
+          backgroundColor: const Color.fromARGB(255, 222, 202, 251), // Light violet purple color
         );
       }).toList(),
     );
@@ -129,7 +128,7 @@ class _ChooseRatingParametersPageState
   // Function to build the list of chips for category items
   Widget buildCategoryChips(String category) {
     List<String>? items = categoryItems[category];
-    if (items == null || items.isEmpty) return SizedBox.shrink();
+    if (items == null || items.isEmpty) return const SizedBox.shrink();
 
     return Wrap(
       spacing: 8.0,

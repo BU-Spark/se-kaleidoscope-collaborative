@@ -18,7 +18,7 @@ class SearchPage1_3 extends StatelessWidget {
         title:
             Text(result['name'] ?? '', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -41,9 +41,9 @@ class SearchPage1_3 extends StatelessWidget {
                 children: [
                   Text(
                     result['name'] ?? '',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   if (placeDetails.isNotEmpty) ...[
                     if (placeDetails['current_opening_hours'] != null &&
                         placeDetails['current_opening_hours']['weekday_text'] !=
@@ -250,7 +250,7 @@ class ExpandableText extends StatefulWidget {
   final String initialText;
   final String expandedText;
 
-  const ExpandableText({required this.initialText, required this.expandedText});
+  const ExpandableText({super.key, required this.initialText, required this.expandedText});
 
   @override
   _ExpandableTextState createState() => _ExpandableTextState();
@@ -266,7 +266,7 @@ class _ExpandableTextState extends State<ExpandableText> {
       children: [
         Text(
           isExpanded ? widget.expandedText : widget.initialText,
-          style: TextStyle(fontSize: 12), // Adjusted font size
+          style: const TextStyle(fontSize: 12), // Adjusted font size
         ),
         TextButton(
           onPressed: () {
