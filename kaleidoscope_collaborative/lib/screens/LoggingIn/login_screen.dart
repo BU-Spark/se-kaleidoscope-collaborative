@@ -16,6 +16,7 @@ import 'package:kaleidoscope_collaborative/screens/firebase_options.dart';
 // StatefulWidget for the Login Screen.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -23,6 +24,7 @@ class LoginScreen extends StatefulWidget {
 // State class for LoginScreen.
 class _LoginScreenState extends State<LoginScreen> {
   final _auth = FirebaseAuth.instance;
+
   // Variables to store email and password input.
   String email = '';
   String password = '';
@@ -108,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailTextController,
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
               // TODO: Password input validation on the front end
               // TextField for password input.
@@ -131,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 controller: _passwordTextController,
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // Button for user login.
               ElevatedButton(
@@ -183,8 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
 
-              // TODO: Implement login using facebook:
-              //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Facebook and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
                 onPressed: () async {
                   try {
