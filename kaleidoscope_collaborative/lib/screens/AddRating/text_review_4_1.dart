@@ -4,8 +4,6 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
 import 'package:kaleidoscope_collaborative/components/AppBar.dart';
 
-// Implementing Add a Review 4.1 - 4.2 : Text Review
-
 class TextReviewPage extends StatefulWidget {
   final int overallRating;
   final String OrganizationName;

@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
 import 'package:kaleidoscope_collaborative/components/AppBar.dart';
 
+//TODO: ADD PROPER ERROR HANDLING ON LINE 197
+
 class SummaryReviewPage extends StatefulWidget {
   final String OrganizationName;
   final String OrganizationType;

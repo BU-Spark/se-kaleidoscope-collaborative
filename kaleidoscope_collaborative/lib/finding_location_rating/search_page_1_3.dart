@@ -3,6 +3,9 @@ import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//TO DO: Add profile photos to review cards
+//Hi next semester's team if there is one
+
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, dynamic> result;
   final Map<String, dynamic> placeDetails;
