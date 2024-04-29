@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+//import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 
-// import search bar 
+// import search bar
 
-
-class FirstScreen extends StatefulWidget{
+class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
+
   @override
   _FirstScreenState createState() => _FirstScreenState();
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Kaleidoscope Collaborative', style: TextStyle(color: Colors.black)),
+        title: Text('Kaleidoscope Collaborative',
+            style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
       ),
       body: SafeArea(
@@ -42,7 +45,10 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupLandingPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SignupLandingPage()));
                 },
                 style: kButtonStyle,
                 child: const Text(
@@ -53,7 +59,8 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 style: kButtonStyle,
                 child: const Text(

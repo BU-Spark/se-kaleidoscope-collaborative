@@ -9,12 +9,12 @@ class PasswordConfirmedScreen extends StatefulWidget {
   const PasswordConfirmedScreen({super.key});
 
   @override
-  _PasswordConfirmedScreenState createState() => _PasswordConfirmedScreenState();
+  _PasswordConfirmedScreenState createState() =>
+      _PasswordConfirmedScreenState();
 }
 
 // State class for PasswordConfirmedScreen.
 class _PasswordConfirmedScreenState extends State<PasswordConfirmedScreen> {
-
   @override
   void initState() {
     super.initState();

@@ -15,7 +15,8 @@ class CreatePassword extends StatefulWidget {
 // The state class for CreatePassword StatefulWidget.
 class _CreatePasswordState extends State<CreatePassword> {
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   // Function to clear the text in a text field.
   void clearText(TextEditingController controller) {

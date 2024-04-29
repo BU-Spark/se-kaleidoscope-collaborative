@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import "package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart";
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/finished_customization_page.dart';
 import 'package:kaleidoscope_collaborative/models/profile.dart';
+import 'package:kaleidoscope_collaborative/screens/first_screen.dart';
 
 class Category {
   final String imagePath;
@@ -31,6 +31,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   late String first_name;
+  late String last_name;
+  late String full_name;
 
   final List<Category> categories = [
     Category(imagePath: 'images/restaurant.jpg', name: 'Restaurant'),
@@ -71,8 +73,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
-        first_name = userData['first_name'];
+        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>; // Cast to Map<String, dynamic>
+        first_name = userData['first_name']; // Now you can use the '[]' operator
+        last_name = userData['last_name'];
+        full_name = '$first_name $last_name';
       }
     } catch (e) {
       print(e.toString());
@@ -254,8 +258,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SearchPage()),
+                      MaterialPageRoute(builder: (context) => SearchPage(name: full_name)),
                     );
+
                   },
                   decoration: InputDecoration(
                     hintText: 'Search',
@@ -287,7 +292,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                SearchPage(initialSearch: category.name),
+                                SearchPage(name: full_name),
                           ),
                         );
                       },
