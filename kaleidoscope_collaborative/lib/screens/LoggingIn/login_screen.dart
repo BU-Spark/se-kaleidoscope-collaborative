@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailTextController,
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
 
               // TODO: Password input validation on the front end
               // TextField for password input.
@@ -133,31 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 controller: _passwordTextController,
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32),
 
               // Button for user login.
               ElevatedButton(
                 onPressed: () async {
                   try {
-<<<<<<< HEAD
-                    // For registration
-                    // final newUser = _auth.createUserWithEmailAndPassword(email: email, password: password);
-                    // if(newUser!=null){
-                    //   Navigator.push(context, MaterialPageRoute(builder: (context) => RegCompletePage()));
-                    // }
-
-                    final existingUser = await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
-                    if (existingUser != null) {
-                      // Save the counter value to persistent storage under the 'counter' key.
-                      //await prefs.setString('counter', counter);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginCompletePage()));
-                    }
-                  } catch (e) {
-=======
                     final existingUser = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     globals.userEmail = _emailTextController.text;
@@ -166,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(
                             builder: (context) => const LoginCompletePage()));
                                     } catch (e) {
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
                     print(e);
                   }
                 },
@@ -180,11 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-<<<<<<< HEAD
-                          builder: (context) => ForgotPasswordScreen()));
-=======
                           builder: (context) => const ForgotPasswordScreen()));
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
                 },
               ),
               const SizedBox(height: 16),
@@ -209,13 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
 
-              // TODO: Implement login using facebook:
-              //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Facebook and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
-<<<<<<< HEAD
-                child: Text('Log In with Facebook'),
-                onPressed: () {},
-=======
                 onPressed: () async {
                   try {
                     final UserCredential? userCredential =
@@ -247,7 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   }
                 },
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
                 style: kButtonStyle,
                 child: const Text('Log In with Facebook'),
               ),
@@ -255,26 +224,17 @@ class _LoginScreenState extends State<LoginScreen> {
               // TODO: Implement login using google:
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Google and follow the steps given to integrate it with the onPressed method of the button
               ElevatedButton(
-<<<<<<< HEAD
-                child: Text('Log In with Google'),
-                onPressed: () {},
-=======
                 onPressed: () {
                   signInWithGoogle(context).catchError((error) {
                     print('Google sign-in failed: $error');
                   });
                 },
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
                 style: kButtonStyle,
                 child: const Text('Log In with Google'),
               ),
               const SizedBox(height: 32),
 
               TextButton(
-<<<<<<< HEAD
-                child: Text('Don’t have an account? Sign Up'),
-                onPressed: () {},
-=======
                 child: const Text('Don’t have an account? Sign Up'),
                 onPressed: () {
                   Navigator.push(
@@ -282,7 +242,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       MaterialPageRoute(
                           builder: (context) => const SignupLandingPage()));
                 },
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
               ),
               const SizedBox(height: 32),
             ],
@@ -292,8 +251,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-<<<<<<< HEAD
-=======
 
 Future<UserCredential?> signInWithFacebook() async {
   final LoginResult loginResult = await FacebookAuth.instance.login();
@@ -345,4 +302,3 @@ Future<void> signInWithGoogle(BuildContext context) async {
     // Handle the error e.g., show a dialog or a snackbar
   }
 }
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f

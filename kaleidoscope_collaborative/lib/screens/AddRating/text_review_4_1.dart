@@ -118,7 +118,6 @@ class _TextReviewPageState extends State<TextReviewPage> {
                       ),
                     );
                   },
-                  child: Text('Skip'),
                   style: kSmallButtonStyle,
                   child: const Text('Skip and Submit'),
                 ),
@@ -141,7 +140,6 @@ class _TextReviewPageState extends State<TextReviewPage> {
                       ),
                     );
                   },
-                  child: Text('Submit'),
                   style: kSmallButtonStyle,
                   child: const Text('Submit'),
                 ),

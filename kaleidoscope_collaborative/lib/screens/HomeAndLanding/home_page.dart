@@ -292,7 +292,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                SearchPage(initialSearch: category.name),
+                                SearchPage(name: full_name),
                           ),
                         );
                       },

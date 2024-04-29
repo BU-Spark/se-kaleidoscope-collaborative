@@ -78,17 +78,8 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                 onChanged: (String value) {
                   // Navigate to verification complete screen when code is filled.
                   if (value.length == 4) {
-<<<<<<< HEAD
-                    Future.delayed(Duration(milliseconds: 100), () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  VerificationComplete())); // TODO: Compare the verification code sent to user with the user's input into PinCodeTextField. If the codes match navigate to VerificationComplete page. Or else display an error message.
-=======
                     Future.delayed(const Duration(milliseconds: 100), () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const VerificationComplete()));    // TODO: Compare the verification code sent to user with the user's input into PinCodeTextField. If the codes match navigate to VerificationComplete page. Or else display an error message.
->>>>>>> 0f785feb0476ce997762402c8a6db586493cce6f
                     });
                   }
                 },
