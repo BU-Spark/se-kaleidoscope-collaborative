@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
+import 'package:kaleidoscope_collaborative/components/AppBar.dart';
 
-// Implementing Add a Review 5 - 5.2 : Summary of the Ratings
-
-// TODO:
-//Route the back to business page to the business card
 class SummaryReviewPage extends StatefulWidget {
   final String OrganizationName;
   final String OrganizationType;
@@ -33,18 +33,18 @@ class SummaryReviewPage extends StatefulWidget {
 }
 
 class _SummaryReviewPageState extends State<SummaryReviewPage> {
+  CloudFirestoreService? service;
+
+  @override
+  void initState() {
+    service = CloudFirestoreService(FirebaseFirestore.instance);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Review Summary', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: const CustomAppBar(AppBarText: 'Review Summary',),
       body: Scrollbar(
         thumbVisibility: true,
         child: SingleChildScrollView(
@@ -53,50 +53,15 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    FadeInImage.assetNetwork(
-                      // Pull the image FROM DB here, or BY default, our dummy picture
-                      placeholder: 'images/dental1.jpg',
-                      image: widget.OrgImgLink,
-                      width: 117.0,
-                      height: 99.0,
-                      fit: BoxFit.fill,
-                    ),
-                    SizedBox(width: 16.0),
-                    // Organization Title and Type
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '${widget.OrganizationName}',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            '${widget.OrganizationType}',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 48),
-                        ],
-                      ),
-                    ),
-                  ],
+                ReviewOrgDetails(
+                    OrgImgLink: widget.OrgImgLink,
+                    OrganizationName: widget.OrganizationName,
+                    OrganizationType: widget.OrganizationType
                 ),
                 SizedBox(height: 20),
-                Text('Your review has been submitted successfully!',
+                Text('Here\'s a summary of your review!',
                     style:
                         TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                Text('Here\'s a summary of your review:',
-                    style: TextStyle(fontSize: 18)),
                 SizedBox(height: 20),
                 Text('Overall Rating',
                     style:
@@ -211,11 +176,26 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                       onPressed: () {
                         // todo: route back to business card
                       },
-                      child: Text('Back to Business'),
+                      child: Text('Cancel'),
                       style: kSmallButtonStyle,
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        try {
+                          Map<String, dynamic> userData = {
+                            'accommodations': widget.parameterRatings,
+                            'overallRating': widget.overallRating,
+                            'placeID': widget.OrganizationId,
+                            'textReview': widget.writtenReview,
+                            'userID': widget.UserId,
+                            'userName': widget.UserId,
+                          };
+                          await service?.addUserReview(userData);
+                        } catch (e) {
+                        // Handle errors here, possibly show an error message to the user
+                        print(
+                        e); // Use a proper way to log errors or show a dialog to the user
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -223,7 +203,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                           ),
                         );
                       },
-                      child: Text('Homepage'),
+                      child: Text('Submit'),
                       style: kSmallButtonStyle,
                     ),
                   ],

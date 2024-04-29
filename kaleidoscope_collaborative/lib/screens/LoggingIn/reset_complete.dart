@@ -9,12 +9,12 @@ import 'login_complete.dart';
 // StatefulWidget for the Password Confirmed Screen.
 class PasswordConfirmedScreen extends StatefulWidget {
   @override
-  _PasswordConfirmedScreenState createState() => _PasswordConfirmedScreenState();
+  _PasswordConfirmedScreenState createState() =>
+      _PasswordConfirmedScreenState();
 }
 
 // State class for PasswordConfirmedScreen.
 class _PasswordConfirmedScreenState extends State<PasswordConfirmedScreen> {
-
   @override
   void initState() {
     super.initState();

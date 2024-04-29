@@ -6,7 +6,9 @@ import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart
 
 // StatefulWidget for the Login Complete Page.
 class LoginCompletePage extends StatefulWidget {
-  LoginCompletePage({Key? key,}) : super(key: key);
+  LoginCompletePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _LoginCompletePageState createState() => _LoginCompletePageState();
@@ -16,6 +18,7 @@ class LoginCompletePage extends StatefulWidget {
 class _LoginCompletePageState extends State<LoginCompletePage> {
   // Firebase Authentication instance.
   final _auth = FirebaseAuth.instance;
+
   // Variable to store the currently logged-in user.
   late User loggedInUser;
 

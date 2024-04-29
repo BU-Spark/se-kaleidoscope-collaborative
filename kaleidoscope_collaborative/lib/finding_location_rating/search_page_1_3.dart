@@ -2,24 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 
-/**
- * TO DO:
- *
- *
- * # 5. search_page_1_3.dart:
- * - the endpoint of the selected dummy card from search_page_1_2.dart.
- * TO BE COMPLETED:
- * -route the logic with database to retrieve the information of the selected location.
- * - update the UI and formatting
- */
 class SearchPage1_3 extends StatelessWidget {
   final Map<String, dynamic> result;
   final Map<String, dynamic> placeDetails;
+  final String name;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  SearchPage1_3({required this.result, required this.placeDetails});
+  SearchPage1_3({required this.result, required this.placeDetails, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +28,7 @@ class SearchPage1_3 extends StatelessWidget {
             FadeInImage.assetNetwork(
               // Pull the image FROM DB here, or BY default, our dummy picture
               placeholder: 'images/dental1.jpg',
-              image: result['icon'],
+              image: result['photo'],
               height: 150,
               width: double.infinity,
               fit: BoxFit.fill,
@@ -84,9 +74,10 @@ class SearchPage1_3 extends StatelessWidget {
                         builder: (context) => AddReviewPage(
                             OrganizationName: placeDetails['name'],
                             OrganizationId: placeDetails['place_id'],
-                            OrganizationType: 'temp',
-                            UserId: '123',
-                            OrgImgLink: placeDetails['icon'])),
+                            OrganizationType: placeDetails['types'].join(', '),
+                            UserId: name,
+                            UserName: name,
+                            OrgImgLink: placeDetails['photo'])),
                   );
                 },
 
@@ -108,10 +99,12 @@ class SearchPage1_3 extends StatelessWidget {
                 // Future that returns the name
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    // return: show loading widget
+                    return Text("Loading reviews...",
+                        style: TextStyle(fontSize: 15));
                   }
                   if (snapshot.hasError) {
-                    // return: show error widget
+                    return Text("Error loading reviews",
+                        style: TextStyle(fontSize: 15));
                   }
                   List<dynamic> reviews = snapshot.data ?? [];
 
@@ -158,6 +151,7 @@ class SearchPage1_3 extends StatelessWidget {
       print(e.toString());
     }
   }
+
 }
 
 // Extracted widget for RatingPage content
@@ -246,8 +240,6 @@ class RatingPageContent extends StatelessWidget {
                     ));
               },
             ),
-
-            //FeatureBoxes(),
           ],
         ));
   }
@@ -316,13 +308,14 @@ class _RatingBarState extends State<RatingBar> {
             // Adjusted height
             margin: const EdgeInsets.symmetric(horizontal: 2),
             // Adjusted spacing
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color.fromRGBO(47, 10, 158, 0.612)),
+                color: rating >= i ?  const Color(0xFF6750A4) : Colors.grey
+            ),
             child: IconButton(
               padding: EdgeInsets.zero,
-              icon: Icon(Icons.star,
-                  size: 20, color: rating >= i ? Colors.yellow : Colors.white),
+              icon: const Icon(Icons.star,
+                  size: 20, color:Colors.white),
               onPressed: () {},
             ),
           ),
@@ -332,55 +325,3 @@ class _RatingBarState extends State<RatingBar> {
   }
 }
 
-// Feature boxes
-class FeatureBoxes extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Create the rectangles with a for loop
-        // HERE, the logic is to retrieve this info from the database, LOOP through the data and match the following:
-        for (int i = 0; i < 2; i++)
-          MyRectangle(title: 'Feature $i', imagePath: 'images/logo.jpg'),
-        // Add more instances with different titles and image paths as needed
-      ],
-    );
-  }
-}
-
-class MyRectangle extends StatelessWidget {
-  final String title;
-  final String imagePath; // Path to the image asset
-
-  const MyRectangle({required this.title, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        // Set mainAxisSize to min to stretch based on content
-        children: [
-          // Image on the left
-          Image.asset(
-            imagePath,
-            height: 80, // Adjust the height of the image
-            width: 80, // Adjust the width of the image
-          ),
-          SizedBox(width: 16), // Add spacing between image and title
-          // Title on the right
-          Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-}

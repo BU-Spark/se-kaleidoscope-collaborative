@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'search_page_1_1.dart';
-import 'no_result_found.dart';
+import 'package:geolocator/geolocator.dart';
 
-/**
- * TO DO:
- *
- * search_page_1_0.dart:
- * It is fully functionally.
- *
- * Update the UI wherever necessary.
- */
 class SearchPage extends StatefulWidget {
+  final String name;
+
+  SearchPage({required this.name});
+
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -20,7 +14,14 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
-  List<String> _searchHistory = [];
+  final List<String> _searchHistory = [];
+  late Future<Position> coordinates;
+
+  @override
+  void initState() {
+    super.initState();
+    coordinates = _determinePosition();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,17 +78,14 @@ class _SearchPageState extends State<SearchPage> {
                         FocusScope.of(context).requestFocus(_searchFocus);
                       },
                       onSubmitted: (query) {
-                        // perform search is the correct one for searching place with address
-                        // _performSearch();
-                        _dummySearch();
+                        _getSearch();
                       },
                     ),
                   ),
                   IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () {
-                      // _performSearch();
-                      _dummySearch();
+                      _getSearch();
                     },
                   ),
                 ],
@@ -107,21 +105,78 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  //  dummy perform search with set coordinates {lat: 42.3475186, lng: -71.1029006}
+  Widget _buildRecentSearches() {
+    return _searchHistory.isNotEmpty
+        ? Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Recent Searches',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          child: Column(
+            children: List.generate(_searchHistory.length, (index) {
+              return Column(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SearchPage1_1(query: _searchHistory[index],
+                                  coordinateFuture: coordinates, name:widget.name)
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Chip(
+                            label: Text(_searchHistory[index]),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                _searchHistory.removeAt(index);
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(height: 1, color: Colors.grey),
+                ],
+              );
+            }),
+          ),
+        ),
+      ],
+    )
+        : Container();
+  }
 
-  void _dummySearch() async {
+  void _getSearch() async {
     String query = _searchController.text;
-    var dummyCoordinates = {
-      'lat': 42.34989710000001,
-      'lng': -71.10323009999999
-    };
+
     if (query.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          // builder: (context) => SearchPage1_1(query: query, coordinates: coordinates),
           builder: (context) =>
-              SearchPage1_1(query: query, coordinates: dummyCoordinates),
+              SearchPage1_1(query: query, coordinateFuture: coordinates, name:widget.name),
         ),
       );
       setState(() {
@@ -131,132 +186,30 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  // Searching for a place
-  void _performSearch() async {
-    String query = _searchController.text;
-    if (query.isNotEmpty) {
-      /**
-       * FOR THE SAKE OF THE DEMO, SINCE WE HAVE NOT YET ROUTED THE USER INFO WITH THE DB,
-       * LET'S SEE A HARD-CODED STARTER LOCATION, WHICH IS CDS'S LOCATION
-       * {lat: 42.34989710000001, lng: -71.10323009999999}
-       *
-       * */
-      // Make an HTTP request to get coordinates based on the search query
-      var response = await http
-          .get(Uri.parse('http://10.0.2.2:8000/api/coordinates/$query'));
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-      if (response.statusCode == 200) {
-        // Parse the response to get the coordinates
-        var coordinates = json.decode(response.body);
-        print(coordinates);
-
-        // Navigate to SearchPage1_1 with the query and coordinates, USING DUMMY COORDINATE FOR THE DEMO
-
-        var dummyCoordinates = {
-          'lat': 42.34989710000001,
-          'lng': -71.10323009999999
-        };
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            // builder: (context) => SearchPage1_1(query: query, coordinates: coordinates),
-            builder: (context) =>
-                SearchPage1_1(query: query, coordinates: dummyCoordinates),
-          ),
-        );
-      } else {
-        // Handle error
-        print('Failed to get coordinates. Status code: ${response.statusCode}');
-        // Push to the no result found page
-        // Navigate to NoResultFoundPage when no results are found
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NoResultFoundPage(),
-          ),
-        );
-      }
-
-      setState(() {
-        _searchHistory.add(query);
-        _searchController.clear();
-      });
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
     }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
-  Widget _buildRecentSearches() {
-    return _searchHistory.isNotEmpty
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Recent Searches',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                child: Column(
-                  children: List.generate(_searchHistory.length, (index) {
-                    return Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            /**
-                       * TO DO: REPLACE THIS WITH THE ACTUAL COORDINATE FROM THE SEARCH
-                       */
-                            var dummyCoordinates = {
-                              'lat': 42.34989710000001,
-                              'lng': -71.10323009999999
-                            };
-                            _navigateToSearchPage1_1(
-                                query: _searchHistory[index],
-                                coordinates: dummyCoordinates);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Chip(
-                                  label: Text(_searchHistory[index]),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.clear),
-                                  onPressed: () {
-                                    setState(() {
-                                      _searchHistory.removeAt(index);
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(height: 1, color: Colors.grey),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            ],
-          )
-        : Container();
-  }
-
-  void _navigateToSearchPage1_1(
-      {required String query, Map<String, dynamic>? coordinates}) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            SearchPage1_1(query: query, coordinates: coordinates),
-      ),
-    );
-  }
 }

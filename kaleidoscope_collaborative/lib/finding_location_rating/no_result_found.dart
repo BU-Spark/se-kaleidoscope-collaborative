@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 /**
  * This page is displayed when no result is found for the location.
  */

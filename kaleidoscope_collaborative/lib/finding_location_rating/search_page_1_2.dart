@@ -2,24 +2,20 @@ import 'package:flutter/material.dart';
 import 'search_page_1_3.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-/**
- * TO DO:
- * search_page_1_2.dart:
- * - boilerplate template for the search result item page with the location card implemented.
- * TO BE COMPLETED:
- * - the location card is not currently being populated with the information from the database.
- */
 class SearchPage1_2 extends StatelessWidget {
   final String initialQuery;
   final List<String> selectedFilters;
-  final List<dynamic> nearbyPlaces;
+  final String name;
+  final Future<http.Response> queryResponse;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   SearchPage1_2(
       {required this.initialQuery,
       required this.selectedFilters,
-      required this.nearbyPlaces});
+      required this.queryResponse,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -40,39 +36,36 @@ class SearchPage1_2 extends StatelessWidget {
         elevation: 0,
       ),
       body:
-          /**
-       * THE CODE BLOCK BELOW CONTAINS THE INITATIAL QUERY AND THE SELECTED FILTERS
-       * ONCE FINISHED SETTING UP THE DB, YOU CAN USE THESE INPUTS TO QUERY THE DB
-       * AND RETURN THE PROPER RATING OF EACH LOCATIONS
-       *
-       *
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Text("Initial Query: $initialQuery"),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: Text("Selected Filters:"),
-          // ),
-          // // Display selected filters
-          // ...selectedFilters.map((filter) => Padding(
-          //       padding: const EdgeInsets.all(8.0),
-          //       child: Text(filter),
-          //     )),
-          // SizedBox(height: 16),
-       */
           Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Builder(
-          builder: (context) => Container(
-            child: ListView(
-              children: nearbyPlaces
-                  .map((result) => _buildResultCard(context, result))
-                  .toList(),
-            ),
-          ),
-        ),
-      ),
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<dynamic>(
+                  future: _getResults(queryResponse, selectedFilters) ,
+                  // Future that returns the name
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Text("Loading places!");
+                    }
+                    if (snapshot.hasError) {
+                      return const Text("Error loading places!");
+                    }
+                    var response = snapshot.data ?? [];
+
+                    if (response == "Error") {
+                      return const Text("Error loading places!");
+                    } else if (response.isEmpty) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        child: const Text("No places found for this query!",
+                            style: TextStyle(fontSize: 15)),
+                      );
+                    } else {
+                      return ListView(
+                        children: response
+                            .map<Widget>((result) => _buildResultCard(context, result)).toList(),
+                      );
+                    }
+                  })),
     );
   }
 
@@ -81,13 +74,12 @@ class SearchPage1_2 extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         // Navigate to SearchPage1_3 with the selected result and place details
+
         Map<String, dynamic> placeDetails = result;
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => SearchPage1_3(
-              result: result,
-              placeDetails: placeDetails,
-            ),
+                result: result, placeDetails: placeDetails, name: name),
           ),
         );
       },
@@ -96,10 +88,8 @@ class SearchPage1_2 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FadeInImage.assetNetwork(
-              // Pull the image FROM DB here, or BY default, our dummy picture
-              placeholder: 'images/dental1.jpg',
-              image: result['icon'],
+            Image.network(
+              result['photo'],
               height: 150,
               width: double.infinity,
               fit: BoxFit.fill,
@@ -115,29 +105,26 @@ class SearchPage1_2 extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   // Additional details from the new API call
-
-                  Builder(
-                    builder: (context) {
-                      var date = DateTime.now();
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            if (result['current_opening_hours'] != null && result['current_opening_hours']['weekday_text'] != null) ...[
-                              Text("Business Hours: ${result['current_opening_hours']['weekday_text'][date.weekday].split("day:")[1]}")
-                            ],
-                            Text("Address: ${result['formatted_address'] ?? 'N/A'}"),
-                            Text("Phone Number: ${result['formatted_phone_number'] ?? 'N/A'}"),
-                            /**
-                             * THE CODE BLOCK BELOW CONTAINS THE ADDITIONAL DETAILS THAT CAN BE DISPLAYED depends on the DB and
-                             * the type of location
-                             */
-                            // Text("Reservable: ${placeDetails['reservable'] ?? 'N/A'}"),
-                            // Text("Vegetarian Friendly: ${placeDetails['serves_vegetarian_food'] ?? 'N/A'}"),
-                            Text("Wheelchair Access: ${result['wheelchair_accessible_entrance'] ?? 'N/A'}"),
+                  Builder(builder: (context) {
+                    var date = DateTime.now();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (result['current_opening_hours'] != null &&
+                            result['current_opening_hours']['weekday_text'] !=
+                                null) ...[
+                          Text(
+                              "Business Hours: ${result['current_opening_hours']['weekday_text'][date.weekday].split("day:")[1]}")
                         ],
-                      );
-                    }
-                  )
+                        Text(
+                            "Address: ${result['formatted_address'] ?? 'N/A'}"),
+                        Text(
+                            "Phone Number: ${result['formatted_phone_number'] ?? 'N/A'}"),
+                        Text(
+                            "Wheelchair Access: ${result['wheelchair_accessible_entrance'] ?? 'N/A'}"),
+                      ],
+                    );
+                  })
                 ],
               ),
             ),
@@ -147,25 +134,58 @@ class SearchPage1_2 extends StatelessWidget {
     );
   }
 
-  Future<Map<String, dynamic>> fetchPlaceDetails(String placeId) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/place/$placeId');
+  Future<List> _getResults(futureResponse, filters) async {
+    var filteredList = [];
 
-    try {
-      final response = await http.get(url);
+    http.Response HttpResponse = await futureResponse ?? [];
 
-      if (response.statusCode == 200) {
-        // If the server returns a 200 OK response, parse the JSON
-        final Map<String, dynamic> placeDetails = json.decode(response.body);
-        return placeDetails;
+    if (HttpResponse.statusCode == 200) {
+      // Parse the response JSON to get nearby places
+      List<dynamic> places = json.decode(HttpResponse.body);
+
+      if (places.length > 10) {
+        places = places.sublist(0, 10);
       } else {
-        // If the server did not return a 200 OK response,
-        // throw an exception.
-        throw Exception('Failed to load place details');
+        places = places.sublist(0, places.length);
       }
-    } catch (error) {
-      // Handle network errors or other exceptions
-      print('Error: $error');
-      throw Exception('Failed to load place details');
+
+      for (var placeResult in places) {
+        var inFilter = await _filterResult(placeResult["place_id"], filters);
+        if (inFilter) {
+          filteredList.add(placeResult);
+        }
+      }
+
     }
+    return filteredList;
+  }
+
+  // Future to check if an org passes filters
+  Future<bool> _filterResult(String placeID, filters) async {
+    if (filters.isEmpty) return true;
+
+    var ratings = [1, 2, 3, 4, 5];
+
+    var query = _firestore
+        .collection('UserReview')
+        .where('placeID', isEqualTo: placeID);
+
+    for (var rawFilter in filters) {
+      var filter = rawFilter.replaceAll(' ', '');
+      if (filter.contains('Stars')) {
+        query = query.where('overallRating',
+            whereIn: ratings.getRange(int.parse(filter[0]), 5));
+      } else {
+        query = query.where('accommodations.$filter', isEqualTo: 5);
+      }
+    }
+
+    var querySnapshot = await query.limit(1).get();
+
+    // Check if the query returned any documents
+    if (querySnapshot.docs.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 }

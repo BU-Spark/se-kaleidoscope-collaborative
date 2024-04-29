@@ -44,23 +44,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 // Individual onboarding pages.
                 buildPage(
                   title: 'Welcome to\nKaleidoscope',
-                  content: 'We are here to empower your experience with reviews from your community.',
-                  imagePath: 'images/welcome.jpg', // Replace with your image path
+                  content:
+                      'We are here to empower your experience with reviews from your community.',
+                  imagePath:
+                      'images/welcome.jpg', // Replace with your image path
                 ),
                 buildPage(
                   title: 'Explore',
-                  content: 'Read reviews about disability accommodations at locations around you',
-                  imagePath: 'images/explore.jpg', // Replace with your image path
+                  content:
+                      'Read reviews about disability accommodations at locations around you',
+                  imagePath:
+                      'images/explore.jpg', // Replace with your image path
                 ),
                 buildPage(
                   title: 'Share',
-                  content: 'Share your experience and help others by writing reviews',
+                  content:
+                      'Share your experience and help others by writing reviews',
                   imagePath: 'images/share.jpg', // Replace with your image path
                 ),
                 buildPage(
                   title: 'Personalize',
-                  content: 'Customize your search settings for a more personalized experience',
-                  imagePath: 'images/personalize.jpg', // Replace with your image path
+                  content:
+                      'Customize your search settings for a more personalized experience',
+                  imagePath:
+                      'images/personalize.jpg', // Replace with your image path
                 ),
               ],
             ),
@@ -70,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               _numPages,
-                  (index) => buildDot(index, context),
+              (index) => buildDot(index, context),
             ),
           ),
 
@@ -93,7 +100,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       primary: Colors.deepPurple,
                     ),
                   ),
-
                 if (_currentPage < _numPages - 1)
                   TextButton(
                     onPressed: () {
@@ -110,7 +116,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 if (_currentPage == _numPages - 1)
                   TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DashboardScreen()));
                     },
                     child: Text('Finish'),
                     style: TextButton.styleFrom(
@@ -126,7 +135,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // Helper function to build each onboarding page.
-  Widget buildPage({required String title, required String content, required String imagePath}) {
+  Widget buildPage(
+      {required String title,
+      required String content,
+      required String imagePath}) {
     return Padding(
       padding: const EdgeInsets.all(30.0),
       child: Column(
@@ -166,10 +178,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: _currentPage == index ? 20 : 10,
       margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
-        color: _currentPage == index ? Colors.deepPurple : Colors.deepPurple[200],
+        color:
+            _currentPage == index ? Colors.deepPurple : Colors.deepPurple[200],
         borderRadius: BorderRadius.circular(5),
       ),
     );
   }
 }
-

@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/Components/BackButton.dart';
+import 'package:kaleidoscope_collaborative/components/AppBar.dart';
 
 // Implementing Add a Review 2.1 : Choosing Accommodations for Rating Page
-
+//
 class ChooseRatingParametersPage extends StatefulWidget {
   final String OrganizationName;
   final String OrganizationType;
   final String UserId;
+  final String UserName;
   final String OrganizationId;
   final String OrgImgLink;
   final int overallRating;
@@ -20,6 +24,7 @@ class ChooseRatingParametersPage extends StatefulWidget {
       required this.OrganizationName,
       required this.OrganizationType,
       required this.UserId,
+        required this.UserName,
       required this.OrganizationId,
       required this.OrgImgLink})
       : super(key: key);
@@ -34,19 +39,20 @@ class _ChooseRatingParametersPageState
   final Map<String, int> parameterRatings = {};
 
   // Map to keep track of each category and its items
-  // Map<String, List<String>> categoryItems = {
-  //   'Mobility accommodation': ['Accessible Washroom', 'Alternative Entrance', 'Handrails', 'Elevator', 'Lowered Counter', 'Ramp'],
-  //   'Stimuli accommodation': ['Outdoor Access Only', 'Reduced Crowd', 'Scent Free', 'Digital Menu'],
-  //   'Communication accommodation': ['Braille', 'Customer Service', 'Service Animal Friendly', 'Sign Language'],
-  // };
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Map<String, List<String>> categoryItems = {};
+  Map<String, List<String>> categoryItems = {
+    'Mobility accommodation': ['Accessible Washroom', 'Alternative Entrance', 'Handrails', 'Elevator', 'Lowered Counter', 'Ramp'],
+    'Stimuli accommodation': ['Outdoor Access Only', 'Reduced Crowd', 'Scent Free', 'Digital Menu'],
+    'Communication accommodation': ['Braille', 'Customer Service', 'Service Animal Friendly', 'Sign Language'],
+  };
 
   @override
   void initState() {
     super.initState();
-    fetchAccommodations();
+    //Currently unneeded as there's no way to add in new accommodation options,
+    //so the following function is commented out to save on Firestore reads
+    //fetchAccommodations();
   }
 
   Future<void> fetchAccommodations() async {
@@ -141,59 +147,20 @@ class _ChooseRatingParametersPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Choose Rating Parameters Page',
-            style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 0,
-      ),
+      appBar: CustomAppBar(AppBarText: 'Choose Rating Parameters Page'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                FadeInImage.assetNetwork(
-                  placeholder: 'images/dental1.jpg',
-                  image: widget.OrgImgLink,
-                  fit: BoxFit.fill,
-                  width: 117.0,
-                  height: 99.0,
-                ),
-                SizedBox(width: 16.0),
-                // Organization Title and Type
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 48),
-                    ],
-                  ),
-                ),
-              ],
+            ReviewOrgDetails(
+                OrgImgLink: widget.OrgImgLink,
+                OrganizationName: widget.OrganizationName,
+                OrganizationType: widget.OrganizationType
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
                 Text(
                   'What accommodation(s) have you observed here?',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -228,6 +195,7 @@ class _ChooseRatingParametersPageState
                                   OrganizationName: widget.OrganizationName,
                                   OrganizationType: widget.OrganizationType,
                                   UserId: widget.UserId,
+                                  UserName: widget.UserName,
                                   OrganizationId: widget.OrganizationId,
                                   OrgImgLink: widget.OrgImgLink)),
                         );
@@ -247,13 +215,14 @@ class _ChooseRatingParametersPageState
                                   OrganizationName: widget.OrganizationName,
                                   OrganizationType: widget.OrganizationType,
                                   UserId: widget.UserId,
+                                  UserName: widget.UserName,
                                   OrganizationId: widget.OrganizationId,
                                   OrgImgLink: widget.OrgImgLink),
                             ),
                           );
 
                           if (rating != null) {
-                            parameterRatings[parameter] = rating;
+                            parameterRatings[parameter.replaceAll(' ', '')] = rating;
                           }
                           // If result is null, the user may have skipped rating this parameter
                         }
@@ -267,6 +236,7 @@ class _ChooseRatingParametersPageState
                                   OrganizationName: widget.OrganizationName,
                                   OrganizationType: widget.OrganizationType,
                                   UserId: widget.UserId,
+                                  UserName: widget.UserName,
                                   OrganizationId: widget.OrganizationId,
                                   OrgImgLink: widget.OrgImgLink)),
                         );
@@ -277,19 +247,7 @@ class _ChooseRatingParametersPageState
                   ],
                 ),
                 SizedBox(height: 16),
-                Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      'Back to business page',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xFF6750A4),
-                      ),
-                    ),
-                  ),
-                ),
+                BackButton2()
               ],
             ),
           ],

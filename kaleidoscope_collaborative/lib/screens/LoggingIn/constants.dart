@@ -24,11 +24,10 @@ final kAccommodationButtonStyle = OutlinedButton.styleFrom(
   // shape: RoundedRectangleBorder(
   //   borderRadius: BorderRadius.circular(100),
   primary: Colors.black,
-            side: BorderSide(
-              color: Colors.black,
-            ),
+  side: BorderSide(
+    color: Colors.black,
+  ),
 );
-
 
 const kButtonTextStyle = TextStyle(
   fontSize: 16,

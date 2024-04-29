@@ -1,18 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/summaryReview_5_1.dart';
-import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
+import 'package:kaleidoscope_collaborative/components/AppBar.dart';
 
 // Implementing Add a Review 4.1 - 4.2 : Text Review
 
-// TODO:
-//Route the back to business page to the business card
 class TextReviewPage extends StatefulWidget {
   final int overallRating;
   final String OrganizationName;
   final String OrganizationType;
   final String UserId;
+  final String UserName;
   final String OrganizationId;
   final String OrgImgLink;
   final Map<String, int> parameterRatings;
@@ -24,6 +23,7 @@ class TextReviewPage extends StatefulWidget {
       required this.OrganizationName,
       required this.OrganizationType,
       required this.UserId,
+        required this.UserName,
       required this.OrganizationId,
       required this.OrgImgLink})
       : super(key: key);
@@ -35,14 +35,8 @@ class TextReviewPage extends StatefulWidget {
 class _TextReviewPageState extends State<TextReviewPage> {
   final TextEditingController _controller = TextEditingController();
   bool _hasWrittenReview = false;
-  CloudFirestoreService? service;
 
-  @override
-  void initState() {
-    // Initialize an instance of Cloud Firestore
-    service = CloudFirestoreService(FirebaseFirestore.instance);
-    super.initState();
-  }
+
 
   List<Map<String, dynamic>> prepareUserRatingData({
     required String userId,
@@ -69,62 +63,18 @@ class _TextReviewPageState extends State<TextReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title:
-            Text('Write a Review Page', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      resizeToAvoidBottomInset : false,
+      appBar: CustomAppBar(AppBarText: 'Write a review'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                // Small Image on the top left corner
-                FadeInImage.assetNetwork(
-                  // Pull the image FROM DB here, or BY default, our dummy picture
-                  placeholder: 'images/dental1.jpg',
-                  image: widget.OrgImgLink,
-                  width: 117.0,
-                  height: 99.0,
-                  fit: BoxFit.fill,
-                ),
-
-                SizedBox(width: 16.0),
-                // Organization Title and Type
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        '${widget.OrganizationName}',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        '${widget.OrganizationType}',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 48),
-                    ],
-                  ),
-                ),
-              ],
+            ReviewOrgDetails(
+                OrgImgLink: widget.OrgImgLink,
+                OrganizationName: widget.OrganizationName,
+                OrganizationType: widget.OrganizationType
             ),
-            SizedBox(height: 20),
             Text('Write your review',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             TextField(
@@ -170,29 +120,12 @@ class _TextReviewPageState extends State<TextReviewPage> {
                       ),
                     );
                   },
-                  child: Text('Skip and Submit'),
+                  child: Text('Skip'),
                   style: kSmallButtonStyle,
                 ),
                 ElevatedButton(
                   // onPressed: () {
                   onPressed: () async {
-                    // Add the user rating to the database
-                    try {
-                      Map<String, dynamic> userData = {
-                        'accommodations': widget.parameterRatings,
-                        'overallRating': widget.overallRating,
-                        'placeID': widget.OrganizationId,
-                        'textReview': _controller.text,
-                        'userID': widget.UserId,
-                        'userName': widget.UserId,
-                      };
-                      await service?.addUserReview(userData);
-                    } catch (e) {
-                      // Handle errors here, possibly show an error message to the user
-                      print(
-                          e); // Use a proper way to log errors or show a dialog to the user
-                    }
-
                     Navigator.push(
                       context,
                       MaterialPageRoute(

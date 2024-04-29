@@ -15,7 +15,8 @@ class _VerificationCompleteState extends State<VerificationComplete> {
     super.initState();
     // Automatically navigate to CreatePassword screen after a 3-second delay.
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CreatePassword()));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => CreatePassword()));
     });
   }
 
