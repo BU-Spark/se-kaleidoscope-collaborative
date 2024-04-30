@@ -9,10 +9,14 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 - Patrinia Baksmaty (Founder & CEO of Kaleidoscope Collaborative)
 
 ## Developer Team
-
+Fall 2023
 - Anargh Sidhardhan (Boston University)
 - Revathi Vipinachandran (Boston University)
 - JingHong Huang (Boston University)
+
+Spring 2024
+- Timmy Lu (Boston University)
+- Priscilla Nguyen (Boston University)
 - Jiasong Huang (Boston University)
 
 # Technical Architecture
@@ -20,10 +24,11 @@ Kaleidoscope Collaborative aims to address the challenge faced by individuals wi
 Our tech stack:
 
 - Flutter + dart
-- Firebase backend (Firebase Auth for User Authentication)
+- Firebase backend (Firebase Auth for User Authentication), Firebase for function invokations
 - Firestore: data storage
   - link: https://console.firebase.google.com/u/0/project/se-kaleidoscope-collaborative
 - Express.js for Google API routing
+  - API: https://developers.google.com/maps/documentation/places/web-service/overview 
 - Deployment: GCP deployment as most of our tech stack revolves around Google Infrastructure
 - State: Provider, which has not been integrated
 - Development Emulator: IOS emulator (preferred as the backend code is written for IOS emulator, for android emulator, please change the localhost to 10.0.2.2:8000 in backend/address.ts)
@@ -94,6 +99,7 @@ For more information, [click here](https://developer.apple.com/documentation/xco
 - Accommodations Based Reviews
 - Search and Filter
 - Profile Customization
+- Geolocator support
 
 Certain page-specific features that require further development or enhancement are listed as TODOs in the project files.
 
