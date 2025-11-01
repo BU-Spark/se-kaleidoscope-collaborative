@@ -6,6 +6,10 @@
 		<string>Upload your own images.</string>
 		<key>NSCameraUsageDescription</key>
 		<string>Take a picture and upload your own images.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>This app needs location access to find nearby places and provide location-based recommendations.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>This app needs location access to find nearby places and provide location-based recommendations.</string>
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>

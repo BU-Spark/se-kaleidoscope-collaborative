@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 //import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
-import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/onboarding_page.dart';
 import 'LoggingIn/constants.dart';
 import 'LoggingIn/login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
@@ -68,11 +67,22 @@ class _FirstScreenState extends State<FirstScreen> {
                   style: kButtonTextStyle,
                 ),
               ),
+              const SizedBox(height: 20),
               TextButton(
-                child: const Text('Skip for now'),
                 onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => LoginCompletePage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                  );
                 },
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF6750A4),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                child: const Text('Skip for now'),
               ),
 
               const Spacer(),

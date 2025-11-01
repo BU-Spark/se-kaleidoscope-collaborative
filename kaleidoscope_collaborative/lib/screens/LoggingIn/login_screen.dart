@@ -139,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () async {
                   try {
-                    final existingUser = await _auth.signInWithEmailAndPassword(
+                    await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     globals.userEmail = _emailTextController.text;
                     Navigator.push(
@@ -151,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 style: kButtonStyle,
-                child: const Text('Log In'),
+                child: const Text('Log In', style: kButtonTextStyle),
               ),
               // Button to navigate to Forgot Password screen.
               TextButton(
@@ -218,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 style: kButtonStyle,
-                child: const Text('Log In with Facebook'),
+                child: const Text('Log In with Facebook', style: kButtonTextStyle),
               ),
               const SizedBox(height: 16),
               // TODO: Implement login using google:
@@ -230,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
                 style: kButtonStyle,
-                child: const Text('Log In with Google'),
+                child: const Text('Log In with Google', style: kButtonTextStyle),
               ),
               const SizedBox(height: 32),
 

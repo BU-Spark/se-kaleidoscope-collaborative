@@ -663,7 +663,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         }
                       : null, // Disable button if conditions are not met
                   style: kButtonStyle,
-                  child: const Text('Submit'), // Your custom button style
+                  child: const Text('Submit', style: kButtonTextStyle), // Your custom button style
                 ),
                 const SizedBox(height: 32),
               ],

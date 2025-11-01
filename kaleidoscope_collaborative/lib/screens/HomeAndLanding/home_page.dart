@@ -27,12 +27,12 @@ class _DashboardScreenState extends State<DashboardScreen>
   TabController? _tabController;
   int _selectedIndex = 1;
   final _auth = FirebaseAuth.instance;
-  late User loggedInUser;
+  User? loggedInUser;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  late String first_name;
-  late String last_name;
-  late String full_name;
+  String? first_name;
+  String? last_name;
+  String? full_name;
 
   final List<Category> categories = [
     Category(imagePath: 'images/restaurant.jpg', name: 'Restaurant'),
@@ -64,11 +64,15 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  Future<String> getUserNameByEmail(String? email) async {
+  Future<String?> getUserNameByEmail(String? email) async {
+    if (loggedInUser?.email == null) {
+      return null;
+    }
+    
     try {
       QuerySnapshot querySnapshot = await _firestore
           .collection('User')
-          .where('email', isEqualTo: loggedInUser.email)
+          .where('email', isEqualTo: loggedInUser!.email)
           .limit(1)
           .get();
 
@@ -190,9 +194,9 @@ class _DashboardScreenState extends State<DashboardScreen>
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            FutureBuilder<String>(
-              future: getUserNameByEmail(loggedInUser.email),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            FutureBuilder<String?>(
+              future: loggedInUser != null ? getUserNameByEmail(loggedInUser!.email) : Future.value(null),
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasData) {
                     return DrawerHeader(
@@ -235,13 +239,22 @@ class _DashboardScreenState extends State<DashboardScreen>
               leading: const Icon(Icons.exit_to_app),
               title: const Text('Sign Out'),
               onTap: () {
-                _auth.signOut().then((_) {
+                if (loggedInUser != null) {
+                  _auth.signOut().then((_) {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FirstScreen()),
+                    );
+                  });
+                } else {
+                  // If no user is logged in, just navigate back to first screen
                   Navigator.of(context).pop();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const FirstScreen()),
                   );
-                });
+                }
               },
             ),
           ],
@@ -258,7 +271,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SearchPage(name: full_name)),
+                      MaterialPageRoute(builder: (context) => SearchPage(name: full_name ?? 'User')),
                     );
 
                   },
@@ -292,7 +305,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                SearchPage(name: full_name),
+                                SearchPage(name: full_name ?? 'User'),
                           ),
                         );
                       },
@@ -354,6 +367,15 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (index == 2) {
       // When "Profile" tab is selected
+      if (loggedInUser == null) {
+        // If no user is logged in, navigate to login screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const FirstScreen()),
+        );
+        return;
+      }
+      
       try {
         CloudFirestoreService firestoreService =
             CloudFirestoreService(FirebaseFirestore.instance);
@@ -363,7 +385,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           // Fetch the profile data from Firestore
           DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
               .collection('ProfileData')
-              .doc(loggedInUser.email)
+              .doc(loggedInUser!.email)
               .get();
 
           if (profileSnapshot.exists) {
@@ -392,6 +414,15 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   void handleProfile() async {
     // When "Profile" tab is selected
+    if (loggedInUser == null) {
+      // If no user is logged in, navigate to login screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FirstScreen()),
+      );
+      return;
+    }
+    
     try {
       CloudFirestoreService firestoreService =
           CloudFirestoreService(FirebaseFirestore.instance);
@@ -401,7 +432,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         // Fetch the profile data from Firestore
         DocumentSnapshot profileSnapshot = await FirebaseFirestore.instance
             .collection('ProfileData')
-            .doc(loggedInUser.email)
+            .doc(loggedInUser!.email)
             .get();
 
         if (profileSnapshot.exists) {

@@ -31,4 +31,5 @@ final kAccommodationButtonStyle = OutlinedButton.styleFrom(
 const kButtonTextStyle = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w500,
+  color: Colors.white,
 );

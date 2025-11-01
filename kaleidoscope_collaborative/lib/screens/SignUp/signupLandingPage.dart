@@ -71,7 +71,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
               },
               style: kButtonStyle,
-              child: const Text('Sign Up in App')
+              child: const Text('Sign Up in App', style: kButtonTextStyle)
             ),
             const SizedBox(height: 16),
 
@@ -92,7 +92,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
               onPressed: () {
               },
               style: kButtonStyle,
-              child: const Text('Log In with Facebook')
+              child: const Text('Log In with Facebook', style: kButtonTextStyle)
             ),
             const SizedBox(height: 16),
 
@@ -100,7 +100,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
               onPressed: () {
               },
               style: kButtonStyle,
-              child: const Text('Log In with Google')
+              child: const Text('Log In with Google', style: kButtonTextStyle)
             ),
           ],
         ),

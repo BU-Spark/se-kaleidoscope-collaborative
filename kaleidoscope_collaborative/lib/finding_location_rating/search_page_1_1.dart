@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'search_page_1_2.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
+import '../config/globals.dart' as globals;
 
 class SearchPage1_1 extends StatefulWidget {
   final String query;
@@ -28,11 +29,17 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
     queryResponse = widget.coordinateFuture.then((coordinates) {
       final lat = coordinates.latitude;
       final lng = coordinates.longitude;
-      String nearbyPlacesUrl = 'http://10.0.2.2:8000/api/query/$initialQuery/$lat/$lng';
+      // Use baseUrl from globals.dart configuration
+      String baseUrl = globals.apiBaseUrl;
+      String nearbyPlacesUrl = '$baseUrl/api/query/$initialQuery/$lat/$lng';
+      print('Making API request to: $nearbyPlacesUrl');
       return http.get(Uri.parse(nearbyPlacesUrl));
     }).catchError((error) {
-      print(error);
-      String nearbyPlacesUrl = 'http://10.0.2.2:8000/api/query/$initialQuery/null/null';
+      print('Location error: $error');
+      // Use New York City as fallback location instead of null/null
+      String baseUrl = globals.apiBaseUrl;
+      String nearbyPlacesUrl = '$baseUrl/api/query/$initialQuery/40.7128/-74.0060';
+      print('Making fallback API request to: $nearbyPlacesUrl');
       return http.get(Uri.parse(nearbyPlacesUrl));
     }
     );

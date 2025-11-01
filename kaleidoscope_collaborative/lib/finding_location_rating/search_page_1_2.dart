@@ -43,26 +43,93 @@ class SearchPage1_2 extends StatelessWidget {
                   // Future that returns the name
                   builder: (context, snapshot) {
                     if (snapshot.connectionState != ConnectionState.done) {
-                      return const Text("Loading places!");
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text("Loading places...", style: TextStyle(fontSize: 16)),
+                        ),
+                      );
                     }
                     if (snapshot.hasError) {
-                      return const Text("Error loading places!");
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              const SizedBox(height: 16),
+                              const Text("Error loading places!", style: TextStyle(fontSize: 16)),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Please ensure the backend server is running on localhost:8000",
+                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
                     }
-                    var response = snapshot.data ?? [];
-
-                    if (response == "Error") {
-                      return const Text("Error loading places!");
-                    } else if (response.isEmpty) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: const Text("No places found for this query!",
-                            style: TextStyle(fontSize: 15)),
+                    
+                    var response = snapshot.data;
+                    
+                    // Check if response indicates an error (list with "Error" string)
+                    if (response is List && response.isNotEmpty && response[0] == "Error") {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              const SizedBox(height: 16),
+                              const Text("Error loading places!", style: TextStyle(fontSize: 16)),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Unable to connect to backend server. Please ensure it's running on localhost:8000",
+                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    
+                    // Ensure response is a list of Maps
+                    if (response is! List) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text("Error: Invalid response format", style: TextStyle(fontSize: 16)),
+                        ),
+                      );
+                    }
+                    
+                    List results = response;
+                    
+                    if (results.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.search_off, size: 48, color: Colors.grey),
+                              const SizedBox(height: 16),
+                              const Text("No places found for this query!",
+                                  style: TextStyle(fontSize: 16)),
+                            ],
+                          ),
+                        ),
                       );
                     } else {
                       return ListView(
-                        children: response
-                            .map<Widget>((result) => _buildResultCard(context, result)).toList(),
+                        children: results
+                            .where((item) => item is Map<String, dynamic>)
+                            .map<Widget>((result) => _buildResultCard(context, result as Map<String, dynamic>))
+                            .toList(),
                       );
                     }
                   })),
@@ -134,34 +201,83 @@ class SearchPage1_2 extends StatelessWidget {
     );
   }
 
-  Future<List> _getResults(futureResponse, filters) async {
-    var filteredList = [];
+  Future<List<dynamic>> _getResults(Future<http.Response> futureResponse, List<String> filters) async {
+    List<dynamic> filteredList = [];
 
-    http.Response HttpResponse = await futureResponse ?? [];
+    try {
+      http.Response httpResponse = await futureResponse;
+      
+      print('HTTP Response Status: ${httpResponse.statusCode}');
+      print('HTTP Response Body: ${httpResponse.body}');
 
-    if (HttpResponse.statusCode == 200) {
-      // Parse the response JSON to get nearby places
-      List<dynamic> places = json.decode(HttpResponse.body);
-
-      if (places.length > 10) {
-        places = places.sublist(0, 10);
-      } else {
-        places = places.sublist(0, places.length);
-      }
-
-      for (var placeResult in places) {
-        var inFilter = await _filterResult(placeResult["place_id"], filters);
-        if (inFilter) {
-          filteredList.add(placeResult);
+      if (httpResponse.statusCode == 200) {
+        // Parse the response JSON to get nearby places
+        var decodedBody = json.decode(httpResponse.body);
+        
+        // Handle case where API returns error JSON
+        if (decodedBody is Map && decodedBody.containsKey('error')) {
+          print('API returned error: ${decodedBody['error']}');
+          return ["Error"];
         }
-      }
+        
+        // Ensure decoded body is a list
+        if (decodedBody is! List) {
+          print('Unexpected response format: ${decodedBody.runtimeType}');
+          return ["Error"];
+        }
+        
+        List<dynamic> places = decodedBody;
+        print('Parsed ${places.length} places from API');
 
+        if (places.isEmpty) {
+          print('No places found - this might be due to:');
+          print('1. Invalid search query');
+          print('2. Google Maps API key issues');
+          print('3. Location bias problems');
+          return [];
+        }
+
+        // Limit to 10 places
+        if (places.length > 10) {
+          places = places.sublist(0, 10);
+        }
+
+        // Filter places based on selected accommodations
+        for (var placeResult in places) {
+          if (placeResult is! Map<String, dynamic>) {
+            print('Warning: Place result is not a Map, skipping');
+            continue;
+          }
+          
+          String? placeId = placeResult["place_id"];
+          if (placeId == null || placeId.isEmpty) {
+            print('Warning: Place result missing place_id, skipping');
+            continue;
+          }
+          
+          bool inFilter = await _filterResult(placeId, filters);
+          if (inFilter) {
+            filteredList.add(placeResult);
+          }
+        }
+        print('After filtering: ${filteredList.length} places remain');
+      } else {
+        print('API request failed with status: ${httpResponse.statusCode}');
+        print('Error body: ${httpResponse.body}');
+        return ["Error"];
+      }
+    } catch (e) {
+      print('Error in _getResults: $e');
+      if (e is http.ClientException) {
+        print('Connection error - make sure backend server is running on localhost:8000');
+      }
+      return ["Error"];
     }
     return filteredList;
   }
 
   // Future to check if an org passes filters
-  Future<bool> _filterResult(String placeID, filters) async {
+  Future<bool> _filterResult(String placeID, List<String> filters) async {
     if (filters.isEmpty) return true;
 
     var ratings = [1, 2, 3, 4, 5];
