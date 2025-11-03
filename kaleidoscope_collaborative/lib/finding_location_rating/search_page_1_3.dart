@@ -75,17 +75,17 @@ class SearchPage1_3 extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AddReviewPage(
-                            OrganizationName: placeDetails['name'],
-                            OrganizationId: placeDetails['place_id'],
-                            OrganizationType: placeDetails['types'].join(', '),
+                            OrganizationName: placeDetails['name'] ?? 'Unknown',
+                            OrganizationId: placeDetails['place_id'] ?? '',
+                            OrganizationType: (placeDetails['types'] as List<dynamic>?)?.join(', ') ?? 'N/A',
                             UserId: name,
                             UserName: name,
-                            OrgImgLink: placeDetails['photo'])),
+                            OrgImgLink: placeDetails['photo'] ?? '')),
                   );
                 },
 
                 //MainAxisAlignment.center
-                child: Text("Add a Review"),
+                child: Text("Add a Review", style: kButtonTextStyle),
                 style: kSmallButtonStyle,
               ),
             ),

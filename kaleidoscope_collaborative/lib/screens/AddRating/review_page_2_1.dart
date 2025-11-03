@@ -199,7 +199,7 @@ class _ChooseRatingParametersPageState
                                   OrgImgLink: widget.OrgImgLink)),
                         );
                       },
-                      child: Text('Skip'),
+                      child: Text('Skip', style: kButtonTextStyle),
                       style: kSmallButtonStyle,
                     ),
                     ElevatedButton(
@@ -240,7 +240,7 @@ class _ChooseRatingParametersPageState
                                   OrgImgLink: widget.OrgImgLink)),
                         );
                       },
-                      child: Text('Next'),
+                      child: Text('Next', style: kButtonTextStyle),
                       style: kSmallButtonStyle,
                     ),
                   ],

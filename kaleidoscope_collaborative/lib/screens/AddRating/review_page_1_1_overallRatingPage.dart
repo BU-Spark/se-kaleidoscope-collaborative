@@ -104,7 +104,7 @@ class _AddReviewPageState extends State<AddReviewPage> {
                       ),
                     );
                   },
-                  child: Text('Next'),
+                  child: Text('Next', style: kButtonTextStyle),
                   style: kSmallButtonStyle,
                 ),
                 SizedBox(height: 16),

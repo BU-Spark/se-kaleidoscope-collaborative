@@ -117,7 +117,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                     );
                   },
                   style: kSmallButtonStyle,
-                  child: const Text('Skip and Submit'),
+                  child: const Text('Skip and Submit', style: kButtonTextStyle),
                 ),
                 ElevatedButton(
                   // onPressed: () {
@@ -139,7 +139,7 @@ class _TextReviewPageState extends State<TextReviewPage> {
                     );
                   },
                   style: kSmallButtonStyle,
-                  child: const Text('Submit'),
+                  child: const Text('Submit', style: kButtonTextStyle),
                 ),
               ],
             ),

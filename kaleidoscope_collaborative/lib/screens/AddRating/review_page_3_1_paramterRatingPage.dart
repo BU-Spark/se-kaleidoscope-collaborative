@@ -98,7 +98,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                         Navigator.pop(
                             context, null); // Return null to indicate skipping
                       },
-                      child: Text('Skip'),
+                      child: Text('Skip', style: kButtonTextStyle),
                       style: kSmallButtonStyle,
                     ),
                     ElevatedButton(
@@ -107,7 +107,7 @@ class _ParameterRatingPageState extends State<ParameterRatingPage> {
                         Navigator.pop(
                             context, parameterRating); // Return the rating
                       },
-                      child: Text('Next'),
+                      child: Text('Next', style: kButtonTextStyle),
                       style: kSmallButtonStyle,
                     ),
                   ],

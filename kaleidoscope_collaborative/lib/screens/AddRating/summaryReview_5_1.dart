@@ -178,7 +178,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                       onPressed: () {
                         // todo: route back to business card
                       },
-                      child: Text('Cancel'),
+                      child: Text('Cancel', style: kButtonTextStyle),
                       style: kSmallButtonStyle,
                     ),
                     ElevatedButton(
@@ -205,7 +205,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                           ),
                         );
                       },
-                      child: Text('Submit'),
+                      child: Text('Submit', style: kButtonTextStyle),
                       style: kSmallButtonStyle,
                     ),
                   ],
