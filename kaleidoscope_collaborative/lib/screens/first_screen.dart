@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-//import 'package:kaleidoscope_collaborative/screens/AddRating/temp_rating_card.dart';
-import 'LoggingIn/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'LoggingIn/login_screen.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
-
-// import search bar
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -20,13 +19,13 @@ class _FirstScreenState extends State<FirstScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Kaleidoscope Collaborative',
-            style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.backgroundColor,
+        elevation: 0,
       ),
+      backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(30.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,55 +33,42 @@ class _FirstScreenState extends State<FirstScreen> {
               const Spacer(),
               Image.asset("images/text_logo.jpg"), // Your logo asset
               const SizedBox(height: 30),
-              const Text(
+              Text(
                 'Discover Disability Inclusive\nServices Around You!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.openSans(
                   fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 50),
-              ElevatedButton(
+              const SizedBox(height: 40),
+              GlassmorphicButton(
+                text: 'Sign Up',
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => SignupLandingPage()));
                 },
-                style: kButtonStyle,
-                child: const Text(
-                  'Sign Up',
-                  style: kButtonTextStyle,
-                ),
               ),
-              const SizedBox(height: 10),
-              ElevatedButton(
+              const SizedBox(height: 16),
+              GlassmorphicButton(
+                text: 'Log In',
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
-                style: kButtonStyle,
-                child: const Text(
-                  'Log In',
-                  style: kButtonTextStyle,
-                ),
               ),
-              const SizedBox(height: 20),
-              TextButton(
+              const SizedBox(height: 16),
+              GlassmorphicTextButton(
+                text: 'Skip for now',
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const DashboardScreen()),
                   );
                 },
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF6750A4),
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                child: const Text('Skip for now'),
               ),
 
               const Spacer(),

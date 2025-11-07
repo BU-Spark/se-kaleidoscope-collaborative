@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'signup1_1.dart';
 
 // Implementing the 1.0 Sign Up Landing Page
@@ -34,73 +36,81 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign up Landing Page',style: TextStyle(color:Colors.black)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
+          ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0, 
+        backgroundColor: AppTheme.backgroundColor,
+        elevation: 0,
+        toolbarHeight: 48,
       ),
+      backgroundColor: AppTheme.backgroundColor,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(30.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Image.asset(
               'images/logo.jpg',
-              width: 117.0, 
-              height: 99.0, 
+              width: 120.0,
+              height: 100.0,
             ),
-            const SizedBox(height: 48),
+            const SizedBox(height: 24),
 
             // Title
-            const Text(
+            Text(
               'Sign Up',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.openSans(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
             ),
             const SizedBox(height: 48),
 
-            ElevatedButton(
+            GlassmorphicButton(
+              text: 'Sign Up in App',
               onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
               },
-              style: kButtonStyle,
-              child: const Text('Sign Up in App', style: kButtonTextStyle)
             ),
             const SizedBox(height: 16),
 
-            const Row(
+            Row(
               children: <Widget>[
-                Expanded(child: Divider(thickness: 1)),
+                const Expanded(child: Divider(thickness: 1)),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text('or'),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    'or',
+                    style: GoogleFonts.openSans(
+                      color: Colors.black54,
+                    ),
+                  ),
                 ),
-                Expanded(child: Divider(thickness: 1)),
+                const Expanded(child: Divider(thickness: 1)),
               ],
             ),
             const SizedBox(height: 16),
 
             // Sign Up with Facebook Button
-            ElevatedButton(
+            GlassmorphicButton(
+              text: 'Log In with Facebook',
               onPressed: () {
               },
-              style: kButtonStyle,
-              child: const Text('Log In with Facebook', style: kButtonTextStyle)
             ),
             const SizedBox(height: 16),
 
-            ElevatedButton(
+            GlassmorphicButton(
+              text: 'Log In with Google',
               onPressed: () {
               },
-              style: kButtonStyle,
-              child: const Text('Log In with Google', style: kButtonTextStyle)
             ),
           ],
         ),

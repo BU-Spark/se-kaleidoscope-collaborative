@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'search_page_1_2.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
@@ -48,75 +50,95 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: Text('Filter Page', style: TextStyle(color: Colors.black)),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
+      backgroundColor: AppTheme.backgroundColor,
+      appBar: AppBar(
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
           ),
-          actions: [
-            GestureDetector(
-              child: const Icon(Icons.history),
-              onTap: () {},
-            ),
-          ],
-          backgroundColor: Colors.white,
-          elevation: 0,
         ),
+        title: Text(
+          'Filters',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppTheme.backgroundColor,
+        elevation: 0,
+        toolbarHeight: 48,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              // padding: EdgeInsets.only(top: kToolbarHeight + 8),
-              padding: EdgeInsets.all(8),
-
-              child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(8),
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                controller: _searchController,
+                readOnly: true,
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                style: GoogleFonts.openSans(
+                  fontSize: 16,
+                  color: Colors.black87,
                 ),
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        readOnly: true,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        // Handle search as needed
-                      },
-                    ),
-                  ],
+                decoration: InputDecoration(
+                  hintText: 'Search for places...',
+                  hintStyle: GoogleFonts.openSans(
+                    color: Colors.grey.shade600,
+                    fontSize: 16,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: AppTheme.primaryColor,
+                    size: 24,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text("Filters", style: TextStyle(fontSize: 18)),
+                  Text(
+                    "Filter Options",
+                    style: GoogleFonts.openSans(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Please select the accommodation you need. Pre-selected accommodations are based on your profile.",
-                    style: TextStyle(fontSize: 14),
+                  Text(
+                    "Please select the accommodations you need. Pre-selected accommodations are based on your profile.",
+                    style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   _buildBoldedWordRowWithBoxes(
@@ -169,25 +191,55 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: const Color(0xFF6750A4),
-        child: TextButton(
-          onPressed: () {
-            print(selectedFilters);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchPage1_2(
-                    initialQuery: widget.query,
-                    selectedFilters: selectedFilters,
-                    queryResponse: queryResponse,
-                    name:widget.name
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: ElevatedButton(
+            onPressed: () {
+              print(selectedFilters);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage1_2(
+                      initialQuery: widget.query,
+                      selectedFilters: selectedFilters,
+                      queryResponse: queryResponse,
+                      name: widget.name),
                 ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColorDark,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
               ),
-            );
-          },
-          child: const Text(
-            "Show Results",
-            style: TextStyle(color: Colors.white),
+              elevation: 0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Show Results",
+                  style: GoogleFonts.openSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.arrow_forward, size: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -196,17 +248,22 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
 
   Widget _buildBoldedWordRowWithBoxes(String word, List<String> boxes) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             word,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: GoogleFonts.openSans(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black87,
+            ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children:
                 boxes.map((box) => _buildUniqueGrayBox(word, box)).toList(),
           ),
@@ -229,35 +286,38 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
         });
       },
       child: Container(
-        margin: const EdgeInsets.only(right: 8, bottom: 8),
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected
-              ? Color.fromARGB(255, 222, 202, 251)
-              : Colors.grey[300],
-          borderRadius: BorderRadius.circular(4),
+              ? AppTheme.primaryColor.withValues(alpha: 0.15)
+              : Colors.grey.shade200,
+          border: Border.all(
+            color: isSelected
+                ? AppTheme.primaryColor
+                : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               box,
-              style: TextStyle(color: isSelected ? Colors.black : Colors.black),
-            ),
-            const SizedBox(width: 4),
-            if (isSelected)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedFilters.remove(box);
-                  });
-                },
-                child: const Icon(
-                  Icons.clear,
-                  color: Colors.black,
-                  size: 16,
-                ),
+              style: GoogleFonts.openSans(
+                color: isSelected ? AppTheme.primaryColorDark : Colors.black87,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                fontSize: 14,
               ),
+            ),
+            if (isSelected) ...[
+              const SizedBox(width: 6),
+              Icon(
+                Icons.check_circle,
+                color: AppTheme.primaryColorDark,
+                size: 18,
+              ),
+            ],
           ],
         ),
       ),

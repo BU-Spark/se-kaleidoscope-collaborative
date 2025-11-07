@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'search_page_1_3.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -20,20 +22,28 @@ class SearchPage1_2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: Text('Search Results', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          GestureDetector(
-            child: Icon(Icons.history),
-            onTap: () {},
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
           ),
-        ],
-        backgroundColor: Colors.white,
+        ),
+        title: Text(
+          'Search Results',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        toolbarHeight: 48,
       ),
       body:
           Padding(
@@ -43,27 +53,56 @@ class SearchPage1_2 extends StatelessWidget {
                   // Future that returns the name
                   builder: (context, snapshot) {
                     if (snapshot.connectionState != ConnectionState.done) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("Loading places...", style: TextStyle(fontSize: 16)),
-                        ),
-                      );
-                    }
-                    if (snapshot.hasError) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              const CircularProgressIndicator(
+                                color: AppTheme.primaryColor,
+                              ),
                               const SizedBox(height: 16),
-                              const Text("Error loading places!", style: TextStyle(fontSize: 16)),
+                              Text(
+                                "Loading places...",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 64,
+                                color: Colors.red.shade400,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "Error loading places!",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 "Please ensure the backend server is running on localhost:8000",
-                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -78,17 +117,31 @@ class SearchPage1_2 extends StatelessWidget {
                     if (response is List && response.isNotEmpty && response[0] == "Error") {
                       return Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(32.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              Icon(
+                                Icons.cloud_off_outlined,
+                                size: 64,
+                                color: Colors.orange.shade400,
+                              ),
                               const SizedBox(height: 16),
-                              const Text("Error loading places!", style: TextStyle(fontSize: 16)),
+                              Text(
+                                "Connection Error",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 "Unable to connect to backend server. Please ensure it's running on localhost:8000",
-                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -99,10 +152,16 @@ class SearchPage1_2 extends StatelessWidget {
                     
                     // Ensure response is a list of Maps
                     if (response is! List) {
-                      return const Center(
+                      return Center(
                         child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("Error: Invalid response format", style: TextStyle(fontSize: 16)),
+                          padding: const EdgeInsets.all(32.0),
+                          child: Text(
+                            "Error: Invalid response format",
+                            style: GoogleFonts.openSans(
+                              fontSize: 16,
+                              color: Colors.red.shade700,
+                            ),
+                          ),
                         ),
                       );
                     }
@@ -112,14 +171,32 @@ class SearchPage1_2 extends StatelessWidget {
                     if (results.isEmpty) {
                       return Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(32.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.search_off, size: 48, color: Colors.grey),
+                              Icon(
+                                Icons.search_off,
+                                size: 64,
+                                color: Colors.grey.shade400,
+                              ),
                               const SizedBox(height: 16),
-                              const Text("No places found for this query!",
-                                  style: TextStyle(fontSize: 16)),
+                              Text(
+                                "No places found",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Try adjusting your filters or search query",
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -140,8 +217,6 @@ class SearchPage1_2 extends StatelessWidget {
   Widget _buildResultCard(BuildContext context, Map<String, dynamic> result) {
     return GestureDetector(
       onTap: () async {
-        // Navigate to SearchPage1_3 with the selected result and place details
-
         Map<String, dynamic> placeDetails = result;
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -151,44 +226,104 @@ class SearchPage1_2 extends StatelessWidget {
         );
       },
       child: Card(
-        color: Colors.grey[200],
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              result['photo'],
-              height: 150,
-              width: double.infinity,
-              fit: BoxFit.fill,
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              child: Image.network(
+                result['photo'] ?? '',
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 180,
+                    color: Colors.grey.shade300,
+                    child: Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 64,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 180,
+                    color: Colors.grey.shade200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryColor,
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              // padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    result['name'] ?? '',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    result['name'] ?? 'Unknown Place',
+                    style: GoogleFonts.openSans(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  // Additional details from the new API call
                   Builder(builder: (context) {
                     var date = DateTime.now();
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (result['current_opening_hours'] != null &&
-                            result['current_opening_hours']['weekday_text'] !=
-                                null) ...[
-                          Text(
-                              "Business Hours: ${result['current_opening_hours']['weekday_text'][date.weekday].split("day:")[1]}")
+                            result['current_opening_hours']['weekday_text'] != null &&
+                            result['current_opening_hours']['weekday_text'].length > date.weekday) ...[
+                          _buildDetailRow(
+                            Icons.access_time,
+                            result['current_opening_hours']['weekday_text'][date.weekday]
+                                .split("day:")[1].trim(),
+                          ),
+                          const SizedBox(height: 4),
                         ],
-                        Text(
-                            "Address: ${result['formatted_address'] ?? 'N/A'}"),
-                        Text(
-                            "Phone Number: ${result['formatted_phone_number'] ?? 'N/A'}"),
-                        Text(
-                            "Wheelchair Access: ${result['wheelchair_accessible_entrance'] ?? 'N/A'}"),
+                        if (result['formatted_address'] != null) ...[
+                          _buildDetailRow(
+                            Icons.location_on_outlined,
+                            result['formatted_address'],
+                          ),
+                          const SizedBox(height: 4),
+                        ],
+                        if (result['formatted_phone_number'] != null) ...[
+                          _buildDetailRow(
+                            Icons.phone_outlined,
+                            result['formatted_phone_number'],
+                          ),
+                          const SizedBox(height: 4),
+                        ],
+                        if (result['wheelchair_accessible_entrance'] != null) ...[
+                          _buildDetailRow(
+                            Icons.accessible,
+                            result['wheelchair_accessible_entrance'] == true
+                                ? 'Wheelchair Accessible'
+                                : 'No Wheelchair Access Info',
+                          ),
+                        ],
                       ],
                     );
                   })
@@ -198,6 +333,29 @@ class SearchPage1_2 extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: GoogleFonts.openSans(
+              fontSize: 14,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

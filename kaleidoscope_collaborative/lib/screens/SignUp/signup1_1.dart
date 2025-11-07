@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kaleidoscope_collaborative/services/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/email_verification.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/phone_verification.dart';
-
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/identity_Verifed_1_4.dart';
 import 'identity_verification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:intl/intl.dart';
 
 // Implementing the 1.1 -  1.2.3 Sign Up Page
@@ -133,6 +134,37 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
+  InputDecoration _buildInputDecoration(String label,
+      {String? errorText, Widget? suffixIcon}) {
+    return InputDecoration(
+      labelText: label,
+      errorText: errorText,
+      suffixIcon: suffixIcon,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide:
+            BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    );
+  }
+
   void _submitForm() async {
     try {
       UserCredential userCredential =
@@ -250,14 +282,28 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
+          ),
         ),
-        title: const Text('1.1 Sign Up', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        title: Text(
+          'Sign Up',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        toolbarHeight: 48,
       ),
+      backgroundColor: AppTheme.backgroundColor,
       body: Scrollbar(
         thumbVisibility: true,
         child: SingleChildScrollView(
@@ -275,14 +321,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 SizedBox(
                     height:
-                        _fnameFocus.hasFocus || _lnameFocus.hasFocus ? 20 : 48),
+                        _fnameFocus.hasFocus || _lnameFocus.hasFocus ? 20 : 48
+                ),
 
                 // First Name input
                 TextField(
                   focusNode: _fnameFocus,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'First Name',
+                  decoration: _buildInputDecoration(
+                    'First Name',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () => clearText(_fnameTextController),
@@ -297,9 +343,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 // Last Name input
                 TextField(
                   focusNode: _lnameFocus,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Last Name',
+                  decoration: _buildInputDecoration(
+                    'Last Name',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () => clearText(_lnameTextController),
@@ -326,13 +371,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   onTap: () => _selectBirthday(context),
                   child: AbsorbPointer(
                     child: TextField(
-                      controller:
-                          _birthdayTextController, // Use the controller here
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Birthday',
-                        suffixIcon: Icon(Icons.calendar_today),
-                        // Removed hintText as controller now controls the text
+                      controller: _birthdayTextController,
+                      decoration: _buildInputDecoration(
+                        'Birthday',
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
                     ),
                   ),
@@ -344,9 +386,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _passwordFocus,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: 'Password',
+                  decoration: _buildInputDecoration(
+                    'Password',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () => clearText(_passwordTextController),
@@ -362,9 +403,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _confirmPasswordFocus,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: ' Confirm Password',
+                  decoration: _buildInputDecoration(
+                    'Confirm Password',
                     errorText:
                         _passwordsMatch ? null : 'Passwords do not match',
                     suffixIcon: IconButton(
@@ -385,9 +425,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: TextField(
                     focusNode: _emailFocus,
                     enabled: isEmailActive,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Email',
+                    decoration: _buildInputDecoration(
+                      'Email',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () => clearText(_emailTextController),
@@ -406,9 +445,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _confirmEmailFocus,
                   enabled: isEmailActive,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: ' Confirm Email',
+                  decoration: _buildInputDecoration(
+                    'Confirm Email',
                     errorText: _emailMatch ? null : 'Email ids do not match',
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.clear),
@@ -449,9 +487,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: TextField(
                     focusNode: _phoneNumberFocus,
                     enabled: isPhoneNumberActive,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Phone Number (optional)',
+                    decoration: _buildInputDecoration(
+                      'Phone Number (optional)',
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () => clearText(_phoneNumberTextController),
@@ -470,9 +507,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextField(
                   focusNode: _confirmPhoneNumberFocus,
                   enabled: isPhoneNumberActive,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    labelText: ' Confirm Phone Number (optional)',
+                  decoration: _buildInputDecoration(
+                    'Confirm Phone Number (optional)',
                     errorText:
                         _phoneNumberMatch ? null : 'Phone numbers do not match',
                     suffixIcon: IconButton(
@@ -489,28 +525,68 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                ElevatedButton(
-                  onPressed: (_emailOrPhoneNumberMatch &&
+                Opacity(
+                  opacity: (_emailOrPhoneNumberMatch &&
                           (_passwordsMatch &&
                               (_emailMatch || _phoneNumberMatch)))
-                      ? () async {
-                          if (isEmailActive) {
-                            _submitForm();
-                            // If email is the chosen method, validate emails.
-                            bool verificationSuccessful = false;
-
-                            // Navigate to the Identity Verification page and await the result
-                            verificationSuccessful = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EmailVerificationPage(
-                                      verificationMethod:
-                                          _emailTextController.text,
-                                      resendCode: 'Email',
-                                      email: _emailTextController.text)),
+                      ? 1.0
+                      : 0.5,
+                  child: GlassmorphicButton(
+                    text: 'Submit',
+                    onPressed: (_emailOrPhoneNumberMatch &&
+                            (_passwordsMatch &&
+                                (_emailMatch || _phoneNumberMatch)))
+                        ? () {
+                            _handleSubmit();
+                          }
+                        : () {
+                            // Show validation message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Please fill all fields correctly and ensure passwords/emails match'),
+                                duration: Duration(seconds: 2),
+                              ),
                             );
+                          },
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-                            if (verificationSuccessful) {
+  Future<void> _handleSubmit() async {
+    if (isEmailActive) {
+      // Email verification flow
+      _submitForm();
+    } else {
+      // Phone number verification flow - to be implemented
+    }
+  }
+
+  // Original complex submit logic - can be uncommented if needed
+  /*Future<void> _handleSubmitOriginal() async {
+    if (isEmailActive) {
+      _submitForm();
+      bool verificationSuccessful = false;
+
+      verificationSuccessful = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EmailVerificationPage(
+            verificationMethod: _emailTextController.text,
+            resendCode: 'Email',
+            email: _emailTextController.text
+          )
+        ),
+      );
+
+      if (verificationSuccessful) {
                               Map<String, dynamic> userData = {
                                 'first_name': _fnameTextController.text,
                                 'last_name': _lnameTextController.text,
@@ -659,18 +735,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                 // Auto-retrieval time has lapsed
                               },
                             );
-                          }
-                        }
-                      : null, // Disable button if conditions are not met
-                  style: kButtonStyle,
-                  child: const Text('Submit', style: kButtonTextStyle), // Your custom button style
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+          }
+        }
+      } else {
+        // Handle phone number verification - to be implemented
+      }
+    }
+  }*/
 }

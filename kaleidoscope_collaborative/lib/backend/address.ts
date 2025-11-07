@@ -108,7 +108,7 @@ async function textSearch(query: string, lat: string, lng: string) {
         
         // FieldMask is REQUIRED for the new Places API
         // Specify which fields to return (use '*' for all fields in testing)
-        const fieldMask = 'places.id,places.displayName,places.formattedAddress,places.internationalPhoneNumber,places.rating,places.photos,places.currentOpeningHours';
+        const fieldMask = 'places.id,places.displayName,places.formattedAddress,places.internationalPhoneNumber,places.rating,places.photos,places.currentOpeningHours,places.types,places.primaryType,places.primaryTypeDisplayName';
         
         const response = await axios.post(url, requestBody, {
             headers: {
@@ -164,8 +164,13 @@ async function textSearch(query: string, lat: string, lng: string) {
                 // Fallback to generic icon if no photo available
                 result.photo = "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png";
             }
-            
-            console.log(`Place ${i}: ${result.name}`);
+
+            // Handle place types for categorization
+            result.types = place.types || [];
+            result.primary_type = place.primaryType || "";
+            result.primary_type_display = place.primaryTypeDisplayName?.text || "";
+
+            console.log(`Place ${i}: ${result.name}, Type: ${result.primary_type}`);
             return result;
         });
 

@@ -1,127 +1,265 @@
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
 
 //TO DO: Add profile photos to review cards
 //Hi next semester's team if there is one
 
-class SearchPage1_3 extends StatelessWidget {
+class SearchPage1_3 extends StatefulWidget {
   final Map<String, dynamic> result;
   final Map<String, dynamic> placeDetails;
   final String name;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   SearchPage1_3({required this.result, required this.placeDetails, required this.name});
 
   @override
+  _SearchPage1_3State createState() => _SearchPage1_3State();
+}
+
+class _SearchPage1_3State extends State<SearchPage1_3> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title:
-            Text(result['name'] ?? '', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
+          ),
+        ),
+        title: Text(
+          widget.result['name'] ?? 'Place Details',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        toolbarHeight: 48,
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FadeInImage.assetNetwork(
-              // Pull the image FROM DB here, or BY default, our dummy picture
-              placeholder: 'images/dental1.jpg',
-              image: result['photo'],
-              height: 150,
-              width: double.infinity,
-              fit: BoxFit.fill,
-            ),
+            if (widget.result['photo'] != null)
+              Image.network(
+                widget.result['photo'],
+                height: 240,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 240,
+                    color: Colors.grey.shade300,
+                    child: Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 64,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 240,
+                    color: Colors.grey.shade200,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryColor,
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
 
             Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    result['name'] ?? '',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    widget.result['name'] ?? 'Unknown Place',
+                    style: GoogleFonts.openSans(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
-                  const SizedBox(height: 8),
-                  if (placeDetails.isNotEmpty) ...[
-                    if (placeDetails['current_opening_hours'] != null &&
-                        placeDetails['current_opening_hours']['weekday_text'] !=
-                            null)
-                      Text(
-                          "Business Hours:\n ${placeDetails['current_opening_hours']['weekday_text'].join(', ').split(',').join('\n')}"),
-                    Text(
-                        "Address: ${placeDetails['formatted_address'] ?? 'N/A'}"),
-                    Text("Rating: ${result['rating'] ?? ''}"),
-                    Text(
-                        "Phone Number: ${placeDetails['formatted_phone_number'] ?? 'N/A'}"),
+                  const SizedBox(height: 16),
+                  if (widget.placeDetails.isNotEmpty) ...[
+                    if (widget.result['rating'] != null) ...[
+                      _buildDetailRow(
+                        Icons.star,
+                        'Rating: ${widget.result['rating']}',
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (widget.placeDetails['formatted_address'] != null) ...[
+                      _buildDetailRow(
+                        Icons.location_on_outlined,
+                        widget.placeDetails['formatted_address'],
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (widget.placeDetails['formatted_phone_number'] != null) ...[
+                      _buildDetailRow(
+                        Icons.phone_outlined,
+                        widget.placeDetails['formatted_phone_number'],
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                    if (widget.placeDetails['current_opening_hours'] != null &&
+                        widget.placeDetails['current_opening_hours']['weekday_text'] !=
+                            null) ...[
+                      _buildBusinessHours(
+                        widget.placeDetails['current_opening_hours']['weekday_text'],
+                      ),
+                    ],
                   ],
                 ],
               ),
             ),
             // "Add a Review" button
-
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: ElevatedButton(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: GlassmorphicButton(
+                text: "Add a Review",
                 onPressed: () {
-                  // Implement the action when the button is pressed
-                  // Implement notification functionality
-                  // Navigate to the temp rating card page
+                  // Get the primary type from the place details
+                  String primaryType = 'N/A';
+                  if (widget.placeDetails['primary_type'] != null &&
+                      widget.placeDetails['primary_type'].toString().isNotEmpty) {
+                    primaryType = widget.placeDetails['primary_type'];
+                  } else if (widget.placeDetails['types'] != null) {
+                    // Fallback: get primary type from types array
+                    final types = widget.placeDetails['types'] as List<dynamic>?;
+                    if (types != null && types.isNotEmpty) {
+                      primaryType = PlaceTypeHelper.getPrimaryType(types);
+                    }
+                  }
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => AddReviewPage(
-                            OrganizationName: placeDetails['name'] ?? 'Unknown',
-                            OrganizationId: placeDetails['place_id'] ?? '',
-                            OrganizationType: (placeDetails['types'] as List<dynamic>?)?.join(', ') ?? 'N/A',
-                            UserId: name,
-                            UserName: name,
-                            OrgImgLink: placeDetails['photo'] ?? '')),
+                            OrganizationName: widget.placeDetails['name'] ?? 'Unknown',
+                            OrganizationId: widget.placeDetails['place_id'] ?? '',
+                            OrganizationType: primaryType,
+                            UserId: widget.name,
+                            UserName: widget.name,
+                            OrgImgLink: widget.placeDetails['photo'] ?? '')),
                   );
                 },
-
-                //MainAxisAlignment.center
-                child: Text("Add a Review", style: kButtonTextStyle),
-                style: kSmallButtonStyle,
               ),
             ),
 
             // Display the content of RatingPage directly
-            Container(
-              child: Text("Community Reviews",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Text(
+                "Community Reviews",
+                style: GoogleFonts.openSans(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
             ),
 
             FutureBuilder<dynamic>(
-                future: getReviewsFor(placeDetails["place_id"]),
-                // Future that returns the name
+                future: getReviewsFor(widget.placeDetails["place_id"]),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    return Text("Loading reviews...",
-                        style: TextStyle(fontSize: 15));
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const CircularProgressIndicator(
+                              color: AppTheme.primaryColor,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "Loading reviews...",
+                              style: GoogleFonts.openSans(
+                                fontSize: 16,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   }
                   if (snapshot.hasError) {
-                    return Text("Error loading reviews",
-                        style: TextStyle(fontSize: 15));
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "Error loading reviews",
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          color: Colors.red.shade700,
+                        ),
+                      ),
+                    );
                   }
                   List<dynamic> reviews = snapshot.data ?? [];
 
                   if (reviews.isEmpty) {
-                    return Container(
-                      child: Text("No reviews currently",
-                          style: TextStyle(fontSize: 15)),
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.rate_review_outlined,
+                              size: 64,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              "No reviews yet",
+                              style: GoogleFonts.openSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Be the first to review this place!",
+                              style: GoogleFonts.openSans(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   } else {
                     return ListView.builder(
                         itemCount: reviews.length,
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           var review = reviews[index].data();
                           return RatingPageContent(
@@ -136,6 +274,75 @@ class SearchPage1_3 extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 20,
+          color: AppTheme.primaryColor,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: GoogleFonts.openSans(
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBusinessHours(List<dynamic> weekdayText) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(
+              Icons.access_time,
+              size: 20,
+              color: AppTheme.primaryColor,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "Business Hours",
+              style: GoogleFonts.openSans(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.only(left: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: weekdayText.map((day) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Text(
+                  day.toString(),
+                  style: GoogleFonts.openSans(
+                    fontSize: 14,
+                    color: Colors.black87,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -170,11 +377,19 @@ class RatingPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        padding: EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: const BorderRadius.all(Radius.circular(16)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
+            ]),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -183,65 +398,61 @@ class RatingPageContent extends StatelessWidget {
               child: RatingBar(overallRating),
             ),
 
-            SizedBox(height: 5),
+            const SizedBox(height: 8),
             Text(
               userName,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: GoogleFonts.openSans(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 8),
 
             Padding(
-              padding: EdgeInsets.only(left: 0, right: 50),
-              // Adjust the horizontal padding as needed
+              padding: const EdgeInsets.only(left: 0, right: 50),
               child: ExpandableText(
                 initialText: textReview,
                 expandedText: textReview,
               ),
             ),
 
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: accommodations.length,
-              physics: NeverScrollableScrollPhysics(),
-
-              itemBuilder: (context, index) {
-                final key = accommodations.keys.elementAt(index);
-                final values = accommodations.values.elementAt(index);
-
-                return Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      //or choose another Alignment
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          // Image border
-                          child: Container(
-                              height: 30,
-                              color: Colors.deepPurple[100],
-                              child: Row(children: [
-                              const Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child:
-                                  Icon(
-                                    Icons.directions_car,
-                                    color: Colors.blue,
-                                    size: 20.0,
-                                  ),
-                              ),
-                                Text(
-                                  key,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ])),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: accommodations.keys.map<Widget>((key) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                    border: Border.all(
+                      color: AppTheme.primaryColor,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.check_circle,
+                        color: AppTheme.primaryColorDark,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        key,
+                        style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.primaryColorDark,
                         ),
                       ),
-                    ));
-              },
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ],
         ));
@@ -269,7 +480,10 @@ class _ExpandableTextState extends State<ExpandableText> {
       children: [
         Text(
           isExpanded ? widget.expandedText : widget.initialText,
-          style: const TextStyle(fontSize: 12), // Adjusted font size
+          style: GoogleFonts.openSans(
+            fontSize: 14,
+            color: Colors.black87,
+          ),
         ),
         TextButton(
           onPressed: () {
@@ -277,7 +491,18 @@ class _ExpandableTextState extends State<ExpandableText> {
               isExpanded = !isExpanded;
             });
           },
-          child: Text(isExpanded ? 'Read Less' : 'Read More'),
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(0, 30),
+          ),
+          child: Text(
+            isExpanded ? 'Read Less' : 'Read More',
+            style: GoogleFonts.openSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.primaryColorDark,
+            ),
+          ),
         ),
       ],
     );

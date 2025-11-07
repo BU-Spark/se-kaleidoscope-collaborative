@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'screens/first_screen.dart';
-
-// import 'package:firebase_core/firebase_core.dart';
+import 'screens/auth_wrapper.dart';
+import 'config/app_theme.dart';
 import 'screens/firebase_options.dart';
 
 // void main() => runApp(MyApp());
@@ -17,16 +16,13 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Kaleidoscope Collaborative',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const FirstScreen(),
+      theme: AppTheme.getThemeData(),
+      home: const AuthWrapper(),
     );
   }
 }

@@ -16,12 +16,42 @@ class ReviewOrgDetails extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        FadeInImage.assetNetwork(
-          placeholder: 'result',
-          image: OrgImgLink,
-          fit: BoxFit.fill,
-          width: 117.0,
-          height: 99.0,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.network(
+            OrgImgLink,
+            fit: BoxFit.cover,
+            width: 164.0,
+            height: 124.0,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 164.0,
+                height: 124.0,
+                color: Colors.grey.shade300,
+                child: Icon(
+                  Icons.image_not_supported,
+                  size: 48,
+                  color: Colors.grey.shade500,
+                ),
+              );
+            },
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                width: 164.0,
+                height: 124.0,
+                color: Colors.grey.shade200,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
         ),
         const SizedBox(width: 16.0),
         Expanded(
@@ -31,20 +61,21 @@ class ReviewOrgDetails extends StatelessWidget {
               Text(
                 OrganizationName,
                 style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Text(
                 OrganizationType,
-                style: const TextStyle(
-                  fontSize: 17,
+                style: TextStyle(
+                  fontSize: 14,
                   fontWeight: FontWeight.w400,
+                  color: Colors.grey.shade700,
                 ),
-                overflow: TextOverflow.clip,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
-              const SizedBox(height: 30),
             ],
           ),
         ),
