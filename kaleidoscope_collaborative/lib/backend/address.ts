@@ -85,45 +85,112 @@ app.get('/api/photo/:photoReference(*)', async (req, res) => {
       return res.status(500).json({ error: 'API key not configured' });
     }
     
-    // Construct the Google Places Photo API URL
-    const photoUrl = `https://places.googleapis.com/v1/${photoReference}/media?maxHeightPx=400&maxWidthPx=400`;
+    // Step 1: Get the photo URL from Google Places API
+    // The /media endpoint with skipHttpRedirect=true returns the actual image URL
+    const photoApiUrl = `https://places.googleapis.com/v1/${photoReference}/media`;
     
-    console.log(`Fetching photo from: ${photoUrl}`);
+    console.log(`Step 1: Getting photo URL from: ${photoApiUrl}`);
+    console.log(`Using API Key: ${G_KEY.substring(0, 10)}...`);
     
-    // Fetch the photo from Google Places API with proper headers
-    const response = await axios.get(photoUrl, {
+    // First request: Get the actual image URL (with redirect)
+    const photoUrlResponse = await axios.get(photoApiUrl, {
       headers: {
         'X-Goog-Api-Key': G_KEY
       },
-      responseType: 'arraybuffer' // Important: get binary data
+      params: {
+        maxHeightPx: 400,
+        maxWidthPx: 400,
+        skipHttpRedirect: true  // This makes the API return the image URL instead of redirecting
+      },
+      validateStatus: function (status) {
+        return status >= 200 && status < 500; // Don't throw on 4xx errors
+      }
     });
     
-    // Forward the image to the client
-    res.set('Content-Type', response.headers['content-type'] || 'image/jpeg');
-    res.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
-    res.send(response.data);
+    console.log(`Photo URL Response Status: ${photoUrlResponse.status}`);
+    console.log(`Photo URL Response Headers:`, photoUrlResponse.headers);
     
-    console.log(`Successfully served photo`);
+    // Check if we got a photoUri in the response
+    if (photoUrlResponse.data && photoUrlResponse.data.photoUri) {
+      const actualPhotoUrl = photoUrlResponse.data.photoUri;
+      console.log(`Step 2: Fetching actual image from: ${actualPhotoUrl}`);
+      
+      // Step 2: Fetch the actual image from the URL
+      const imageResponse = await axios.get(actualPhotoUrl, {
+        responseType: 'arraybuffer'
+      });
+      
+      // Forward the image to the client
+      const contentType = imageResponse.headers['content-type'] || 'image/jpeg';
+      res.set('Content-Type', contentType);
+      res.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+      res.send(Buffer.from(imageResponse.data));
+      
+      console.log(`Successfully served photo (${contentType})`);
+    } else {
+      // If skipHttpRedirect didn't work, try direct fetch with redirect following
+      console.log(`Step 2 (fallback): Fetching image directly with redirects`);
+      
+      const directResponse = await axios.get(photoApiUrl, {
+        headers: {
+          'X-Goog-Api-Key': G_KEY
+        },
+        params: {
+          maxHeightPx: 400,
+          maxWidthPx: 400
+        },
+        responseType: 'arraybuffer',
+        maxRedirects: 5
+      });
+      
+      const contentType = directResponse.headers['content-type'] || 'image/jpeg';
+      res.set('Content-Type', contentType);
+      res.set('Cache-Control', 'public, max-age=86400');
+      res.send(Buffer.from(directResponse.data));
+      
+      console.log(`Successfully served photo via fallback (${contentType})`);
+    }
+    
   } catch (error: any) {
     console.error('Error fetching photo:', error.message);
     
     if (error.response) {
       console.error('Response status:', error.response.status);
-      console.error('Response data:', error.response.data);
+      console.error('Response headers:', JSON.stringify(error.response.headers));
+      
+      // Try to parse error response
+      if (error.response.data) {
+        try {
+          const errorText = Buffer.from(error.response.data).toString('utf-8');
+          console.error('Response data:', errorText.substring(0, 500));
+        } catch (e) {
+          console.error('Could not parse error response');
+        }
+      }
     }
     
-    // Return a 404 or error status
+    // Return a generic error image or 404
     res.status(error.response?.status || 500).json({ 
       error: 'Failed to fetch photo',
-      details: error.message 
+      details: error.message,
+      photoReference: req.params.photoReference
     });
   }
 });
 
 
+// Test endpoint to check if photo endpoint is working
+app.get('/api/test-photo', async (req, res) => {
+  res.json({
+    message: 'Photo endpoint is accessible',
+    apiKeyConfigured: G_KEY ? true : false,
+    apiKeyPrefix: G_KEY ? G_KEY.substring(0, 10) + '...' : 'NOT SET'
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  
+  console.log(`API Key configured: ${G_KEY ? 'Yes' : 'No'}`);
 });
 
 // Function calls to Google Maps API 
