@@ -71,6 +71,55 @@ app.get('/api/query/:query/:lat/:lng', async (req, res) => {
     }
   });
 
+// Photo proxy endpoint - serves Google Places photos with proper authentication
+app.get('/api/photo/:photoReference(*)', async (req, res) => {
+  console.log("Received photo request:");
+  console.log(`   Photo Reference: ${req.params.photoReference}`);
+  
+  try {
+    const photoReference = req.params.photoReference;
+    
+    // Validate API key
+    if (!G_KEY || G_KEY === '') {
+      console.error('ERROR: Google Maps API key is missing!');
+      return res.status(500).json({ error: 'API key not configured' });
+    }
+    
+    // Construct the Google Places Photo API URL
+    const photoUrl = `https://places.googleapis.com/v1/${photoReference}/media?maxHeightPx=400&maxWidthPx=400`;
+    
+    console.log(`Fetching photo from: ${photoUrl}`);
+    
+    // Fetch the photo from Google Places API with proper headers
+    const response = await axios.get(photoUrl, {
+      headers: {
+        'X-Goog-Api-Key': G_KEY
+      },
+      responseType: 'arraybuffer' // Important: get binary data
+    });
+    
+    // Forward the image to the client
+    res.set('Content-Type', response.headers['content-type'] || 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+    res.send(response.data);
+    
+    console.log(`Successfully served photo`);
+  } catch (error: any) {
+    console.error('Error fetching photo:', error.message);
+    
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
+    
+    // Return a 404 or error status
+    res.status(error.response?.status || 500).json({ 
+      error: 'Failed to fetch photo',
+      details: error.message 
+    });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -174,9 +223,10 @@ async function textSearch(query: string, lat: string, lng: string) {
             if (place.photos && place.photos.length > 0) {
                 // New API uses photo name (e.g., "places/ChIJ.../photos/...")
                 const photoName = place.photos[0].name;
-                // Construct photo URL using the new Places Photo API
-                // Note: photoName already includes the full resource path
-                result.photo = `https://places.googleapis.com/v1/${photoName}/media?key=${G_KEY}&maxHeightPx=400&maxWidthPx=400`;
+                // Store just the photo reference name (not the full URL)
+                // The Flutter app will construct the URL using our backend proxy
+                result.photo = photoName;
+                result.photoReference = photoName; // Keep for clarity
             } else {
                 // Fallback to generic icon if no photo available
                 result.photo = "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png";
