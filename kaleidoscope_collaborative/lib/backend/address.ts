@@ -1,6 +1,7 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -37,7 +38,23 @@ const port = process.env.PORT || 8000;
 const G_KEY = process.env.GOOGLE_MAPS_API_KEY;
 console.log(G_KEY);
 
+// Enable CORS for all routes (needed for Flutter app to access the API)
+app.use(cors({
+  origin: '*', // In production, you might want to restrict this to your Flutter app's domain
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Kaleidoscope Backend API is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.get('/api/query/:query/:lat/:lng', async (req, res) => {
     console.log("Received request:");
