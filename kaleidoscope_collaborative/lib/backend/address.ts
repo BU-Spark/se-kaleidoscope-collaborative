@@ -36,7 +36,6 @@ const port = process.env.PORT || 8000;
 
 // Make sure to set your Google Maps API key in the .env file 
 const G_KEY = process.env.GOOGLE_MAPS_API_KEY;
-console.log(G_KEY);
 
 // Enable CORS for all routes (needed for Flutter app to access the API)
 app.use(cors({
@@ -57,13 +56,8 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/api/query/:query/:lat/:lng', async (req, res) => {
-    console.log("Received request:");
-    console.log(`   Query: ${req.params.query}`);
-    console.log(`   Location: ${req.params.lat}, ${req.params.lng}`);
-
     try {
       const results = await textSearch(req.params.query, req.params.lat, req.params.lng);
-      console.log(`Returning ${results.length} results`);
       res.json(results);
     } catch (error: any) {
       console.error('Error in /api/query endpoint:', error.message);
@@ -72,108 +66,99 @@ app.get('/api/query/:query/:lat/:lng', async (req, res) => {
   });
 
 // Photo proxy endpoint - serves Google Places photos with proper authentication
-app.get('/api/photo/:photoReference(*)', async (req, res) => {
-  console.log("Received photo request:");
-  console.log(`   Photo Reference: ${req.params.photoReference}`);
+// Using wildcard to capture the full path including slashes
+app.get('/api/photo/*', async (req, res) => {
+  // Extract the photo reference from the path
+  // Remove '/api/photo/' prefix to get the full photo reference
+  const photoReference = req.path.replace('/api/photo/', '');
   
   try {
-    const photoReference = req.params.photoReference;
-    
     // Validate API key
     if (!G_KEY || G_KEY === '') {
-      console.error('ERROR: Google Maps API key is missing!');
       return res.status(500).json({ error: 'API key not configured' });
     }
     
-    // Step 1: Get the photo URL from Google Places API
-    // The /media endpoint with skipHttpRedirect=true returns the actual image URL
-    const photoApiUrl = `https://places.googleapis.com/v1/${photoReference}/media`;
+    // Extract the place ID and photo name from the reference
+    // Format: places/{place_id}/photos/{photo_name}
+    const match = photoReference.match(/places\/([^\/]+)\/photos\/([^\/]+)/);
     
-    console.log(`Step 1: Getting photo URL from: ${photoApiUrl}`);
-    console.log(`Using API Key: ${G_KEY.substring(0, 10)}...`);
+    if (!match) {
+      return res.status(400).json({ error: 'Invalid photo reference format' });
+    }
     
-    // First request: Get the actual image URL (with redirect)
-    const photoUrlResponse = await axios.get(photoApiUrl, {
-      headers: {
-        'X-Goog-Api-Key': G_KEY
-      },
-      params: {
-        maxHeightPx: 400,
-        maxWidthPx: 400,
-        skipHttpRedirect: true  // This makes the API return the image URL instead of redirecting
-      },
-      validateStatus: function (status) {
-        return status >= 200 && status < 500; // Don't throw on 4xx errors
-      }
-    });
+    const placeId = match[1];
     
-    console.log(`Photo URL Response Status: ${photoUrlResponse.status}`);
-    console.log(`Photo URL Response Headers:`, photoUrlResponse.headers);
-    
-    // Check if we got a photoUri in the response
-    if (photoUrlResponse.data && photoUrlResponse.data.photoUri) {
-      const actualPhotoUrl = photoUrlResponse.data.photoUri;
-      console.log(`Step 2: Fetching actual image from: ${actualPhotoUrl}`);
-      
-      // Step 2: Fetch the actual image from the URL
-      const imageResponse = await axios.get(actualPhotoUrl, {
-        responseType: 'arraybuffer'
+    // Try Method 1: Use the new Places API (v1) to get place details with photo
+    try {
+      const placeDetailsUrl = `https://places.googleapis.com/v1/places/${placeId}`;
+      const placeResponse = await axios.get(placeDetailsUrl, {
+        headers: {
+          'X-Goog-Api-Key': G_KEY,
+          'X-Goog-FieldMask': 'photos'
+        }
       });
       
-      // Forward the image to the client
-      const contentType = imageResponse.headers['content-type'] || 'image/jpeg';
-      res.set('Content-Type', contentType);
-      res.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
-      res.send(Buffer.from(imageResponse.data));
-      
-      console.log(`Successfully served photo (${contentType})`);
-    } else {
-      // If skipHttpRedirect didn't work, try direct fetch with redirect following
-      console.log(`Step 2 (fallback): Fetching image directly with redirects`);
-      
-      const directResponse = await axios.get(photoApiUrl, {
+      if (placeResponse.data && placeResponse.data.photos && placeResponse.data.photos.length > 0) {
+        // Get the first photo's name
+        const freshPhotoName = placeResponse.data.photos[0].name;
+        
+        // Now fetch the photo using the fresh reference
+        const photoUrl = `https://places.googleapis.com/v1/${freshPhotoName}/media?maxHeightPx=400&maxWidthPx=400`;
+        
+        const photoResponse = await axios.get(photoUrl, {
+          headers: {
+            'X-Goog-Api-Key': G_KEY
+          },
+          responseType: 'arraybuffer',
+          maxRedirects: 5
+        });
+        
+        const contentType = photoResponse.headers['content-type'] || 'image/jpeg';
+        res.set('Content-Type', contentType);
+        res.set('Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+        res.send(Buffer.from(photoResponse.data));
+        return;
+      }
+    } catch (method1Error: any) {
+      // Continue to Method 2
+    }
+    
+    // Method 2: Try to use the photo reference directly (might be expired)
+    try {
+      const photoUrl = `https://places.googleapis.com/v1/${photoReference}/media?maxHeightPx=400&maxWidthPx=400`;
+      const photoResponse = await axios.get(photoUrl, {
         headers: {
           'X-Goog-Api-Key': G_KEY
-        },
-        params: {
-          maxHeightPx: 400,
-          maxWidthPx: 400
         },
         responseType: 'arraybuffer',
         maxRedirects: 5
       });
       
-      const contentType = directResponse.headers['content-type'] || 'image/jpeg';
+      const contentType = photoResponse.headers['content-type'] || 'image/jpeg';
       res.set('Content-Type', contentType);
-      res.set('Cache-Control', 'public, max-age=86400');
-      res.send(Buffer.from(directResponse.data));
-      
-      console.log(`Successfully served photo via fallback (${contentType})`);
+      res.set('Cache-Control', 'public, max-age=3600');
+      res.send(Buffer.from(photoResponse.data));
+      return;
+    } catch (method2Error: any) {
+      // Continue to fallback
     }
+    
+    // Fallback: Return a placeholder image
+    const placeholderUrl = 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png';
+    const placeholderResponse = await axios.get(placeholderUrl, {
+      responseType: 'arraybuffer'
+    });
+    
+    res.set('Content-Type', 'image/png');
+    res.set('Cache-Control', 'public, max-age=86400');
+    res.send(Buffer.from(placeholderResponse.data));
     
   } catch (error: any) {
-    console.error('Error fetching photo:', error.message);
-    
-    if (error.response) {
-      console.error('Response status:', error.response.status);
-      console.error('Response headers:', JSON.stringify(error.response.headers));
-      
-      // Try to parse error response
-      if (error.response.data) {
-        try {
-          const errorText = Buffer.from(error.response.data).toString('utf-8');
-          console.error('Response data:', errorText.substring(0, 500));
-        } catch (e) {
-          console.error('Could not parse error response');
-        }
-      }
-    }
-    
-    // Return a generic error image or 404
+    // Return error as JSON
     res.status(error.response?.status || 500).json({ 
       error: 'Failed to fetch photo',
       details: error.message,
-      photoReference: req.params.photoReference
+      photoReference: photoReference
     });
   }
 });
@@ -190,7 +175,6 @@ app.get('/api/test-photo', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  console.log(`API Key configured: ${G_KEY ? 'Yes' : 'No'}`);
 });
 
 // Function calls to Google Maps API 
@@ -225,19 +209,12 @@ async function textSearch(query: string, lat: string, lng: string) {
         };
     }
     
-    console.log(`Making Google Places API (New) request to: ${url}`);
-    console.log(`Request Body:`, JSON.stringify(requestBody, null, 2));
-    console.log(`Query: "${query.trim()}", Location: ${lat}, ${lng}`);
-    
     try {
         // Validate API key
         if (!G_KEY || G_KEY === '') {
             console.error('ERROR: Google Maps API key is missing or empty!');
-            console.error('Please set GOOGLE_MAPS_API_KEY in your .env file');
             return [];
         }
-        
-        console.log(`Using API Key: ${G_KEY.substring(0, 10)}...`);
         
         // FieldMask is REQUIRED for the new Places API
         // Specify which fields to return (use '*' for all fields in testing)
@@ -253,18 +230,12 @@ async function textSearch(query: string, lat: string, lng: string) {
         
         const data = response.data;
         
-        // Log full response for debugging
-        console.log('Google Places API Response:', JSON.stringify(data, null, 2).substring(0, 500));
-        
         // Check if we got results
         if (!data.places || data.places.length === 0) {
-            console.log('No places found for query');
-            console.log('Response structure:', Object.keys(data));
             return [];
         }
         
         const places = data.places || [];
-        console.log(`Found ${places.length} places`);
 
         // Transform the new API response format to match expected frontend format
         const results = places.map((place: any, i: number) => {
@@ -304,41 +275,15 @@ async function textSearch(query: string, lat: string, lng: string) {
             result.primary_type = place.primaryType || "";
             result.primary_type_display = place.primaryTypeDisplayName?.text || "";
 
-            console.log(`Place ${i}: ${result.name}, Type: ${result.primary_type}`);
             return result;
         });
 
         return results;
     } catch (error: any) {
         console.error('ERROR calling Google Places API (New):', error.message);
-        
         if (error.response) {
             console.error('Response status:', error.response.status);
-            console.error('Response headers:', error.response.headers);
-            console.error('Response data:', JSON.stringify(error.response.data, null, 2));
-            
-            // Provide specific error guidance
-            if (error.response.status === 403) {
-                console.error('403 Forbidden - Check:');
-                console.error('   1. Places API (New) is enabled in Google Cloud Console');
-                console.error('   2. API key has correct permissions');
-                console.error('   3. Billing is enabled on your Google Cloud project');
-            } else if (error.response.status === 400) {
-                console.error('400 Bad Request - Check:');
-                console.error('   1. Request format is correct');
-                console.error('   2. Location coordinates are valid numbers');
-            } else if (error.response.status === 401) {
-                console.error('401 Unauthorized - Check:');
-                console.error('   1. API key is valid');
-                console.error('   2. API key is correctly set in .env file');
-            }
-        } else if (error.request) {
-            console.error('No response received from Google Places API');
-            console.error('Request details:', error.request);
-        } else {
-            console.error('Error setting up request:', error.message);
         }
-        
         return [];
     }
   }
