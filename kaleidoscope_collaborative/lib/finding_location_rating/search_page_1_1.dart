@@ -155,6 +155,7 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                       "Handrails",
                       "Elevator",
                       "Lowered Counter",
+                      "Handicap Parking",
                     ],
                   ),
                   _buildBoldedWordRowWithBoxes(
@@ -164,6 +165,9 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                       "Reduced Crowd",
                       "Scent Free",
                       "Digital Menu",
+                      "Low Lights",
+                      "Reduced Noise",
+                      "Spaced Seating",
                     ],
                   ),
                   _buildBoldedWordRowWithBoxes(
@@ -173,6 +177,14 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                       "Customer Service",
                       "Service Animal Friendly",
                       "Sign Language ASL", //removed /because not allowed in DB
+                      "Attendants to Assist Disabled Customers",
+                    ],
+                  ),
+                  _buildBoldedWordRowWithBoxes(
+                    "Safety & Environment",
+                    [
+                      "Fenced/Gated",
+                      "Indoor Play Area",
                     ],
                   ),
                   _buildBoldedWordRowWithBoxes(

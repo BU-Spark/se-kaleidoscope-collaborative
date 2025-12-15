@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
+import 'package:kaleidoscope_collaborative/widgets/favorite_button.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_overallRatingPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
+import 'package:kaleidoscope_collaborative/utils/photo_url_helper.dart';
 
 //TO DO: Add profile photos to review cards
 //Hi next semester's team if there is one
@@ -25,6 +27,9 @@ class _SearchPage1_3State extends State<SearchPage1_3> {
 
   @override
   Widget build(BuildContext context) {
+    // Construct the photo URL using the helper
+    final photoUrl = PhotoUrlHelper.getPhotoUrl(widget.result['photo']);
+    
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
@@ -54,8 +59,10 @@ class _SearchPage1_3State extends State<SearchPage1_3> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (widget.result['photo'] != null)
-              Image.network(
-                widget.result['photo'],
+              Stack(
+                children: [
+                  Image.network(
+                photoUrl,
                 height: 240,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -88,6 +95,20 @@ class _SearchPage1_3State extends State<SearchPage1_3> {
                     ),
                   );
                 },
+                  ),
+                  // Favorite button
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: FavoriteButton(
+                      placeId: widget.placeDetails['place_id'] ?? '',
+                      placeName: widget.result['name'] ?? 'Unknown Place',
+                      placePhoto: widget.result['photo'] ?? '',
+                      placePrimaryType: widget.placeDetails['primary_type'] ?? 'place',
+                      size: 28,
+                    ),
+                  ),
+                ],
               ),
 
             Padding(

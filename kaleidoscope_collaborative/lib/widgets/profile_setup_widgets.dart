@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
+import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 
 class ProfileSetupWidgets {
   static Widget buildProgressIndicator({
@@ -125,6 +128,58 @@ class ProfileSetupWidgets {
       backgroundColor: AppTheme.backgroundColor,
       elevation: 0,
       toolbarHeight: 48,
+    );
+  }
+
+  static Widget buildLogoutButton(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () async {
+        try {
+          globals.userEmail = '';
+          await FirebaseAuth.instance.signOut();
+          if (context.mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+              (Route<dynamic> route) => false,
+            );
+          }
+        } catch (e) {
+          debugPrint('Error signing out: $e');
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Failed to log out. Please try again.',
+                  style: GoogleFonts.openSans(),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      },
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.red, width: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        minimumSize: const Size(double.infinity, 56),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      ),
+      icon: const Icon(
+        Icons.logout,
+        color: Colors.red,
+        size: 22,
+      ),
+      label: Text(
+        'Log Out',
+        style: GoogleFonts.openSans(
+          color: Colors.red,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      ),
     );
   }
 }

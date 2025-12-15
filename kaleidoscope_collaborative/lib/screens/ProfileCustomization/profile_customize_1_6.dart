@@ -127,31 +127,37 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
             // Action Buttons
             Padding(
               padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ProfileSetupWidgets.buildBackButton(context),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GlassmorphicButton(
-                      text: 'Next',
-                      onPressed: () {
-                        if (selectedImagePath == null || selectedImagePath!.isEmpty) {
-                          selectedImagePath = defaultImagePaths[0];
-                        }
-                        widget.profileData.profile_picture_path = selectedImagePath!;
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileSetupWidgets.buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Next',
+                          onPressed: () {
+                            if (selectedImagePath == null || selectedImagePath!.isEmpty) {
+                              selectedImagePath = defaultImagePaths[0];
+                            }
+                            widget.profileData.profile_picture_path = selectedImagePath!;
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CustomizeProfilePage_1_7(profileData: widget.profileData),
-                          ),
-                        );
-                      },
-                    ),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CustomizeProfilePage_1_7(profileData: widget.profileData),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),

@@ -23,13 +23,27 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
     'Caregiver to a non-family member with a disability': false,
     'Parent of a child with a disability': false,
     'Child of a parent with a disability': false,
+    'Spouse of a person with adisability': false,
     'Service Provider': false,
     'No relationship to the disability community': false,
+    'Others': false,
   };
+
+  final TextEditingController _othersController = TextEditingController();
+
+  @override
+  void dispose() {
+    _othersController.dispose();
+    super.dispose();
+  }
 
   void _onRelationshipChanged(String key, bool value) {
     setState(() {
       relationships[key] = value;
+      // Clear the text field if "Others" is unchecked
+      if (key == 'Others' && !value) {
+        _othersController.clear();
+      }
     });
   }
 
@@ -81,7 +95,17 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
                     ...relationships.keys.map((String key) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: _buildCheckboxTile(key, relationships[key]!),
+                        child: Column(
+                          children: [
+                            _buildCheckboxTile(key, relationships[key]!),
+                            // Show text field if "Others" is selected
+                            if (key == 'Others' && relationships[key]!)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: _buildOthersTextField(),
+                              ),
+                          ],
+                        ),
                       );
                     }).toList(),
                     const SizedBox(height: 16),
@@ -93,37 +117,64 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
             // Action Buttons
             Padding(
               padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ProfileSetupWidgets.buildBackButton(context),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GlassmorphicButton(
-                      text: 'Next',
-                      onPressed: () {
-                        // Get all selected relationships
-                        List<String> selectedRelationships = relationships.entries
-                            .where((entry) => entry.value)
-                            .map((entry) => entry.key)
-                            .toList();
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileSetupWidgets.buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Next',
+                          onPressed: () {
+                            // Validate "Others" field if selected
+                            if (relationships['Others'] == true && 
+                                _othersController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Please specify your relationship in the "Others" field',
+                                    style: GoogleFonts.openSans(),
+                                  ),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                              return;
+                            }
 
-                        // Join them with comma or use the first one if only one selected
-                        widget.profileData.relationship = selectedRelationships.isNotEmpty
-                            ? selectedRelationships.join(', ')
-                            : '';
+                            // Get all selected relationships
+                            List<String> selectedRelationships = relationships.entries
+                                .where((entry) => entry.value)
+                                .map((entry) {
+                                  // Replace "Others" with the actual text input
+                                  if (entry.key == 'Others') {
+                                    return _othersController.text.trim();
+                                  }
+                                  return entry.key;
+                                })
+                                .toList();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CustomizeProfilePage_1_3(profileData: widget.profileData),
-                          ),
-                        );
-                      },
-                    ),
+                            // Join them with comma or use the first one if only one selected
+                            widget.profileData.relationship = selectedRelationships.isNotEmpty
+                                ? selectedRelationships.join(', ')
+                                : '';
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CustomizeProfilePage_1_3(profileData: widget.profileData),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),
@@ -163,6 +214,45 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
           if (newValue != null) {
             _onRelationshipChanged(title, newValue);
           }
+        },
+      ),
+    );
+  }
+
+  Widget _buildOthersTextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
+      ),
+      child: TextField(
+        controller: _othersController,
+        style: GoogleFonts.openSans(fontSize: 15),
+        decoration: InputDecoration(
+          hintText: 'Please specify your relationship...',
+          hintStyle: GoogleFonts.openSans(
+            fontSize: 14,
+            color: Colors.grey.shade500,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          suffixIcon: _othersController.text.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.grey.shade600),
+                  onPressed: () {
+                    setState(() {
+                      _othersController.clear();
+                    });
+                  },
+                )
+              : null,
+        ),
+        onChanged: (value) {
+          setState(() {}); // Update UI to show/hide clear button
         },
       ),
     );

@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
+import 'package:kaleidoscope_collaborative/utils/photo_url_helper.dart';
+import 'package:kaleidoscope_collaborative/widgets/favorite_button.dart';
 import 'package:kaleidoscope_collaborative/finding_location_rating/search_page_1_3.dart';
 
 class CategoryResultsPage extends StatefulWidget {
@@ -220,9 +222,12 @@ class _CategoryResultsPageState extends State<CategoryResultsPage> {
 
   Widget _buildPlaceCard(Map<String, dynamic> placeData) {
     final placeName = placeData['placeName'] ?? 'Unknown Place';
-    final placePhoto = placeData['placePhoto'] ?? '';
+    final placePhotoReference = placeData['placePhoto'] ?? '';
     final reviewCount = placeData['reviewCount'] ?? 0;
     final averageRating = (placeData['averageRating'] ?? 0.0).toDouble();
+    
+    // Construct the photo URL using the helper (handles both old and new formats)
+    final photoUrl = PhotoUrlHelper.getPhotoUrl(placePhotoReference);
 
     return GestureDetector(
       onTap: () {
@@ -246,9 +251,9 @@ class _CategoryResultsPageState extends State<CategoryResultsPage> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  placePhoto.isNotEmpty
+                  PhotoUrlHelper.isValidPhotoReference(placePhotoReference)
                       ? Image.network(
-                          placePhoto,
+                          photoUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
@@ -294,6 +299,18 @@ class _CategoryResultsPageState extends State<CategoryResultsPage> {
                           Colors.black.withValues(alpha: 0.3),
                         ],
                       ),
+                    ),
+                  ),
+                  // Favorite button
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: FavoriteButton(
+                      placeId: placeData['placeID'] ?? '',
+                      placeName: placeName,
+                      placePhoto: placePhotoReference,
+                      placePrimaryType: placeData['placePrimaryType'] ?? 'place',
+                      size: 20,
                     ),
                   ),
                   // Review count badge

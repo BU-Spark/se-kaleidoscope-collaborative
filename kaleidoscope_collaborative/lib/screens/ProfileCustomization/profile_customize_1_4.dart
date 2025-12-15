@@ -29,12 +29,24 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
     'Digital Menu': false,
     'Gender Neutral Washroom': false,
     'Alternative Entrance': false,
-    'Other': false,
+    'Others': false,
   };
+
+  final TextEditingController _othersController = TextEditingController();
+
+  @override
+  void dispose() {
+    _othersController.dispose();
+    super.dispose();
+  }
 
   void _onAccommodationChanged(String key, bool value) {
     setState(() {
       accommodation[key] = value;
+      // Clear the text field if "Others" is unchecked
+      if (key == 'Others' && !value) {
+        _othersController.clear();
+      }
     });
   }
 
@@ -74,7 +86,7 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Which accommodations do you frequently interact with? (Select all that apply)',
+                      'Which accommodation(s)/supports would create a more accessible environment for you? (Select all that apply)',
                       style: GoogleFonts.openSans(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -86,7 +98,17 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
                     ...accommodation.keys.map((String key) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: _buildCheckboxTile(key, accommodation[key]!),
+                        child: Column(
+                          children: [
+                            _buildCheckboxTile(key, accommodation[key]!),
+                            // Show text field if "Others" is selected
+                            if (key == 'Others' && accommodation[key]!)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: _buildOthersTextField(),
+                              ),
+                          ],
+                        ),
                       );
                     }).toList(),
                     const SizedBox(height: 16),
@@ -98,33 +120,60 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
             // Action Buttons
             Padding(
               padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ProfileSetupWidgets.buildBackButton(context),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GlassmorphicButton(
-                      text: 'Next',
-                      onPressed: () {
-                        List<String> accommodations = accommodation.entries
-                            .where((entry) => entry.value)
-                            .map((entry) => entry.key)
-                            .toList();
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileSetupWidgets.buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Next',
+                          onPressed: () {
+                            // Validate "Others" field if selected
+                            if (accommodation['Others'] == true && 
+                                _othersController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Please specify the accommodation in the "Others" field',
+                                    style: GoogleFonts.openSans(),
+                                  ),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                              return;
+                            }
 
-                        widget.profileData.accommodations = accommodations;
+                            List<String> accommodations = accommodation.entries
+                                .where((entry) => entry.value)
+                                .map((entry) {
+                                  // Replace "Others" with the actual text input
+                                  if (entry.key == 'Others') {
+                                    return _othersController.text.trim();
+                                  }
+                                  return entry.key;
+                                })
+                                .toList();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CustomizeProfilePage_1_5(profileData: widget.profileData),
-                          ),
-                        );
-                      },
-                    ),
+                            widget.profileData.accommodations = accommodations;
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CustomizeProfilePage_1_5(profileData: widget.profileData),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),
@@ -164,6 +213,45 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
           if (newValue != null) {
             _onAccommodationChanged(title, newValue);
           }
+        },
+      ),
+    );
+  }
+
+  Widget _buildOthersTextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
+      ),
+      child: TextField(
+        controller: _othersController,
+        style: GoogleFonts.openSans(fontSize: 15),
+        decoration: InputDecoration(
+          hintText: 'Please specify the accommodation...',
+          hintStyle: GoogleFonts.openSans(
+            fontSize: 14,
+            color: Colors.grey.shade500,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          suffixIcon: _othersController.text.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.grey.shade600),
+                  onPressed: () {
+                    setState(() {
+                      _othersController.clear();
+                    });
+                  },
+                )
+              : null,
+        ),
+        onChanged: (value) {
+          setState(() {}); // Update UI to show/hide clear button
         },
       ),
     );

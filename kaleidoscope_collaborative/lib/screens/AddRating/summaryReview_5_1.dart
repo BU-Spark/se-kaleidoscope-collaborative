@@ -172,7 +172,7 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              entry.key,
+                              _formatParameterName(entry.key),
                               style: GoogleFonts.openSans(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -372,5 +372,15 @@ class _SummaryReviewPageState extends State<SummaryReviewPage> {
         ),
       ),
     );
+  }
+
+  /// Format parameter names by adding spaces before capital letters
+  String _formatParameterName(String name) {
+    // Add space before capital letters (except the first one)
+    String formatted = name.replaceAllMapped(
+      RegExp(r'(?<!^)(?=[A-Z])'),
+      (match) => ' ',
+    );
+    return formatted;
   }
 }

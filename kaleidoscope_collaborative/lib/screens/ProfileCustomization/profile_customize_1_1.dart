@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
+import 'package:kaleidoscope_collaborative/widgets/profile_setup_widgets.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_2.dart';
 import 'package:kaleidoscope_collaborative/models/profile.dart';
 
@@ -111,46 +112,52 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
             // Action Buttons - Fixed at bottom
             Padding(
               padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildBackButton(context),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GlassmorphicButton(
-                      text: 'Next',
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          if (selectedGender == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Please select your gender',
-                                  style: GoogleFonts.openSans(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Next',
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              if (selectedGender == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Please select your gender',
+                                      style: GoogleFonts.openSans(),
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+                              final profileData = ProfileData(
+                                name: _nameController.text,
+                                age: int.parse(_ageController.text),
+                                gender: selectedGender ?? 'Not specified',
+                                occupation: _occupationController.text,
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CustomizeProfilePage_1_2(profileData: profileData),
                                 ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
-                          }
-                          final profileData = ProfileData(
-                            name: _nameController.text,
-                            age: int.parse(_ageController.text),
-                            gender: selectedGender ?? 'Not specified',
-                            occupation: _occupationController.text,
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CustomizeProfilePage_1_2(profileData: profileData),
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),

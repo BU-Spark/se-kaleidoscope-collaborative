@@ -8,3 +8,4 @@ String userEmail = '';
 // For Physical Device (iPhone/Android): use Railway URL
 // Production: Railway deployment URL
 String apiBaseUrl = 'https://se-kaleidoscope-collaborative-production.up.railway.app';
+// String apiBaseUrl = 'https://10e534ea3970.ngrok-free.app';

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
+import 'package:kaleidoscope_collaborative/utils/photo_url_helper.dart';
 import 'package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart';
 
 class ReviewContentPage extends StatefulWidget {
@@ -315,9 +316,12 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
 
   Widget _buildReviewCard(Map<String, dynamic> reviewData) {
     final placeName = reviewData['placeName'] ?? 'Unknown Place';
-    final placePhoto = reviewData['placePhoto'] ?? '';
+    final placePhotoReference = reviewData['placePhoto'] ?? '';
     final overallRating = reviewData['overallRating'] ?? 0;
     final textReview = reviewData['textReview'] ?? '';
+    
+    // Construct the photo URL using the helper
+    final photoUrl = PhotoUrlHelper.getPhotoUrl(placePhotoReference);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -342,9 +346,9 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
                 // Place photo
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: placePhoto.isNotEmpty
+                  child: PhotoUrlHelper.isValidPhotoReference(placePhotoReference)
                       ? Image.network(
-                          placePhoto,
+                          photoUrl,
                           width: 60,
                           height: 60,
                           fit: BoxFit.cover,

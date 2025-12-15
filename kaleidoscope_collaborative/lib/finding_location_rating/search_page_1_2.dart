@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/utils/photo_url_helper.dart';
+import 'package:kaleidoscope_collaborative/widgets/favorite_button.dart';
 import 'search_page_1_3.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -215,6 +217,9 @@ class SearchPage1_2 extends StatelessWidget {
 
 // The gray background layered card that displays the search results
   Widget _buildResultCard(BuildContext context, Map<String, dynamic> result) {
+    // Construct the photo URL using the helper
+    final photoUrl = PhotoUrlHelper.getPhotoUrl(result['photo']);
+    
     return GestureDetector(
       onTap: () async {
         Map<String, dynamic> placeDetails = result;
@@ -234,43 +239,70 @@ class SearchPage1_2 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.network(
-                result['photo'] ?? '',
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 180,
-                    color: Colors.grey.shade300,
-                    child: Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 64,
-                        color: Colors.grey.shade500,
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  child: PhotoUrlHelper.isValidPhotoReference(result['photo'])
+                      ? Image.network(
+                      photoUrl,
+                      height: 180,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 180,
+                          color: Colors.grey.shade300,
+                          child: Center(
+                            child: Icon(
+                              Icons.image_not_supported,
+                              size: 64,
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 180,
+                          color: Colors.grey.shade200,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppTheme.primaryColor,
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
+                      height: 180,
+                      color: Colors.grey.shade300,
+                      child: Center(
+                        child: Icon(
+                          Icons.place,
+                          size: 64,
+                          color: Colors.grey.shade500,
+                        ),
                       ),
                     ),
-                  );
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    height: 180,
-                    color: Colors.grey.shade200,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: AppTheme.primaryColor,
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                            : null,
-                      ),
-                    ),
-                  );
-                },
-              ),
+                ),
+                // Favorite button
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: FavoriteButton(
+                    placeId: result['place_id'] ?? '',
+                    placeName: result['name'] ?? 'Unknown Place',
+                    placePhoto: result['photo'] ?? '',
+                    placePrimaryType: result['primary_type'] ?? 'place',
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

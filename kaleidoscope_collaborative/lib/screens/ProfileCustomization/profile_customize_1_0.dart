@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
+import 'package:kaleidoscope_collaborative/widgets/profile_setup_widgets.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_1.dart';
 
@@ -105,25 +106,31 @@ class CustomizeProfilePage extends StatelessWidget {
             // Action Buttons - Fixed at bottom
             Padding(
               padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildSkipButton(context),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildSkipButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: "Let's Go!",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CustomizeProfilePage_1_1(),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GlassmorphicButton(
-                      text: "Let's Go!",
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CustomizeProfilePage_1_1(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),

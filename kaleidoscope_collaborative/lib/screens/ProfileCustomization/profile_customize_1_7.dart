@@ -164,7 +164,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                           const SizedBox(height: 16),
 
                           _buildInfoSection(
-                            'Familiar with',
+                            'Disability/Support category best matching your needs',
                             profileData.disability_familiarity.isNotEmpty
                                 ? profileData.disability_familiarity.join(', ')
                                 : 'No disabilities selected',
@@ -198,16 +198,18 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
             // Action Buttons
             Padding(
               padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: ProfileSetupWidgets.buildBackButton(context),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: GlassmorphicButton(
-                      text: 'Finish',
-                      onPressed: () async {
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileSetupWidgets.buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Finish',
+                          onPressed: () async {
                         // Get current user from Firebase Auth
                         final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -275,6 +277,10 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                       },
                     ),
                   ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),
