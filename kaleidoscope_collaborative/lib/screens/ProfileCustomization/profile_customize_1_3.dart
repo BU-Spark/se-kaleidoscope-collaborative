@@ -37,6 +37,23 @@ class _CustomizeProfilePage_1_3State extends State<CustomizeProfilePage_1_3> {
   final TextEditingController _othersController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-fill disability familiarity checkboxes with existing data
+    if (widget.profileData.disability_familiarity.isNotEmpty) {
+      for (String disability in widget.profileData.disability_familiarity) {
+        if (disabilityFamiliarity.containsKey(disability)) {
+          disabilityFamiliarity[disability] = true;
+        } else {
+          // If it doesn't match any key, it might be an "Others" value
+          disabilityFamiliarity['Others'] = true;
+          _othersController.text = disability;
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _othersController.dispose();
     super.dispose();

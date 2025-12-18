@@ -35,6 +35,23 @@ class _CustomizeProfilePage_1_5State extends State<CustomizeProfilePage_1_5> {
   final TextEditingController _othersController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-fill location preference checkboxes with existing data
+    if (widget.profileData.location_preference.isNotEmpty) {
+      for (String location in widget.profileData.location_preference) {
+        if (locationPreference.containsKey(location)) {
+          locationPreference[location] = true;
+        } else {
+          // If it doesn't match any key, it might be an "Others" value
+          locationPreference['Others'] = true;
+          _othersController.text = location;
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _othersController.dispose();
     super.dispose();

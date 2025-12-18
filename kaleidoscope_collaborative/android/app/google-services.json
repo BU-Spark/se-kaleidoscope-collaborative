@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "181675201017",
     "project_id": "se-kaleidoscope-collaborative",
-    "storage_bucket": "se-kaleidoscope-collaborative.appspot.com"
+    "storage_bucket": "se-kaleidoscope-collaborative.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +12,28 @@
           "package_name": "com.example.kaleidoscope_collaborative"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "181675201017-9einm17ap4q2uu2rqjlnkc4ql45aqq7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kaleidoscope_collaborative",
+            "certificate_hash": "c18f39833ff6c56c933715b1226237eee6e1e765"
+          }
+        },
+        {
+          "client_id": "181675201017-9oq0b4b9gv2usfrivb365h56cboemkm7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kaleidoscope_collaborative",
+            "certificate_hash": "1415e763395910706f901943d01bb39bbf7748ae"
+          }
+        },
+        {
+          "client_id": "181675201017-2gg712kejfp6hseigl6s4nm64ef0lbgu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA8P-O2mbaU4AsM05oQ7XRUwtz0MbrTGCM"
@@ -20,7 +41,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181675201017-2gg712kejfp6hseigl6s4nm64ef0lbgu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "181675201017-1duvoahmgjnak0de4gkig8jg5hem4i6s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kaleidoscopeCollaborative.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

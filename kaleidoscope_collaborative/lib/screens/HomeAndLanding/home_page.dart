@@ -12,13 +12,8 @@ import 'package:kaleidoscope_collaborative/widgets/auth_gate.dart';
 import 'package:kaleidoscope_collaborative/screens/Review/review_content_page.dart';
 import 'package:kaleidoscope_collaborative/screens/Category/category_results_page.dart';
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
-
-class Category {
-  final String imagePath;
-  final String name;
-
-  Category({required this.imagePath, required this.name});
-}
+import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
+import 'package:kaleidoscope_collaborative/services/unsplash_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -44,20 +39,15 @@ class _DashboardScreenState extends State<DashboardScreen>
   ProfileData? _profileData;
   bool _showProfileCustomization = false;
 
-  final List<Category> categories = [
-    Category(imagePath: 'images/restaurant.jpg', name: 'Restaurant'),
-    Category(imagePath: 'images/dojo.jpg', name: 'Dojo'),
-    Category(imagePath: 'images/library.jpg', name: 'Library'),
-    Category(imagePath: 'images/museum.jpg', name: 'Museum'),
-    Category(imagePath: 'images/dentist.jpg', name: 'Dentist'),
-    Category(imagePath: 'images/swimming.jpg', name: 'Swimming Pool'),
-  ];
+  // Categories will be loaded dynamically from reviews
+  late CloudFirestoreService _firestoreService;
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
     _tabController = TabController(length: 2, vsync: this);
+    _firestoreService = CloudFirestoreService(_firestore);
 
     // Listen to auth state changes
     _auth.authStateChanges().listen((User? user) {
@@ -263,96 +253,223 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              childAspectRatio: 1 / 1.05,
-            ),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              var category = categories[index];
-              return GestureDetector(
-                onTap: () {
-                  // Map display name to Google type
-                  String categoryType = PlaceTypeHelper.mapDisplayNameToType(category.name);
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoryResultsPage(
-                        categoryType: categoryType,
-                        categoryName: category.name,
-                        userName: loggedInUser?.email ?? 'User',
-                      ),
-                    ),
-                  );
-                },
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  elevation: 3,
-                  shadowColor: AppTheme.primaryColor.withValues(alpha: 0.2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
+          child: FutureBuilder<Map<String, int>>(
+            future: _firestoreService.getAvailableCategoryGroups(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        flex: 3,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.asset(
-                              category.imagePath,
-                              fit: BoxFit.cover,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withValues(alpha: 0.3),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      const CircularProgressIndicator(
+                        color: AppTheme.primaryColor,
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          color: Colors.white,
-                          child: Center(
-                            child: Text(
-                              category.name,
-                              style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                              textAlign: TextAlign.center,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Loading categories...',
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          color: Colors.grey.shade700,
                         ),
                       ),
                     ],
                   ),
+                );
+              }
+
+              if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.explore_outlined,
+                          size: 64,
+                          color: Colors.grey.shade400,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No categories yet',
+                          style: GoogleFonts.openSans(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Start reviewing places to see categories here!',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.openSans(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              // Group types by category groups
+              final categoryGroups = _groupTypesByCategoryGroup(snapshot.data!);
+              
+              return GridView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 1 / 1.05,
                 ),
+                itemCount: categoryGroups.length,
+                itemBuilder: (context, index) {
+                  final entry = categoryGroups[index];
+                  final categoryGroupName = entry.key;
+                  final reviewCount = entry.value;
+                  
+                  // Get the best type for this category group to use for display
+                  final bestType = _getBestTypeForCategoryGroup(categoryGroupName, snapshot.data!);
+                  final displayName = PlaceTypeHelper.getFriendlyName(bestType);
+                  final icon = PlaceTypeHelper.getIcon(bestType);
+                  final color = PlaceTypeHelper.getCategoryColor(bestType);
+
+                  return GestureDetector(
+                    onTap: () {
+                      // Get all types in this category group
+                      final types = PlaceTypeHelper.getTypesForCategory(categoryGroupName);
+                      final categoryType = types.isNotEmpty ? types.first : bestType;
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryResultsPage(
+                            categoryType: categoryType,
+                            categoryName: displayName,
+                            userName: loggedInUser?.email ?? 'User',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 3,
+                      shadowColor: AppTheme.primaryColor.withValues(alpha: 0.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: _CategoryImageWidget(
+                              categoryName: displayName,
+                              icon: icon,
+                              color: color,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              color: Colors.white,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      displayName,
+                                      style: GoogleFonts.openSans(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 1),
+                                  Text(
+                                    '$reviewCount ${reviewCount == 1 ? 'review' : 'reviews'}',
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 11,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             },
           ),
         ),
       ],
     );
+  }
+
+  /// Group types by their category groups and sum review counts
+  List<MapEntry<String, int>> _groupTypesByCategoryGroup(Map<String, int> typeCounts) {
+    Map<String, int> groupedCounts = {};
+    
+    for (var entry in typeCounts.entries) {
+      final type = entry.key;
+      final count = entry.value;
+      
+      // Get category group for this type
+      final categoryGroup = PlaceTypeHelper.getCategoryGroup(type);
+      
+      if (categoryGroup != null) {
+        // Group by category group
+        groupedCounts[categoryGroup] = (groupedCounts[categoryGroup] ?? 0) + count;
+      } else {
+        // If no category group, use the type itself as the group
+        groupedCounts[type] = (groupedCounts[type] ?? 0) + count;
+      }
+    }
+    
+    // Sort by review count (descending) and return as list
+    final sorted = groupedCounts.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    return sorted;
+  }
+
+  /// Get the best type for a category group (the one with most reviews)
+  String _getBestTypeForCategoryGroup(String categoryGroup, Map<String, int> typeCounts) {
+    final types = PlaceTypeHelper.getTypesForCategory(categoryGroup);
+    
+    if (types.isEmpty) {
+      return categoryGroup;
+    }
+    
+    // Find the type in this category group with the most reviews
+    String? bestType;
+    int maxCount = 0;
+    
+    for (var type in types) {
+      final count = typeCounts[type] ?? 0;
+      if (count > maxCount) {
+        maxCount = count;
+        bestType = type;
+      }
+    }
+    
+    // If no type found with reviews, return the first type in the group
+    return bestType ?? types.first;
   }
 
   Widget _buildReviewTab() {
@@ -474,5 +591,141 @@ class _DashboardScreenState extends State<DashboardScreen>
         _selectedIndex = index;
       });
     }
+  }
+}
+
+/// Widget that displays category image from Unsplash with icon fallback
+class _CategoryImageWidget extends StatelessWidget {
+  final String categoryName;
+  final IconData icon;
+  final Color color;
+
+  const _CategoryImageWidget({
+    required this.categoryName,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: UnsplashService.getCategoryImageUrl(categoryName),
+      builder: (context, snapshot) {
+        // If image is loading or not available, show icon fallback
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.4),
+                ],
+              ),
+            ),
+            child: Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
+              ),
+            ),
+          );
+        }
+
+        final imageUrl = snapshot.data;
+
+        // If we have an image URL, display it
+        if (imageUrl != null) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // If image fails to load, show icon fallback
+                  return _buildIconFallback();
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.15),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          color.withValues(alpha: 0.2),
+                          color.withValues(alpha: 0.4),
+                        ],
+                      ),
+                    ),
+                    child: Center(
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(color),
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              // Add a subtle gradient overlay for better text readability
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.2),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        // Fallback to icon if no image available
+        return _buildIconFallback();
+      },
+    );
+  }
+
+  Widget _buildIconFallback() {
+    return Container(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            color.withValues(alpha: 0.2),
+            color.withValues(alpha: 0.4),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          icon,
+          size: 48,
+          color: color,
+        ),
+      ),
+    );
   }
 }

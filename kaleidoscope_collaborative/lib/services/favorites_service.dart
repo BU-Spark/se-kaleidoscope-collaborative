@@ -86,7 +86,15 @@ class FavoritesService {
               })
           .toList();
     } catch (e) {
-      print('Error getting favorites: $e');
+      // Check if it's an index error
+      final errorString = e.toString();
+      if (errorString.contains('index') || errorString.contains('failed-precondition')) {
+        // Silently fallback - index will be created automatically by Firebase
+        // or user can create it using the link in the error message
+      } else {
+        print('Error getting favorites: $e');
+      }
+      
       // If orderBy fails (no index), try without ordering
       try {
         final querySnapshot = await _firestore
@@ -94,12 +102,25 @@ class FavoritesService {
             .where('userId', isEqualTo: userId)
             .get();
 
-        return querySnapshot.docs
+        // Sort manually in memory
+        final favorites = querySnapshot.docs
             .map((doc) => {
                   'id': doc.id,
                   ...doc.data(),
                 })
             .toList();
+        
+        // Sort by timestamp descending if available
+        favorites.sort((a, b) {
+          final aTime = a['timestamp'] as Timestamp?;
+          final bTime = b['timestamp'] as Timestamp?;
+          if (aTime == null && bTime == null) return 0;
+          if (aTime == null) return 1;
+          if (bTime == null) return -1;
+          return bTime.compareTo(aTime);
+        });
+        
+        return favorites;
       } catch (e2) {
         print('Error getting favorites (fallback): $e2');
         return [];

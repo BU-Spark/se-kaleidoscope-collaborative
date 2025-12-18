@@ -7,7 +7,9 @@ import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_
 import 'package:kaleidoscope_collaborative/models/profile.dart';
 
 class CustomizeProfilePage_1_1 extends StatefulWidget {
-  const CustomizeProfilePage_1_1({super.key});
+  final ProfileData? existingProfileData;
+  
+  const CustomizeProfilePage_1_1({super.key, this.existingProfileData});
 
   @override
   _CustomizeProfilePage_1_1State createState() =>
@@ -21,6 +23,18 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
   final _formKey = GlobalKey<FormState>();
 
   String? selectedGender;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill with existing data if available
+    if (widget.existingProfileData != null) {
+      _nameController.text = widget.existingProfileData!.name;
+      _ageController.text = widget.existingProfileData!.age.toString();
+      selectedGender = widget.existingProfileData!.gender;
+      _occupationController.text = widget.existingProfileData!.occupation;
+    }
+  }
 
   @override
   void dispose() {
@@ -137,12 +151,27 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
                                 );
                                 return;
                               }
-                              final profileData = ProfileData(
-                                name: _nameController.text,
-                                age: int.parse(_ageController.text),
-                                gender: selectedGender ?? 'Not specified',
-                                occupation: _occupationController.text,
-                              );
+                              // Use existing profile data if available, otherwise create new
+                              final profileData = widget.existingProfileData != null
+                                  ? ProfileData(
+                                      name: _nameController.text,
+                                      age: int.parse(_ageController.text),
+                                      gender: selectedGender ?? 'Not specified',
+                                      occupation: _occupationController.text,
+                                      relationship: widget.existingProfileData!.relationship,
+                                      disability_familiarity: widget.existingProfileData!.disability_familiarity,
+                                      accommodations: widget.existingProfileData!.accommodations,
+                                      location_preference: widget.existingProfileData!.location_preference,
+                                      profile_picture_path: widget.existingProfileData!.profile_picture_path,
+                                      uploaded_profile_picture_status: widget.existingProfileData!.uploaded_profile_picture_status,
+                                      uploaded_profile_picture: widget.existingProfileData!.uploaded_profile_picture,
+                                    )
+                                  : ProfileData(
+                                      name: _nameController.text,
+                                      age: int.parse(_ageController.text),
+                                      gender: selectedGender ?? 'Not specified',
+                                      occupation: _occupationController.text,
+                                    );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

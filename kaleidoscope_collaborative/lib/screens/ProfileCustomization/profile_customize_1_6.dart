@@ -26,6 +26,20 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
   String? selectedImagePath;
   bool isImageUploaded = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill profile picture selection with existing data
+    if (widget.profileData.uploaded_profile_picture_status == 1 &&
+        widget.profileData.uploaded_profile_picture != null &&
+        widget.profileData.uploaded_profile_picture!.isNotEmpty) {
+      isImageUploaded = true;
+      // Keep the existing base64 image in profileData
+    } else if (widget.profileData.profile_picture_path.isNotEmpty) {
+      selectedImagePath = widget.profileData.profile_picture_path;
+    }
+  }
+
   final List<String> defaultImagePaths = [
     'images/defaultProfilePictures/default_image_1.png',
     'images/defaultProfilePictures/default_image_2.png',
@@ -240,11 +254,29 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
       ),
       child: Column(
         children: [
-          Icon(
-            isImageUploaded ? Icons.check_circle : Icons.cloud_upload,
-            size: 48,
-            color: isImageUploaded ? Colors.green : AppTheme.primaryColor,
-          ),
+          // Show uploaded image preview if available
+          if (isImageUploaded && widget.profileData.uploaded_profile_picture != null)
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppTheme.primaryColor, width: 3),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(13),
+                child: Image.memory(
+                  base64Decode(widget.profileData.uploaded_profile_picture!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          else
+            Icon(
+              isImageUploaded ? Icons.check_circle : Icons.cloud_upload,
+              size: 48,
+              color: isImageUploaded ? Colors.green : AppTheme.primaryColor,
+            ),
           const SizedBox(height: 16),
           Text(
             isImageUploaded ? 'Image Uploaded Successfully!' : 'Upload Your Image',

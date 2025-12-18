@@ -5,9 +5,12 @@ import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/widgets/profile_setup_widgets.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_1.dart';
+import 'package:kaleidoscope_collaborative/models/profile.dart';
 
 class CustomizeProfilePage extends StatelessWidget {
-  const CustomizeProfilePage({super.key});
+  final ProfileData? existingProfileData;
+  
+  const CustomizeProfilePage({super.key, this.existingProfileData});
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class CustomizeProfilePage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const CustomizeProfilePage_1_1(),
+                                builder: (context) => CustomizeProfilePage_1_1(existingProfileData: existingProfileData),
                               ),
                             );
                           },

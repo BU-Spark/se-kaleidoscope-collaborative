@@ -32,6 +32,30 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
   final TextEditingController _othersController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-fill relationship checkboxes with existing data
+    if (widget.profileData.relationship.isNotEmpty) {
+      final relationshipList = widget.profileData.relationship.split(', ').map((e) => e.trim()).toList();
+      
+      // Check if any of the relationships match the keys
+      for (String rel in relationshipList) {
+        if (relationships.containsKey(rel)) {
+          relationships[rel] = true;
+        } else {
+          // If it doesn't match any key, it might be an "Others" value
+          // Check if it's not in the standard list
+          bool isStandard = relationships.keys.any((key) => key == rel);
+          if (!isStandard) {
+            relationships['Others'] = true;
+            _othersController.text = rel;
+          }
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _othersController.dispose();
     super.dispose();

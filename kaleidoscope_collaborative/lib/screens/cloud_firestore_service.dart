@@ -184,4 +184,73 @@ class CloudFirestoreService {
       return 0;
     }
   }
+
+  /// Update an existing review by document ID
+  Future<void> updateUserReview(String reviewId, Map<String, dynamic> data) async {
+    try {
+      await firestore.collection('UserReview').doc(reviewId).update({
+        ...data,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      print('Error updating review: $e');
+      rethrow;
+    }
+  }
+
+  /// Delete a review by document ID
+  Future<void> deleteUserReview(String reviewId) async {
+    try {
+      await firestore.collection('UserReview').doc(reviewId).delete();
+    } catch (e) {
+      print('Error deleting review: $e');
+      rethrow;
+    }
+  }
+
+  /// Get all unique category groups from reviews
+  /// Returns a map of category group name to review count
+  /// Groups Google Places API types into category groups (e.g., Restaurant, Fitness, etc.)
+  Future<Map<String, int>> getAvailableCategoryGroups() async {
+    try {
+      // Get all reviews (limit to reasonable number for performance)
+      QuerySnapshot querySnapshot = await firestore
+          .collection('UserReview')
+          .limit(1000) // Adjust based on your needs
+          .get();
+
+      // Count reviews by category group
+      Map<String, int> categoryCounts = {};
+      
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        String placeType = data['placePrimaryType'] ?? '';
+        
+        // Clean up the type
+        if (placeType.isEmpty || placeType == 'N/A') {
+          continue;
+        }
+        
+        // Extract primary type if it's comma-separated
+        if (placeType.contains(',')) {
+          placeType = placeType.split(',').first.trim();
+        }
+        
+        placeType = placeType.toLowerCase().trim();
+        
+        // Map to category group using PlaceTypeHelper logic
+        // We'll do this in the calling code to avoid circular dependency
+        // For now, use the type as-is and group in the UI layer
+        if (!categoryCounts.containsKey(placeType)) {
+          categoryCounts[placeType] = 0;
+        }
+        categoryCounts[placeType] = categoryCounts[placeType]! + 1;
+      }
+
+      return categoryCounts;
+    } catch (e) {
+      print('Error getting available category groups: $e');
+      return {};
+    }
+  }
 }
