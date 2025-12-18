@@ -1,7 +1,9 @@
 // This is the Login Screen for user authentication with email and password, and options for social media login.
 import 'package:flutter/material.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -45,7 +47,30 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailFocus.dispose();
     _passwordFocus.dispose();
+    _emailTextController.dispose();
+    _passwordTextController.dispose();
     super.dispose();
+  }
+
+  InputDecoration _buildInputDecoration(String label, {Widget? suffixIcon}) {
+    return InputDecoration(
+      labelText: label,
+      suffixIcon: suffixIcon,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide:
+            BorderSide(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    );
   }
 
   @override
@@ -60,14 +85,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        // AppBar with back button
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
+          ),
         ),
-        title: const Text('Log in', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        title: Text(
+          'Log In',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
+        toolbarHeight: 48,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -93,9 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 focusNode: _emailFocus,
                 obscureText: false,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: 'Email',
+                decoration: _buildInputDecoration(
+                  'Email',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () => clearText(_emailTextController),
@@ -110,16 +146,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailTextController,
               ),
 
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // TODO: Password input validation on the front end
               // TextField for password input.
               TextField(
                 focusNode: _passwordFocus,
                 obscureText: true,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: 'Password',
+                decoration: _buildInputDecoration(
+                  'Password',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
                     onPressed: () => clearText(_passwordTextController),
@@ -133,25 +168,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 controller: _passwordTextController,
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Button for user login.
-              ElevatedButton(
+              GlassmorphicButton(
+                text: 'Log In',
                 onPressed: () async {
                   try {
-                    final existingUser = await _auth.signInWithEmailAndPassword(
+                    await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     globals.userEmail = _emailTextController.text;
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const LoginCompletePage()));
-                                    } catch (e) {
+                  } catch (e) {
                     print(e);
                   }
                 },
-                style: kButtonStyle,
-                child: const Text('Log In'),
               ),
               // Button to navigate to Forgot Password screen.
               TextButton(
@@ -185,7 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
 
-              ElevatedButton(
+              GlassmorphicButton(
+                text: 'Log In with Facebook',
                 onPressed: () async {
                   try {
                     final UserCredential? userCredential =
@@ -217,20 +252,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   }
                 },
-                style: kButtonStyle,
-                child: const Text('Log In with Facebook'),
               ),
               const SizedBox(height: 16),
               // TODO: Implement login using google:
               //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Google and follow the steps given to integrate it with the onPressed method of the button
-              ElevatedButton(
+              GlassmorphicButton(
+                text: 'Log In with Google',
                 onPressed: () {
                   signInWithGoogle(context).catchError((error) {
                     print('Google sign-in failed: $error');
                   });
                 },
-                style: kButtonStyle,
-                child: const Text('Log In with Google'),
               ),
               const SizedBox(height: 32),
 

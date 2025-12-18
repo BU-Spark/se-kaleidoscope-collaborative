@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
+import 'package:kaleidoscope_collaborative/widgets/profile_setup_widgets.dart';
 import 'package:kaleidoscope_collaborative/models/profile.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
 
@@ -14,10 +18,10 @@ class CustomizeProfilePage_1_4 extends StatefulWidget {
 }
 
 class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
-  Map<String, bool> acommadation = {
+  Map<String, bool> accommodation = {
     'Accessible Parking': false,
     'Elevator': false,
-    'Braile': false,
+    'Braille': false,
     'Automated Doors': false,
     'Accessible Washroom': false,
     'Bright Lighting': false,
@@ -25,167 +29,231 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
     'Digital Menu': false,
     'Gender Neutral Washroom': false,
     'Alternative Entrance': false,
-    'Other': false,
+    'Others': false,
   };
 
-  void _onAcommadationChanged(String key, bool value) {
+  final TextEditingController _othersController = TextEditingController();
+
+  @override
+  void dispose() {
+    _othersController.dispose();
+    super.dispose();
+  }
+
+  void _onAccommodationChanged(String key, bool value) {
     setState(() {
-      acommadation[key] = value;
+      accommodation[key] = value;
+      // Clear the text field if "Others" is unchecked
+      if (key == 'Others' && !value) {
+        _othersController.clear();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    double spacerHeight = height / 21;
-    double halfSpacerHeight = height / 42;
-    double textfieldHeight = height / 104;
-    double container = width / 1.9;
-    double padding = width / 24;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Form(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: spacerHeight),
-                const Text(
-                  'Customize Profile',
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 32,
-                    color: Colors.black,
-                    letterSpacing: 0.1,
-                  ),
-                ),
-                SizedBox(height: halfSpacerHeight),
-                const Text(
-                  "Tell us a bit about yourself!",
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                    letterSpacing: 0.5,
-                    color: Colors.black,
-                  ),
-                  softWrap: true,
-                ),
-                SizedBox(height: halfSpacerHeight),
-                SizedBox(
-                  width: container,
-                  child: const Text(
-                    'Which accommodations do you frequently interact with?',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: Colors.black,
-                      letterSpacing: 0.15,
-                    ),
-                  ),
-                ),
-                SizedBox(height: halfSpacerHeight),
-                ..._buildAcommadationCheckboxes(),
-                SizedBox(height: spacerHeight),
-                _buildActionButtons(context),
-              ],
+      backgroundColor: AppTheme.backgroundColor,
+      appBar: ProfileSetupWidgets.buildAppBar('Profile Setup'),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Progress Indicator
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0),
+              child: ProfileSetupWidgets.buildProgressIndicator(
+                currentStep: 5,
+                totalSteps: 8,
+              ),
             ),
-          ),
+
+            // Scrollable Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Text(
+                      'Accommodations',
+                      style: GoogleFonts.openSans(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Which accommodation(s)/supports would create a more accessible environment for you? (Select all that apply)',
+                      style: GoogleFonts.openSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ...accommodation.keys.map((String key) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Column(
+                          children: [
+                            _buildCheckboxTile(key, accommodation[key]!),
+                            // Show text field if "Others" is selected
+                            if (key == 'Others' && accommodation[key]!)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: _buildOthersTextField(),
+                              ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+
+            // Action Buttons
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileSetupWidgets.buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Next',
+                          onPressed: () {
+                            // Validate "Others" field if selected
+                            if (accommodation['Others'] == true && 
+                                _othersController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Please specify the accommodation in the "Others" field',
+                                    style: GoogleFonts.openSans(),
+                                  ),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                              return;
+                            }
+
+                            List<String> accommodations = accommodation.entries
+                                .where((entry) => entry.value)
+                                .map((entry) {
+                                  // Replace "Others" with the actual text input
+                                  if (entry.key == 'Others') {
+                                    return _othersController.text.trim();
+                                  }
+                                  return entry.key;
+                                })
+                                .toList();
+
+                            widget.profileData.accommodations = accommodations;
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CustomizeProfilePage_1_5(profileData: widget.profileData),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  List<Widget> _buildAcommadationCheckboxes() {
-    Color checkboxBackgroundColor = const Color.fromRGBO(250, 249, 253, 1);
-    return acommadation.keys.map((String key) {
-      return Container(
-        color: checkboxBackgroundColor,
-        child: CheckboxListTile(
-          title: Text(
-            key,
-            style: const TextStyle(
-              color: Color.fromRGBO(26, 27, 30, 1),
-              fontSize: 16,
-              letterSpacing: 0.5,
-            ),
-          ),
-          value: acommadation[key],
-          onChanged: (bool? value) {
-            if (value != null) {
-              _onAcommadationChanged(key, value);
-            }
-          },
+  Widget _buildCheckboxTile(String title, bool value) {
+    return Container(
+      decoration: BoxDecoration(
+        color: value ? AppTheme.primaryColor.withValues(alpha: 0.1) : Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: value ? AppTheme.primaryColor : Colors.grey.shade300,
+          width: value ? 2 : 1,
         ),
-      );
-    }).toList();
+      ),
+      child: CheckboxListTile(
+        title: Text(
+          title,
+          style: GoogleFonts.openSans(
+            fontSize: 15,
+            fontWeight: value ? FontWeight.w600 : FontWeight.w400,
+            color: value ? AppTheme.primaryColorDark : Colors.black87,
+          ),
+        ),
+        value: value,
+        activeColor: AppTheme.primaryColor,
+        checkColor: Colors.white,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        onChanged: (bool? newValue) {
+          if (newValue != null) {
+            _onAccommodationChanged(title, newValue);
+          }
+        },
+      ),
+    );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Color(0xFF74777F), width: 1),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100)),
-            minimumSize: const Size(84, 40),
-          ),
-          child: const Text(
-            'back',
-            style: TextStyle(
-              color: Color(0xFF275EA7),
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              letterSpacing: 0.1,
-            ),
-          ),
+  Widget _buildOthersTextField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withValues(alpha: 0.5),
+          width: 1.5,
         ),
-        ElevatedButton(
-          onPressed: () {
-            // Create a new list from the selected disabilities
-            List<String> acommadations = acommadation.entries
-                .where((entry) => entry.value)
-                .map((entry) => entry.key)
-                .toList();
-
-            // Replace the existing accommodations list with the new list of selected disabilities
-            widget.profileData.accommodations = acommadations;
-
-            // Navigate to the next page, passing the updated profileData
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CustomizeProfilePage_1_5(profileData: widget.profileData),
-              ),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
-            elevation: 0,
-            shape: const StadiumBorder(),
-            minimumSize: const Size(84, 40),
+      ),
+      child: TextField(
+        controller: _othersController,
+        style: GoogleFonts.openSans(fontSize: 15),
+        decoration: InputDecoration(
+          hintText: 'Please specify the accommodation...',
+          hintStyle: GoogleFonts.openSans(
+            fontSize: 14,
+            color: Colors.grey.shade500,
           ),
-          child: const Text(
-            'next',
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              letterSpacing: 0.1,
-            ),
-          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          suffixIcon: _othersController.text.isNotEmpty
+              ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.grey.shade600),
+                  onPressed: () {
+                    setState(() {
+                      _othersController.clear();
+                    });
+                  },
+                )
+              : null,
         ),
-      ],
+        onChanged: (value) {
+          setState(() {}); // Update UI to show/hide clear button
+        },
+      ),
     );
   }
 }

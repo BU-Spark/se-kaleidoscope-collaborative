@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/constants.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
-import 'package:kaleidoscope_collaborative/screens/AddRating/Components/BackButton.dart';
-import 'package:kaleidoscope_collaborative/components/AppBar.dart';
 
 // Implementing Add a Review 2.1 : Choosing Accommodations for Rating Page
 //
@@ -106,20 +106,48 @@ class _ChooseRatingParametersPageState
   Widget buildCurrentSelection() {
     return Wrap(
       spacing: 8.0,
+      runSpacing: 8.0,
       children: selectedItems.map((item) {
-        return Chip(
-          label: Text(item),
-          onDeleted: () {
-            // Find the category of the item
-            String? category = categoryItems.keys.firstWhere(
-              (k) => categoryItems[k]?.contains(item) == false,
-              orElse: () => '',
-            );
-            if (category.isNotEmpty) {
-              deselectItem(category, item);
-            }
-          },
-          backgroundColor: const Color.fromARGB(255, 222, 202, 251), // Light violet purple color
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryColor.withValues(alpha: 0.15),
+            border: Border.all(
+              color: AppTheme.primaryColor,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                item,
+                style: GoogleFonts.openSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.primaryColorDark,
+                ),
+              ),
+              const SizedBox(width: 6),
+              GestureDetector(
+                onTap: () {
+                  String? category = categoryItems.keys.firstWhere(
+                    (k) => categoryItems[k]?.contains(item) == false,
+                    orElse: () => '',
+                  );
+                  if (category.isNotEmpty) {
+                    deselectItem(category, item);
+                  }
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: AppTheme.primaryColorDark,
+                  size: 18,
+                ),
+              ),
+            ],
+          ),
         );
       }).toList(),
     );
@@ -132,12 +160,29 @@ class _ChooseRatingParametersPageState
 
     return Wrap(
       spacing: 8.0,
+      runSpacing: 8.0,
       children: items.map((item) {
-        return ChoiceChip(
-          label: Text(item),
-          selected: false,
-          onSelected: (_) => selectItem(category, item),
-          backgroundColor: Colors.grey.shade200,
+        return GestureDetector(
+          onTap: () => selectItem(category, item),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              border: Border.all(
+                color: Colors.grey.shade300,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              item,
+              style: GoogleFonts.openSans(
+                color: Colors.black87,
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+              ),
+            ),
+          ),
         );
       }).toList(),
     );
@@ -146,110 +191,188 @@ class _ChooseRatingParametersPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(AppBarText: 'Choose Rating Parameters Page'),
+      backgroundColor: AppTheme.backgroundColor,
+      appBar: AppBar(
+        leading: Center(
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            constraints: const BoxConstraints(),
+          ),
+        ),
+        title: Text(
+          'Choose Accommodations',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: AppTheme.backgroundColor,
+        elevation: 0,
+        toolbarHeight: 48,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            const SizedBox(height: 8),
             ReviewOrgDetails(
                 OrgImgLink: widget.OrgImgLink,
                 OrganizationName: widget.OrganizationName,
                 OrganizationType: widget.OrganizationType
             ),
+            const SizedBox(height: 32),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'What accommodation(s) have you observed here?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.openSans(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Current selection',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                buildCurrentSelection(),
+                const SizedBox(height: 24),
+                if (selectedItems.isNotEmpty) ...[
+                  Text(
+                    'Current selection',
+                    style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  buildCurrentSelection(),
+                  const SizedBox(height: 24),
+                ],
                 for (String category in categoryItems.keys) ...[
-                  SizedBox(height: 20),
                   Text(
                     category,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  buildCategoryChips(category),
-                ],
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        // Implement skip logic
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TextReviewPage(
-                                  overallRating: widget.overallRating,
-                                  parameterRatings: parameterRatings,
-                                  OrganizationName: widget.OrganizationName,
-                                  OrganizationType: widget.OrganizationType,
-                                  UserId: widget.UserId,
-                                  UserName: widget.UserName,
-                                  OrganizationId: widget.OrganizationId,
-                                  OrgImgLink: widget.OrgImgLink)),
-                        );
-                      },
-                      child: Text('Skip'),
-                      style: kSmallButtonStyle,
+                    style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        for (String parameter in selectedItems) {
-                          // Wait for the ParameterRatingPage to pop before continuing to the next item
-                          final int? rating = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ParameterRatingPage(
-                                  parameterName: parameter,
-                                  OrganizationName: widget.OrganizationName,
-                                  OrganizationType: widget.OrganizationType,
-                                  UserId: widget.UserId,
-                                  UserName: widget.UserName,
-                                  OrganizationId: widget.OrganizationId,
-                                  OrgImgLink: widget.OrgImgLink),
-                            ),
-                          );
+                  ),
+                  const SizedBox(height: 12),
+                  buildCategoryChips(category),
+                  const SizedBox(height: 20),
+                ],
+                const SizedBox(height: 28),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildSkipButton(context),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: GlassmorphicButton(
+                        text: 'Next',
+                        onPressed: selectedItems.isNotEmpty
+                            ? () async {
+                                for (String parameter in selectedItems) {
+                                  final int? rating = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ParameterRatingPage(
+                                          parameterName: parameter,
+                                          OrganizationName: widget.OrganizationName,
+                                          OrganizationType: widget.OrganizationType,
+                                          UserId: widget.UserId,
+                                          UserName: widget.UserName,
+                                          OrganizationId: widget.OrganizationId,
+                                          OrgImgLink: widget.OrgImgLink),
+                                    ),
+                                  );
 
-                          if (rating != null) {
-                            parameterRatings[parameter.replaceAll(' ', '')] = rating;
-                          }
-                          // If result is null, the user may have skipped rating this parameter
-                        }
-                        // After rating all parameters, navigate to the TextReviewPage
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TextReviewPage(
-                                  overallRating: widget.overallRating,
-                                  parameterRatings: parameterRatings,
-                                  OrganizationName: widget.OrganizationName,
-                                  OrganizationType: widget.OrganizationType,
-                                  UserId: widget.UserId,
-                                  UserName: widget.UserName,
-                                  OrganizationId: widget.OrganizationId,
-                                  OrgImgLink: widget.OrgImgLink)),
-                        );
-                      },
-                      child: Text('Next'),
-                      style: kSmallButtonStyle,
+                                  if (rating != null) {
+                                    parameterRatings[parameter.replaceAll(' ', '')] = rating;
+                                  }
+                                }
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TextReviewPage(
+                                          overallRating: widget.overallRating,
+                                          parameterRatings: parameterRatings,
+                                          OrganizationName: widget.OrganizationName,
+                                          OrganizationType: widget.OrganizationType,
+                                          UserId: widget.UserId,
+                                          UserName: widget.UserName,
+                                          OrganizationId: widget.OrganizationId,
+                                          OrgImgLink: widget.OrgImgLink)),
+                                );
+                              }
+                            : () {},
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
-                BackButton2()
               ],
             ),
+            SizedBox(height: MediaQuery.of(context).padding.bottom + 16),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkipButton(BuildContext context) {
+    return Container(
+      height: 56,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: const Color(0xFFE6DDF3),
+        border: Border.all(
+          color: AppTheme.primaryColor,
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryColor.withValues(alpha: 0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TextReviewPage(
+                      overallRating: widget.overallRating,
+                      parameterRatings: parameterRatings,
+                      OrganizationName: widget.OrganizationName,
+                      OrganizationType: widget.OrganizationType,
+                      UserId: widget.UserId,
+                      UserName: widget.UserName,
+                      OrganizationId: widget.OrganizationId,
+                      OrgImgLink: widget.OrgImgLink)),
+            );
+          },
+          borderRadius: BorderRadius.circular(30),
+          splashColor: AppTheme.primaryColor.withValues(alpha: 0.1),
+          highlightColor: AppTheme.primaryColor.withValues(alpha: 0.05),
+          child: Center(
+            child: Text(
+              'Skip',
+              style: GoogleFonts.openSans(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.primaryColorDark,
+              ),
+            ),
+          ),
         ),
       ),
     );

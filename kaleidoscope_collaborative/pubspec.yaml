@@ -36,9 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_verification_code: ^1.1.7
   flutter_vector_icons: ^1.0.0
-  firebase_core: ^2.24.0
-  cloud_firestore: ^4.13.3
-  firebase_auth: ^4.15.0
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.4
+  firebase_auth: ^5.3.1
   firebase_core_dart: ^1.0.1
   intl: ^0.19.0
   geolocator: ^11.0.0
@@ -49,6 +49,8 @@ dependencies:
   flutter_facebook_auth: ^6.1.1
   google_sign_in: ^5.4.4
   location: ^4.3.0
+  google_fonts: ^6.1.0
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

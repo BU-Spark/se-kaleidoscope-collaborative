@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kaleidoscope_collaborative/config/app_theme.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
+import 'package:kaleidoscope_collaborative/widgets/profile_setup_widgets.dart';
 import 'package:kaleidoscope_collaborative/models/profile.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_7.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:image/image.dart' as img;
-
-//import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
-class ProfilePicture {
-  final String imagePath;
-  final int index;
-
-  ProfilePicture({required this.imagePath, required this.index});
-}
 
 class CustomizeProfilePage_1_6 extends StatefulWidget {
   final ProfileData profileData;
@@ -30,190 +26,140 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
   String? selectedImagePath;
   bool isImageUploaded = false;
 
+  final List<String> defaultImagePaths = [
+    'images/defaultProfilePictures/default_image_1.png',
+    'images/defaultProfilePictures/default_image_2.png',
+    'images/defaultProfilePictures/default_image_3.png',
+    'images/defaultProfilePictures/default_image_4.png',
+    'images/defaultProfilePictures/default_image_5.png',
+    'images/defaultProfilePictures/default_image_6.png',
+  ];
+
   Future<String> resizeAndCompressImage(String imagePath) async {
-    // Load the image file
     img.Image? originalImage =
         img.decodeImage(await File(imagePath).readAsBytes());
 
     img.Image resizedImage =
         img.copyResize(originalImage!, width: 500, height: 500);
 
-    // Compress the image as a JPEG
-    List<int> jpeg = img.encodeJpg(resizedImage,
-        quality: 85); // Adjust quality for further size optimization
-
-    // Convert the image to a base64 string
+    List<int> jpeg = img.encodeJpg(resizedImage, quality: 85);
     String base64Image = base64Encode(jpeg);
 
     return base64Image;
   }
 
-  Future<String> encodeImageToBase64(String imagePath) async {
-    File imageFile = File(imagePath);
-    List<int> imageBytes = await imageFile.readAsBytes();
-    return base64Encode(imageBytes);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final List<String> paths = [
-      'images/defaultProfilePictures/default_image_1.png',
-      'images/defaultProfilePictures/default_image_2.png',
-      'images/defaultProfilePictures/default_image_3.png',
-      'images/defaultProfilePictures/default_image_4.png',
-      'images/defaultProfilePictures/default_image_5.png',
-      'images/defaultProfilePictures/default_image_6.png',
-    ];
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    double spacerHeight = height / 21;
-    double halfSpacerHeight = height / 42;
-    double textfieldHeight = height / 104;
-    double container = width / 1.9;
-    double padding = width / 24;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Form(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: spacerHeight),
-                const Text(
-                  'Customize Profile',
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 32,
-                    color: Colors.black,
-                    letterSpacing: 0.1,
-                  ),
-                ),
-                SizedBox(height: halfSpacerHeight),
-                const Text(
-                  "Tell us a bit about yourself!",
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12,
-                    letterSpacing: 0.5,
-                    color: Colors.black,
-                  ),
-                  softWrap: true,
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: container,
-                  child: const Text(
-                    'Choose a Profile Picture!!!',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: Colors.black,
-                      letterSpacing: 0.15,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: SizedBox(
-                    height: 259,
-                    width: 300,
-                    child: _buildProfileImagesGrid(context, paths),
-                  ),
-                ),
-                SizedBox(height: halfSpacerHeight),
-                SizedBox(
-                  width: container,
-                  child: const Text(
-                    'Or Upload Your Own!',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                      color: Colors.black,
-                      letterSpacing: 0.15,
-                    ),
-                  ),
-                ),
-                SizedBox(height: halfSpacerHeight),
-                _buildUploadContainer(context),
-                SizedBox(height: spacerHeight),
-                _buildActionButtons(context, paths),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUploadContainer(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 300.0,
-        height: 222.0,
-        decoration: BoxDecoration(
-          color: const Color.fromRGBO(103, 80, 164, 0.11),
-          borderRadius: BorderRadius.circular(28.0),
-        ),
+      backgroundColor: AppTheme.backgroundColor,
+      appBar: ProfileSetupWidgets.buildAppBar('Profile Setup'),
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            const Icon(
-              Icons.mobile_friendly,
-              size: 30.0,
-              color: Color.fromRGBO(103, 80, 164, 1),
-            ),
-            Text(
-              isImageUploaded ? 'Successfully Uploaded' : 'Upload Image',
-              style: const TextStyle(
-                color: Color.fromRGBO(103, 80, 164, 1),
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
+          children: [
+            // Progress Indicator
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0),
+              child: ProfileSetupWidgets.buildProgressIndicator(
+                currentStep: 7,
+                totalSteps: 8,
               ),
             ),
-            const SizedBox(
-              width: 234,
-              child: Text(
-                'This image will appear to other Ditto users when you review locations!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color.fromRGBO(67, 71, 78, 1),
-                  fontSize: 13,
-                  letterSpacing: 0.25,
+
+            // Scrollable Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Text(
+                      'Profile Picture',
+                      style: GoogleFonts.openSans(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Choose a profile picture from our defaults or upload your own',
+                      style: GoogleFonts.openSans(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black54,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Default Images Grid
+                    Text(
+                      'Choose from defaults',
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildProfileImagesGrid(),
+                    const SizedBox(height: 32),
+
+                    // Upload Section
+                    Text(
+                      'Or upload your own',
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildUploadContainer(),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final ImagePicker picker = ImagePicker();
-                final XFile? image =
-                    await picker.pickImage(source: ImageSource.gallery);
-                if (image != null) {
-                  setState(() {
-                    selectedProfileImagePath = image.path;
-                    isImageUploaded = true;
-                  });
-                }
-                if (image != null) {
-                  // Encode the image to base64
-                  String base64Image = await resizeAndCompressImage(image.path);
-                  // Update the instance with the encoded image
-                  setState(() {
-                    widget.profileData.uploaded_profile_picture = base64Image;
-                    //widget.profileData.profile_picture_path = image.path;
-                    widget.profileData.uploaded_profile_picture_status = 1;
-                    isImageUploaded = true;
-                  });
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: const Color.fromRGBO(103, 80, 164, 1),
+
+            // Action Buttons
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ProfileSetupWidgets.buildBackButton(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: GlassmorphicButton(
+                          text: 'Next',
+                          onPressed: () {
+                            if (selectedImagePath == null || selectedImagePath!.isEmpty) {
+                              selectedImagePath = defaultImagePaths[0];
+                            }
+                            widget.profileData.profile_picture_path = selectedImagePath!;
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CustomizeProfilePage_1_7(profileData: widget.profileData),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ProfileSetupWidgets.buildLogoutButton(context),
+                ],
               ),
-              child: const Text('Upload Image'),
             ),
           ],
         ),
@@ -221,111 +167,143 @@ class _CustomizeProfilePage_1_6State extends State<CustomizeProfilePage_1_6> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, paths) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    double spacerHeight = height / 21;
-    double halfSpacerHeight = height / 42;
-    double textfieldHeight = height / 104;
-    double container = width / 1.9;
-    double padding = width / 24;
-    return ButtonBar(
-      buttonPadding: EdgeInsets.zero,
-      alignment: MainAxisAlignment.end,
-      children: [
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Color(0xFF74777F), width: 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-            minimumSize: const Size(84, 40),
-          ),
-          child: const Text(
-            'back',
-            style: TextStyle(
-              color: Color(0xFF275EA7),
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              letterSpacing: 0.1,
-            ),
-          ),
+  Widget _buildProfileImagesGrid() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1,
         ),
-        SizedBox(width: padding),
-        ElevatedButton(
-          onPressed: () {
-            // Check if selectedImagePath is null or empty; if so, use the first image path as default
-            if (selectedImagePath == null || selectedImagePath!.isEmpty) {
-              selectedImagePath = paths[0];
-            }
-
-            // Assign the selected or default image path to profileData
-            widget.profileData.profile_picture_path = selectedImagePath!;
-
-            // Navigate to the next page, passing the updated profileData
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    CustomizeProfilePage_1_7(profileData: widget.profileData),
+        itemCount: defaultImagePaths.length,
+        itemBuilder: (context, index) {
+          final isSelected = selectedImagePath == defaultImagePaths[index];
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedImagePath = defaultImagePaths[index];
+                isImageUploaded = false;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isSelected ? AppTheme.primaryColor : Colors.grey.shade300,
+                  width: isSelected ? 3 : 2,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
               ),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: const Color(0xFF275EA7),
-            elevation: 0,
-            shape: const StadiumBorder(),
-            minimumSize: const Size(84, 40),
-          ),
-          child: const Text(
-            'next',
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              letterSpacing: 0.1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  defaultImagePaths[index],
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildProfileImagesGrid(BuildContext context, List<String> paths) {
-    // This method will build the grid of profile images
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 1,
+  Widget _buildUploadContainer() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isImageUploaded
+              ? AppTheme.primaryColor
+              : AppTheme.primaryColor.withValues(alpha: 0.3),
+          width: 2,
+        ),
       ),
-      itemCount: paths.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedImagePath = paths[index]; // Set the selected image index
-            });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: selectedImagePath == paths[index]
-                    ? Colors.blue
-                    : Colors.transparent, // Highlight selected image
-                width: 3,
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Image.asset(paths[index]), // Display the image
+      child: Column(
+        children: [
+          Icon(
+            isImageUploaded ? Icons.check_circle : Icons.cloud_upload,
+            size: 48,
+            color: isImageUploaded ? Colors.green : AppTheme.primaryColor,
           ),
-        );
-      },
+          const SizedBox(height: 16),
+          Text(
+            isImageUploaded ? 'Image Uploaded Successfully!' : 'Upload Your Image',
+            style: GoogleFonts.openSans(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isImageUploaded ? Colors.green : AppTheme.primaryColorDark,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'This image will appear to other users when you review locations',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.openSans(
+              fontSize: 14,
+              color: Colors.black54,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                final ImagePicker picker = ImagePicker();
+                final XFile? image =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  String base64Image = await resizeAndCompressImage(image.path);
+                  setState(() {
+                    selectedProfileImagePath = image.path;
+                    widget.profileData.uploaded_profile_picture = base64Image;
+                    widget.profileData.uploaded_profile_picture_status = 1;
+                    isImageUploaded = true;
+                    selectedImagePath = null;
+                  });
+                }
+              },
+              icon: const Icon(Icons.add_photo_alternate),
+              label: Text(
+                isImageUploaded ? 'Change Image' : 'Select Image',
+                style: GoogleFonts.openSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
