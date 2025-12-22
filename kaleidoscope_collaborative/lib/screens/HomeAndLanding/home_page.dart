@@ -211,121 +211,128 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildExploreTab() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TextField(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SearchPage(name: loggedInUser?.email ?? 'User')),
-              );
-            },
-            readOnly: true,
-            decoration: InputDecoration(
-              hintText: 'Search for places...',
-              hintStyle: GoogleFonts.openSans(
-                color: Colors.grey.shade600,
-                fontSize: 16,
+    // Limit text scale factor for the entire explore tab
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
+    
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaleFactor: textScaleFactor,
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchPage(name: loggedInUser?.email ?? 'User')),
+                );
+              },
+              readOnly: true,
+              decoration: InputDecoration(
+                hintText: 'Search for places...',
+                hintStyle: GoogleFonts.openSans(
+                  color: Colors.grey.shade600,
+                  fontSize: 16,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: AppTheme.primaryColor,
+                  size: 24,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               ),
-              prefixIcon: Icon(
-                Icons.search,
-                color: AppTheme.primaryColor,
-                size: 24,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
-              ),
-              fillColor: Colors.white,
-              filled: true,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             ),
           ),
-        ),
-        Expanded(
-          child: FutureBuilder<Map<String, int>>(
-            future: _firestoreService.getAvailableCategoryGroups(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const CircularProgressIndicator(
-                        color: AppTheme.primaryColor,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Loading categories...',
-                        style: GoogleFonts.openSans(
-                          fontSize: 16,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
+          Expanded(
+            child: FutureBuilder<Map<String, int>>(
+              future: _firestoreService.getAvailableCategoryGroups(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.explore_outlined,
-                          size: 64,
-                          color: Colors.grey.shade400,
+                        const CircularProgressIndicator(
+                          color: AppTheme.primaryColor,
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No categories yet',
+                          'Loading categories...',
                           style: GoogleFonts.openSans(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Start reviewing places to see categories here!',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.openSans(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
+                            fontSize: 16,
+                            color: Colors.grey.shade700,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                );
-              }
+                  );
+                }
 
-              // Group types by category groups
-              final categoryGroups = _groupTypesByCategoryGroup(snapshot.data!);
-              
-              return GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                  childAspectRatio: 1 / 1.05,
-                ),
-                itemCount: categoryGroups.length,
-                itemBuilder: (context, index) {
+                if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.explore_outlined,
+                            size: 64,
+                            color: Colors.grey.shade400,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No categories yet',
+                            style: GoogleFonts.openSans(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Start reviewing places to see categories here!',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.openSans(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                // Group types by category groups
+                final categoryGroups = _groupTypesByCategoryGroup(snapshot.data!);
+                
+                return GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                    childAspectRatio: 1 / 1.15,
+                  ),
+                  itemCount: categoryGroups.length,
+                  itemBuilder: (context, index) {
                   final entry = categoryGroups[index];
                   final categoryGroupName = entry.key;
                   final reviewCount = entry.value;
@@ -353,71 +360,84 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                       );
                     },
-                    child: Card(
-                      clipBehavior: Clip.antiAlias,
-                      elevation: 3,
-                      shadowColor: AppTheme.primaryColor.withValues(alpha: 0.2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: _CategoryImageWidget(
-                              categoryName: displayName,
-                              icon: icon,
-                              color: color,
-                            ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Limit text scale factor to prevent overflow in cards
+                        final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
+                        
+                        return Card(
+                          clipBehavior: Clip.antiAlias,
+                          elevation: 3,
+                          shadowColor: AppTheme.primaryColor.withValues(alpha: 0.2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              color: Colors.white,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      displayName,
-                                      style: GoogleFonts.openSans(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black87,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 1),
-                                  Text(
-                                    '$reviewCount ${reviewCount == 1 ? 'review' : 'reviews'}',
-                                    style: GoogleFonts.openSans(
-                                      fontSize: 11,
-                                      color: Colors.grey.shade600,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: _CategoryImageWidget(
+                                  categoryName: displayName,
+                                  icon: icon,
+                                  color: color,
+                                ),
                               ),
-                            ),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  color: Colors.white,
+                                  child: MediaQuery(
+                                    data: MediaQuery.of(context).copyWith(
+                                      textScaleFactor: textScaleFactor,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            displayName,
+                                            style: GoogleFonts.openSans(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '$reviewCount ${reviewCount == 1 ? 'review' : 'reviews'}',
+                                          style: GoogleFonts.openSans(
+                                            fontSize: 11,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   );
-                },
-              );
-            },
+                  },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

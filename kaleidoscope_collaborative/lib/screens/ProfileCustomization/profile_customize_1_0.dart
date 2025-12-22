@@ -234,6 +234,9 @@ class CustomizeProfilePage extends StatelessWidget {
   }
 
   Widget _buildSkipButton(BuildContext context) {
+    // Limit text scale factor to prevent overflow in buttons
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2);
+    
     return Container(
       height: 56,
       decoration: BoxDecoration(
@@ -265,13 +268,24 @@ class CustomizeProfilePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           splashColor: AppTheme.primaryColor.withValues(alpha: 0.1),
           highlightColor: AppTheme.primaryColor.withValues(alpha: 0.05),
-          child: Center(
-            child: Text(
-              'Skip for Now',
-              style: GoogleFonts.openSans(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.primaryColorDark,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaleFactor: textScaleFactor,
+              ),
+              child: Center(
+                child: Text(
+                  'Skip for Now',
+                  style: GoogleFonts.openSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColorDark,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),

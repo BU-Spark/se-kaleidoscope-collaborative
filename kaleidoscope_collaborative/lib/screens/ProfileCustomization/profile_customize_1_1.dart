@@ -346,6 +346,9 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
   }
 
   Widget _buildBackButton(BuildContext context) {
+    // Limit text scale factor to prevent overflow in buttons
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2);
+    
     return Container(
       height: 56,
       decoration: BoxDecoration(
@@ -373,27 +376,35 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
           highlightColor: AppTheme.primaryColor.withValues(alpha: 0.05),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.arrow_back,
-                  color: AppTheme.primaryColorDark,
-                  size: 24,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Back',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColorDark,
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaleFactor: textScaleFactor,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.arrow_back,
+                    color: AppTheme.primaryColorDark,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'Back',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.openSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColorDark,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

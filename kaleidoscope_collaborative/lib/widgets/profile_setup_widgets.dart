@@ -49,6 +49,9 @@ class ProfileSetupWidgets {
   }
 
   static Widget buildBackButton(BuildContext context, {VoidCallback? onPressed}) {
+    // Limit text scale factor to prevent overflow in buttons
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2);
+    
     return Container(
       height: 56,
       decoration: BoxDecoration(
@@ -76,27 +79,35 @@ class ProfileSetupWidgets {
           highlightColor: AppTheme.primaryColor.withValues(alpha: 0.05),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.arrow_back,
-                  color: AppTheme.primaryColorDark,
-                  size: 24,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Back',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.openSans(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColorDark,
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaleFactor: textScaleFactor,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.arrow_back,
+                    color: AppTheme.primaryColorDark,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      'Back',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.openSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryColorDark,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -132,52 +143,62 @@ class ProfileSetupWidgets {
   }
 
   static Widget buildLogoutButton(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: () async {
-        try {
-          globals.userEmail = '';
-          await FirebaseAuth.instance.signOut();
-          if (context.mounted) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const DashboardScreen()),
-              (Route<dynamic> route) => false,
-            );
-          }
-        } catch (e) {
-          debugPrint('Error signing out: $e');
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Failed to log out. Please try again.',
-                  style: GoogleFonts.openSans(),
+    // Limit text scale factor to prevent overflow in buttons
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2);
+    
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaleFactor: textScaleFactor,
+      ),
+      child: OutlinedButton.icon(
+        onPressed: () async {
+          try {
+            globals.userEmail = '';
+            await FirebaseAuth.instance.signOut();
+            if (context.mounted) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                (Route<dynamic> route) => false,
+              );
+            }
+          } catch (e) {
+            debugPrint('Error signing out: $e');
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Failed to log out. Please try again.',
+                    style: GoogleFonts.openSans(),
+                  ),
+                  backgroundColor: Colors.red,
                 ),
-                backgroundColor: Colors.red,
-              ),
-            );
+              );
+            }
           }
-        }
-      },
-      style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: Colors.red, width: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+        },
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: Colors.red, width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          minimumSize: const Size(double.infinity, 56),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         ),
-        minimumSize: const Size(double.infinity, 56),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      ),
-      icon: const Icon(
-        Icons.logout,
-        color: Colors.red,
-        size: 22,
-      ),
-      label: Text(
-        'Log Out',
-        style: GoogleFonts.openSans(
+        icon: const Icon(
+          Icons.logout,
           color: Colors.red,
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
+          size: 22,
+        ),
+        label: Text(
+          'Log Out',
+          style: GoogleFonts.openSans(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );

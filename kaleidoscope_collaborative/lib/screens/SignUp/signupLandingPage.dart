@@ -39,22 +39,29 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Center(
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            constraints: const BoxConstraints(),
+    // Limit text scale factor for the entire signup landing page
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
+
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaleFactor: textScaleFactor,
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: Center(
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.of(context).pop(),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              constraints: const BoxConstraints(),
+            ),
           ),
+          backgroundColor: AppTheme.backgroundColor,
+          elevation: 0,
+          toolbarHeight: 48,
         ),
         backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        toolbarHeight: 48,
-      ),
-      backgroundColor: AppTheme.backgroundColor,
-      body: Padding(
+        body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -169,6 +176,7 @@ class _SignupLandingPageState extends State<SignupLandingPage> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
