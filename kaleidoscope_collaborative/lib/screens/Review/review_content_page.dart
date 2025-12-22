@@ -6,6 +6,7 @@ import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart'
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
 import 'package:kaleidoscope_collaborative/utils/photo_url_helper.dart';
 import 'package:kaleidoscope_collaborative/finding_location_rating/search_page_1_0.dart';
+import 'package:kaleidoscope_collaborative/services/unsplash_service.dart';
 
 class ReviewContentPage extends StatefulWidget {
   final String userId;
@@ -23,11 +24,18 @@ class ReviewContentPage extends StatefulWidget {
 
 class _ReviewContentPageState extends State<ReviewContentPage> {
   late CloudFirestoreService _firestoreService;
+  int _refreshKey = 0;
 
   @override
   void initState() {
     super.initState();
     _firestoreService = CloudFirestoreService(FirebaseFirestore.instance);
+  }
+
+  void _refreshReviews() {
+    setState(() {
+      _refreshKey++;
+    });
   }
 
   @override
@@ -37,6 +45,7 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
         _buildSearchBar(),
         Expanded(
           child: FutureBuilder<Map<String, List<QueryDocumentSnapshot>>>(
+            key: ValueKey(_refreshKey),
             future: _firestoreService.getUserReviewsByCategory(widget.userId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -278,16 +287,13 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
         child: ExpansionTile(
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           childrenPadding: const EdgeInsets.only(bottom: 8),
-          leading: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: categoryColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              categoryIcon,
+          leading: SizedBox(
+            width: 50,
+            height: 50,
+            child: _CategoryImageWidget(
+              categoryName: categoryName,
+              icon: categoryIcon,
               color: categoryColor,
-              size: 24,
             ),
           ),
           title: Text(
@@ -307,14 +313,14 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
           ),
           children: reviews.map((review) {
             final data = review.data() as Map<String, dynamic>;
-            return _buildReviewCard(data);
+            return _buildReviewCard(data, review.id);
           }).toList(),
         ),
       ),
     );
   }
 
-  Widget _buildReviewCard(Map<String, dynamic> reviewData) {
+  Widget _buildReviewCard(Map<String, dynamic> reviewData, String reviewId) {
     final placeName = reviewData['placeName'] ?? 'Unknown Place';
     final placePhotoReference = reviewData['placePhoto'] ?? '';
     final overallRating = reviewData['overallRating'] ?? 0;
@@ -335,7 +341,7 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
           onTap: () {
             // Navigate to place details
             // You can implement navigation to the place details page here
-            _showReviewDetails(reviewData);
+            _showReviewDetails(reviewData, reviewId);
           },
           borderRadius: BorderRadius.circular(12),
           child: Padding(
@@ -441,7 +447,7 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
     );
   }
 
-  void _showReviewDetails(Map<String, dynamic> reviewData) {
+  void _showReviewDetails(Map<String, dynamic> reviewData, String reviewId) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -564,10 +570,620 @@ class _ReviewContentPageState extends State<ReviewContentPage> {
                     );
                   }).toList(),
                 ),
+                const SizedBox(height: 20),
               ],
+              // Edit and Delete buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _showEditReviewDialog(reviewData, reviewId);
+                      },
+                      icon: const Icon(Icons.edit, size: 20),
+                      label: Text(
+                        'Edit',
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppTheme.primaryColor,
+                        side: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _showDeleteConfirmationDialog(reviewId);
+                      },
+                      icon: const Icon(Icons.delete, size: 20),
+                      label: Text(
+                        'Delete',
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade600,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showEditReviewDialog(Map<String, dynamic> reviewData, String reviewId) {
+    int overallRating = reviewData['overallRating'] ?? 0;
+    String textReview = reviewData['textReview'] ?? '';
+    Map<String, int> accommodations = reviewData['accommodations'] != null
+        ? Map<String, int>.from(reviewData['accommodations'])
+        : {};
+
+    showDialog(
+      context: context,
+      builder: (context) => _EditReviewDialog(
+        reviewId: reviewId,
+        initialOverallRating: overallRating,
+        initialTextReview: textReview,
+        initialAccommodations: accommodations,
+        placeName: reviewData['placeName'] ?? 'Unknown Place',
+        onSave: () {
+          _refreshReviews();
+        },
+        firestoreService: _firestoreService,
+      ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(String reviewId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'Delete Review',
+          style: GoogleFonts.openSans(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to delete this review? This action cannot be undone.',
+          style: GoogleFonts.openSans(
+            fontSize: 14,
+            color: Colors.grey.shade700,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.openSans(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                await _firestoreService.deleteUserReview(reviewId);
+                _refreshReviews();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Review deleted successfully',
+                        style: GoogleFonts.openSans(),
+                      ),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Error deleting review: ${e.toString()}',
+                        style: GoogleFonts.openSans(),
+                      ),
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  );
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade600,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              'Delete',
+              style: GoogleFonts.openSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _EditReviewDialog extends StatefulWidget {
+  final String reviewId;
+  final int initialOverallRating;
+  final String initialTextReview;
+  final Map<String, int> initialAccommodations;
+  final String placeName;
+  final VoidCallback onSave;
+  final CloudFirestoreService firestoreService;
+
+  const _EditReviewDialog({
+    required this.reviewId,
+    required this.initialOverallRating,
+    required this.initialTextReview,
+    required this.initialAccommodations,
+    required this.placeName,
+    required this.onSave,
+    required this.firestoreService,
+  });
+
+  @override
+  _EditReviewDialogState createState() => _EditReviewDialogState();
+}
+
+class _EditReviewDialogState extends State<_EditReviewDialog> {
+  late int _overallRating;
+  late TextEditingController _textReviewController;
+  late Map<String, int> _accommodations;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _overallRating = widget.initialOverallRating;
+    _textReviewController = TextEditingController(text: widget.initialTextReview);
+    _accommodations = Map<String, int>.from(widget.initialAccommodations);
+  }
+
+  @override
+  void dispose() {
+    _textReviewController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 700),
+        padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Edit Review',
+                      style: GoogleFonts.openSans(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
+                    color: Colors.grey.shade600,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                widget.placeName,
+                style: GoogleFonts.openSans(
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Overall Rating',
+                style: GoogleFonts.openSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _overallRating = index + 1;
+                      });
+                    },
+                    child: Icon(
+                      index < _overallRating ? Icons.star : Icons.star_border,
+                      size: 40,
+                      color: index < _overallRating
+                          ? AppTheme.primaryColor
+                          : Colors.grey.shade400,
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Text Review',
+                style: GoogleFonts.openSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _textReviewController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  hintText: 'Write your review...',
+                  hintStyle: GoogleFonts.openSans(
+                    color: Colors.grey.shade400,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: AppTheme.primaryColor, width: 2),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                ),
+                style: GoogleFonts.openSans(),
+              ),
+              if (_accommodations.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                Text(
+                  'Accommodations',
+                  style: GoogleFonts.openSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ..._accommodations.keys.map((key) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          key,
+                          style: GoogleFonts.openSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: List.generate(5, (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _accommodations[key] = index + 1;
+                                });
+                              },
+                              child: Icon(
+                                index < _accommodations[key]!
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                size: 32,
+                                color: index < _accommodations[key]!
+                                    ? AppTheme.primaryColor
+                                    : Colors.grey.shade400,
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ],
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _isSaving ? null : () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.grey.shade700,
+                        side: BorderSide(color: Colors.grey.shade300),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _isSaving ? null : _saveReview,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isSaving
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Text(
+                              'Save',
+                              style: GoogleFonts.openSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _saveReview() async {
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      Map<String, dynamic> updateData = {
+        'overallRating': _overallRating,
+        'textReview': _textReviewController.text.trim().isEmpty
+            ? '[Skipped]'
+            : _textReviewController.text.trim(),
+      };
+
+      if (_accommodations.isNotEmpty) {
+        updateData['accommodations'] = _accommodations;
+      }
+
+      await widget.firestoreService.updateUserReview(widget.reviewId, updateData);
+
+      if (mounted) {
+        Navigator.pop(context);
+        widget.onSave();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Review updated successfully',
+              style: GoogleFonts.openSans(),
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error updating review: ${e.toString()}',
+              style: GoogleFonts.openSans(),
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
+      }
+    }
+  }
+}
+
+/// Widget that displays category image from Unsplash with icon fallback
+/// Similar to the one in home_page.dart but sized for ExpansionTile
+class _CategoryImageWidget extends StatelessWidget {
+  final String categoryName;
+  final IconData icon;
+  final Color color;
+
+  const _CategoryImageWidget({
+    required this.categoryName,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: UnsplashService.getCategoryImageUrl(categoryName),
+      builder: (context, snapshot) {
+        // If image is loading or not available, show icon fallback
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
+              ),
+            ),
+          );
+        }
+
+        final imageUrl = snapshot.data;
+
+        // If we have an image URL, display it
+        if (imageUrl != null) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    // If image fails to load, show icon fallback
+                    return _buildIconFallback();
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(color),
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                // Add a subtle gradient overlay
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.1),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // Fallback to icon if no image available
+        return _buildIconFallback();
+      },
+    );
+  }
+
+  Widget _buildIconFallback() {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(
+        icon,
+        color: color,
+        size: 24,
       ),
     );
   }

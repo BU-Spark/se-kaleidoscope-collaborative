@@ -35,6 +35,23 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
   final TextEditingController _othersController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-fill accommodation checkboxes with existing data
+    if (widget.profileData.accommodations.isNotEmpty) {
+      for (String acc in widget.profileData.accommodations) {
+        if (accommodation.containsKey(acc)) {
+          accommodation[acc] = true;
+        } else {
+          // If it doesn't match any key, it might be an "Others" value
+          accommodation['Others'] = true;
+          _othersController.text = acc;
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _othersController.dispose();
     super.dispose();

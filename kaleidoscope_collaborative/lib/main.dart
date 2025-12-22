@@ -13,9 +13,20 @@ import 'config/globals.dart' as globals;
 // void main() => runApp(MyApp());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  
+  // Initialize Firebase with error handling for hot reload
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Firebase already initialized (happens during hot reload)
+    if (e.toString().contains('duplicate-app')) {
+      print('Firebase already initialized');
+    } else {
+      rethrow;
+    }
+  }
   
   // Sync globals.userEmail with Firebase Auth on startup
   _syncUserEmail();

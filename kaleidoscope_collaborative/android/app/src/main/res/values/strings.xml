@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Your app name Here</string>
-    <string name="facebook_app_id">your id Here</string>
-    <string name="facebook_client_token">FB Client Token Here</string>
-    <string name="fb_login_protocol_scheme">FB Login Protocol scheme Here</string>
+    <string name="app_name">Kaleidoscope Collaborative</string>
+    <string name="facebook_app_id">1032474271759880</string>
+    <string name="facebook_client_token">c3b087f22e143b05b1009f06e580c48e</string>
+    <string name="fb_login_protocol_scheme">fb1032474271759880</string>
 </resources>

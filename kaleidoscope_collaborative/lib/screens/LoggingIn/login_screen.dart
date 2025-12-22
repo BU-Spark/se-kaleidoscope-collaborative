@@ -83,7 +83,14 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {});
     });
 
-    return Scaffold(
+    // Limit text scale factor for the entire login screen
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
+
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaleFactor: textScaleFactor,
+      ),
+      child: Scaffold(
       appBar: AppBar(
         leading: Center(
           child: IconButton(
@@ -279,6 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

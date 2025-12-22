@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.9.20'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:8.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.4.0'
     }
@@ -23,8 +23,40 @@ rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
-    project.evaluationDependsOn(':app')
+    // Force all subprojects to use Java 17
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+                
+                // Configure Kotlin JVM target if kotlinOptions is available
+                if (project.android.hasProperty('kotlinOptions')) {
+                    project.android.kotlinOptions {
+                        jvmTarget = '17'
+                    }
+                }
+            }
+        }
+        
+        // Also configure JavaCompile tasks
+        project.tasks.withType(JavaCompile).configureEach {
+            sourceCompatibility = JavaVersion.VERSION_17.toString()
+            targetCompatibility = JavaVersion.VERSION_17.toString()
+            options.compilerArgs << "-Xlint:-options"
+        }
+        
+        // Configure Kotlin compile tasks
+        project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                jvmTarget = '17'
+            }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {

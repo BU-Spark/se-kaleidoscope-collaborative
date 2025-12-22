@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/models/profile.dart';
@@ -10,11 +11,72 @@ import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
 import 'dart:typed_data';
 import 'dart:convert';
 
-class finished_customization_page extends StatelessWidget {
+class finished_customization_page extends StatefulWidget {
   final ProfileData profileData;
 
   const finished_customization_page({Key? key, required this.profileData})
       : super(key: key);
+
+  @override
+  _FinishedCustomizationPageState createState() => _FinishedCustomizationPageState();
+}
+
+class _FinishedCustomizationPageState extends State<finished_customization_page> {
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  String? _userName;
+  String? _userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        setState(() {
+          _userEmail = user.email ?? '';
+          // Get name from ProfileData (already available in widget.profileData)
+          // Fallback to User collection if ProfileData name is empty
+          if (widget.profileData.name.isNotEmpty) {
+            _userName = widget.profileData.name;
+          } else {
+            // Fallback: try to get from User collection
+            _fetchNameFromUserCollection(user.email!);
+          }
+        });
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+    }
+  }
+
+  Future<void> _fetchNameFromUserCollection(String email) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('User')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final userData = querySnapshot.docs.first.data();
+        final firstName = userData['first_name'] ?? '';
+        final lastName = userData['last_name'] ?? '';
+        setState(() {
+          _userName = '$firstName $lastName'.trim();
+          if (_userName!.isEmpty) {
+            _userName = firstName.isNotEmpty ? firstName : (lastName.isNotEmpty ? lastName : null);
+          }
+        });
+      }
+    } catch (e) {
+      print('Error fetching user name from User collection: $e');
+    }
+  }
 
   Uint8List decodeImage(String base64String) {
     return base64Decode(base64String);
@@ -150,15 +212,15 @@ class finished_customization_page extends StatelessWidget {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(13),
-                              child: profileData.uploaded_profile_picture_status == 1 &&
-                                      profileData.uploaded_profile_picture != null
+                              child: widget.profileData.uploaded_profile_picture_status == 1 &&
+                                      widget.profileData.uploaded_profile_picture != null
                                   ? Image.memory(
-                                      decodeImage(profileData.uploaded_profile_picture!),
+                                      decodeImage(widget.profileData.uploaded_profile_picture!),
                                       fit: BoxFit.cover,
                                     )
-                                  : profileData.profile_picture_path.isNotEmpty
+                                  : widget.profileData.profile_picture_path.isNotEmpty
                                       ? Image.asset(
-                                          profileData.profile_picture_path,
+                                          widget.profileData.profile_picture_path,
                                           fit: BoxFit.cover,
                                         )
                                       : Container(
@@ -170,35 +232,51 @@ class finished_customization_page extends StatelessWidget {
 
                           const SizedBox(height: 24),
 
+                          // User Name and Email
+                          if (_userName != null && _userName!.isNotEmpty) ...[
+                            _buildInfoSection(
+                              'Name',
+                              _userName!,
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                          if (_userEmail != null && _userEmail!.isNotEmpty) ...[
+                            _buildInfoSection(
+                              'Email',
+                              _userEmail!,
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+
                           // Profile Details
                           _buildInfoSection(
                             'Relationship',
-                            profileData.relationship.isNotEmpty
-                                ? profileData.relationship
+                            widget.profileData.relationship.isNotEmpty
+                                ? widget.profileData.relationship
                                 : 'Not specified',
                           ),
                           const SizedBox(height: 16),
 
                           _buildInfoSection(
                             'Familiar with',
-                            profileData.disability_familiarity.isNotEmpty
-                                ? profileData.disability_familiarity.join(', ')
+                            widget.profileData.disability_familiarity.isNotEmpty
+                                ? widget.profileData.disability_familiarity.join(', ')
                                 : 'No disabilities selected',
                           ),
                           const SizedBox(height: 16),
 
                           _buildInfoSection(
                             'Accommodations',
-                            profileData.accommodations.isNotEmpty
-                                ? profileData.accommodations.join(', ')
+                            widget.profileData.accommodations.isNotEmpty
+                                ? widget.profileData.accommodations.join(', ')
                                 : 'None selected',
                           ),
                           const SizedBox(height: 16),
 
                           _buildInfoSection(
                             'Frequently visits',
-                            profileData.location_preference.isNotEmpty
-                                ? profileData.location_preference.join(', ')
+                            widget.profileData.location_preference.isNotEmpty
+                                ? widget.profileData.location_preference.join(', ')
                                 : 'No preferences set',
                           ),
                         ],
@@ -225,7 +303,7 @@ class finished_customization_page extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const CustomizeProfilePage(),
+                            builder: (context) => CustomizeProfilePage(existingProfileData: widget.profileData),
                           ),
                         );
                       },

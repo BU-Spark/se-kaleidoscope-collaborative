@@ -235,162 +235,182 @@ class _CategoryResultsPageState extends State<CategoryResultsPage> {
         // Note: We need to construct the full place details from the cached data
         _navigateToPlaceDetails(placeData);
       },
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        elevation: 3,
-        shadowColor: AppTheme.primaryColor.withValues(alpha: 0.2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Place photo
-            Expanded(
-              flex: 3,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  PhotoUrlHelper.isValidPhotoReference(placePhotoReference)
-                      ? Image.network(
-                          photoUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Limit text scale factor to prevent overflow in cards
+          final textScaleFactor = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
+          
+          return Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 3,
+            shadowColor: AppTheme.primaryColor.withValues(alpha: 0.2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Place photo
+                Expanded(
+                  flex: 3,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      PhotoUrlHelper.isValidPhotoReference(placePhotoReference)
+                          ? Image.network(
+                              photoUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey.shade300,
+                                  child: Icon(
+                                    Icons.image_not_supported,
+                                    size: 40,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                );
+                              },
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  color: Colors.grey.shade200,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.primaryColor,
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                              loadingProgress.expectedTotalBytes!
+                                          : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
                               color: Colors.grey.shade300,
                               child: Icon(
-                                Icons.image_not_supported,
+                                Icons.place,
                                 size: 40,
                                 color: Colors.grey.shade500,
                               ),
-                            );
-                          },
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              color: Colors.grey.shade200,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: AppTheme.primaryColor,
-                                  value: loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                          loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      : Container(
-                          color: Colors.grey.shade300,
-                          child: Icon(
-                            Icons.place,
-                            size: 40,
-                            color: Colors.grey.shade500,
+                            ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.3),
+                            ],
                           ),
                         ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withValues(alpha: 0.3),
-                        ],
                       ),
-                    ),
-                  ),
-                  // Favorite button
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: FavoriteButton(
-                      placeId: placeData['placeID'] ?? '',
-                      placeName: placeName,
-                      placePhoto: placePhotoReference,
-                      placePrimaryType: placeData['placePrimaryType'] ?? 'place',
-                      size: 20,
-                    ),
-                  ),
-                  // Review count badge
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(12),
+                      // Favorite button
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: FavoriteButton(
+                          placeId: placeData['placeID'] ?? '',
+                          placeName: placeName,
+                          placePhoto: placePhotoReference,
+                          placePrimaryType: placeData['placePrimaryType'] ?? 'place',
+                          size: 20,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.rate_review,
-                            size: 12,
-                            color: Colors.white,
+                      // Review count badge with constrained text scaling
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: MediaQuery(
+                          data: MediaQuery.of(context).copyWith(
+                            textScaleFactor: textScaleFactor,
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '$reviewCount',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.7),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.rate_review,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '$reviewCount',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Place info with constrained text scaling
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    color: Colors.white,
+                    child: MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        textScaleFactor: textScaleFactor,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              placeName,
+                              style: GoogleFonts.openSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.star,
+                                size: 16,
+                                color: AppTheme.primaryColor,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                averageRating.toStringAsFixed(1),
+                                style: GoogleFonts.openSans(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            // Place info
-            Expanded(
-              flex: 2,
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      placeName,
-                      style: GoogleFonts.openSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          size: 16,
-                          color: AppTheme.primaryColor,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          averageRating.toStringAsFixed(1),
-                          style: GoogleFonts.openSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
