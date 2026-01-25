@@ -2,6 +2,8 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import axios from 'axios';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -46,6 +48,11 @@ app.use(cors({
 
 app.use(express.json());
 
+// Serve static HTML files from the public directory
+// When compiled, __dirname will be 'dist', so we go up one level to find 'public'
+const publicPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicPath));
+
 // Health check endpoint for Railway
 app.get('/health', (req, res) => {
   res.status(200).json({ 
@@ -53,6 +60,21 @@ app.get('/health', (req, res) => {
     message: 'Kaleidoscope Backend API is running',
     timestamp: new Date().toISOString()
   });
+});
+
+// Serve privacy policy
+app.get('/privacy-policy', (req, res) => {
+  res.sendFile(path.join(publicPath, 'privacy-policy.html'));
+});
+
+// Serve terms of service
+app.get('/terms-of-service', (req, res) => {
+  res.sendFile(path.join(publicPath, 'terms-of-service.html'));
+});
+
+// Root endpoint - serve index page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
 app.get('/api/query/:query/:lat/:lng', async (req, res) => {
