@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math' show cos, sqrt, asin;
 
 class CloudFirestoreService {
   final FirebaseFirestore firestore;
@@ -252,5 +253,148 @@ class CloudFirestoreService {
       print('Error getting available category groups: $e');
       return {};
     }
+  }
+
+  /// Calculate distance between two coordinates using Haversine formula
+  /// Returns distance in kilometers
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371; // Earth's radius in kilometers
+    
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+    
+    double a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) *
+        sin(dLon / 2) * sin(dLon / 2);
+    
+    double c = 2 * asin(sqrt(a));
+    
+    return earthRadius * c;
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * (3.141592653589793 / 180.0);
+  }
+
+  double sin(double radians) {
+    // Using Taylor series approximation for sine
+    double result = radians;
+    double term = radians;
+    for (int i = 1; i <= 10; i++) {
+      term *= -radians * radians / ((2 * i) * (2 * i + 1));
+      result += term;
+    }
+    return result;
+  }
+
+  /// Get reviewed places filtered by user's accessibility accommodations
+  /// Returns places that have reviews mentioning the user's required accommodations
+  Future<List<Map<String, dynamic>>> getReviewedPlacesByAccommodations(
+    List<String> categoryTypes,
+    List<String> userAccommodations,
+  ) async {
+    try {
+      // Get all places in the category
+      List<Map<String, dynamic>> allPlaces = await getReviewedPlacesByCategoryGroup(categoryTypes);
+      
+      if (userAccommodations.isEmpty) {
+        return allPlaces;
+      }
+
+      // Normalize user accommodations (remove spaces for comparison)
+      // This is needed because reviews store accommodations without spaces (e.g., "AccessibleWashroom")
+      // but profiles store them with spaces (e.g., "Accessible Washroom")
+      List<String> normalizedUserAccommodations = userAccommodations
+          .map((acc) => acc.replaceAll(' ', ''))
+          .toList();
+
+      // Filter places that have reviews with matching accommodations
+      List<Map<String, dynamic>> filteredPlaces = [];
+      
+      for (var place in allPlaces) {
+        String placeId = place['placeID'] ?? '';
+        
+        // Get all reviews for this place
+        QuerySnapshot reviewSnapshot = await firestore
+            .collection('UserReview')
+            .where('placeID', isEqualTo: placeId)
+            .get();
+        
+        // Check if any review has accommodations that match user's preferences
+        bool hasMatchingAccommodations = false;
+        
+        for (var reviewDoc in reviewSnapshot.docs) {
+          final reviewData = reviewDoc.data() as Map<String, dynamic>;
+          
+          // Extract accommodations from review
+          // Accommodations are stored as a Map<String, int> where keys are accommodation names
+          if (reviewData.containsKey('accommodations')) {
+            final accommodationsData = reviewData['accommodations'];
+            
+            // Handle both Map and List formats for backwards compatibility
+            List<String> reviewAccommodations = [];
+            
+            if (accommodationsData is Map) {
+              // If it's a map, get the keys (accommodation names)
+              // These are already stored without spaces (e.g., "AccessibleWashroom")
+              reviewAccommodations = accommodationsData.keys
+                  .map((key) => key.toString())
+                  .toList();
+            } else if (accommodationsData is List) {
+              // If it's already a list, normalize by removing spaces
+              reviewAccommodations = List<String>.from(accommodationsData)
+                  .map((acc) => acc.toString().replaceAll(' ', ''))
+                  .toList();
+            }
+            
+            // Check if there's any overlap with user's accommodations (both normalized)
+            for (String normalizedUserAccommodation in normalizedUserAccommodations) {
+              if (reviewAccommodations.contains(normalizedUserAccommodation)) {
+                hasMatchingAccommodations = true;
+                break;
+              }
+            }
+          }
+          
+          if (hasMatchingAccommodations) break;
+        }
+        
+        if (hasMatchingAccommodations) {
+          filteredPlaces.add(place);
+        }
+      }
+      
+      return filteredPlaces;
+    } catch (e) {
+      print('Error getting places by accommodations: $e');
+      return [];
+    }
+  }
+
+  /// Sort places by distance from user's location
+  List<Map<String, dynamic>> sortPlacesByDistance(
+    List<Map<String, dynamic>> places,
+    double userLat,
+    double userLon,
+  ) {
+    // Add distance to each place
+    for (var place in places) {
+      // Try to get place coordinates from cached data or use a default
+      // Note: You may need to store lat/lng in reviews or fetch from Google Places API
+      double placeLat = place['latitude'] ?? userLat;
+      double placeLon = place['longitude'] ?? userLon;
+      
+      double distance = calculateDistance(userLat, userLon, placeLat, placeLon);
+      place['distance'] = distance;
+    }
+    
+    // Sort by distance
+    places.sort((a, b) {
+      double distA = a['distance'] ?? double.infinity;
+      double distB = b['distance'] ?? double.infinity;
+      return distA.compareTo(distB);
+    });
+    
+    return places;
   }
 }

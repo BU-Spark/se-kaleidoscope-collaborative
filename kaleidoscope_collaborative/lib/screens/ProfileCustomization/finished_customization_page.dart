@@ -8,6 +8,7 @@ import 'package:kaleidoscope_collaborative/models/profile.dart';
 import 'package:kaleidoscope_collaborative/screens/HomeAndLanding/home_page.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_0.dart';
 import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 
@@ -289,9 +290,20 @@ class _FinishedCustomizationPageState extends State<finished_customization_page>
               ),
             ),
 
-            // Action Buttons - Fixed at bottom
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+            // Action Buttons - Fixed at bottom with proper padding for bottom nav
+            // Add extra bottom padding for iOS 26+ floating tab bar
+            Builder(
+              builder: (context) {
+                final isIOS26 = PlatformInfo.isIOS26OrHigher();
+                final bottomPadding = isIOS26 ? 60.0 : 0.0;
+
+                return Container(
+                  padding: EdgeInsets.fromLTRB(
+                    24.0,
+                    8.0,
+                    24.0,
+                    bottomPadding,
+                  ),
               child: Column(
                 children: [
                   // Edit Profile button
@@ -367,7 +379,9 @@ class _FinishedCustomizationPageState extends State<finished_customization_page>
                   ),
                 ],
               ),
-            ),
+            );
+          },
+        ),
           ],
         ),
       ),

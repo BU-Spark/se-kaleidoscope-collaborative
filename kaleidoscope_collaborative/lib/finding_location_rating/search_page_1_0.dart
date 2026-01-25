@@ -21,12 +21,10 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
   final List<String> _searchHistory = [];
-  late Future<Position> coordinates;
 
   @override
   void initState() {
     super.initState();
-    coordinates = _determinePosition();
   }
 
   @override
@@ -180,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
                         MaterialPageRoute(
                           builder: (context) => SearchPage1_1(
                             query: _searchHistory[index],
-                            coordinateFuture: coordinates,
+                            coordinateFuture: _getPositionFromGlobals(),
                             name: widget.name,
                           ),
                         ),
@@ -231,7 +229,7 @@ class _SearchPageState extends State<SearchPage> {
     if (query.isNotEmpty) {
       if (widget.skipFilters) {
         // Skip filters and go directly to results
-        final queryResponse = coordinates.then((coords) {
+        final queryResponse = _getPositionFromGlobals().then((coords) {
           final lat = coords.latitude;
           final lng = coords.longitude;
           String baseUrl = globals.apiBaseUrl;
@@ -260,7 +258,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                SearchPage1_1(query: query, coordinateFuture: coordinates, name: widget.name),
+                SearchPage1_1(query: query, coordinateFuture: _getPositionFromGlobals(), name: widget.name),
           ),
         );
       }
@@ -271,30 +269,38 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+  /// Get position from globals (already obtained in home_page.dart)
+  /// Returns a Future<Position> for compatibility with existing code
+  Future<Position> _getPositionFromGlobals() async {
+    if (globals.userLatitude != null && globals.userLongitude != null) {
+      // Create a Position object from stored coordinates
+      return Position(
+        latitude: globals.userLatitude!,
+        longitude: globals.userLongitude!,
+        timestamp: DateTime.now(),
+        accuracy: 0.0,
+        altitude: 0.0,
+        altitudeAccuracy: 0.0,
+        heading: 0.0,
+        headingAccuracy: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+      );
+    } else {
+      // Fallback to Boston if location not available
+      return Position(
+        latitude: 42.3601,
+        longitude: -71.0589,
+        timestamp: DateTime.now(),
+        accuracy: 0.0,
+        altitude: 0.0,
+        altitudeAccuracy: 0.0,
+        heading: 0.0,
+        headingAccuracy: 0.0,
+        speed: 0.0,
+        speedAccuracy: 0.0,
+      );
     }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition();
   }
 
 }
