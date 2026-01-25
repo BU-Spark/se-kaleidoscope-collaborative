@@ -5,6 +5,9 @@ import 'search_page_1_2.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import '../config/globals.dart' as globals;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/profile.dart';
+import '../models/accommodations_constants.dart';
 
 class SearchPage1_1 extends StatefulWidget {
   final String query;
@@ -45,6 +48,52 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
       return http.get(Uri.parse(nearbyPlacesUrl));
     }
     );
+
+    // Load profile filters if user is logged in
+    _loadProfileFilters();
+  }
+
+  /// Loads user's profile accommodations and pre-selects matching filters
+  Future<void> _loadProfileFilters() async {
+    try {
+      // Check if user is logged in
+      if (globals.userEmail.isEmpty) {
+        return; // Not logged in, skip pre-selection
+      }
+
+      // Fetch user's profile data from Firestore
+      final doc = await FirebaseFirestore.instance
+          .collection('ProfileData')
+          .doc(globals.userEmail)
+          .get();
+
+      if (!doc.exists) {
+        return; // Profile doesn't exist, skip pre-selection
+      }
+
+      // Parse profile data
+      final profileData = ProfileData.fromFirestore(
+        doc.data() as Map<String, dynamic>,
+      );
+
+      // Only keep accommodations that are in our canonical list
+      // This filters out custom "Others" values that can't be used for search
+      final profileFilters = profileData.accommodations
+          .where((acc) => kAllAccommodations.contains(acc))
+          .toList();
+
+      // Update selected filters if widget is still mounted
+      if (!mounted) return;
+
+      setState(() {
+        selectedFilters
+          ..clear()
+          ..addAll(profileFilters);
+      });
+    } catch (e) {
+      print('Error loading profile filters: $e');
+      // Silently fail - user can still use filters manually
+    }
   }
 
   @override
@@ -141,52 +190,11 @@ class _SearchPage1_1State extends State<SearchPage1_1> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _buildBoldedWordRowWithBoxes(
-                    "Accomodation(s) Needed",
-                    selectedFilters.isEmpty
-                        ? []
-                        : selectedFilters.map((filter) => filter).toList(),
-                  ),
-                  _buildBoldedWordRowWithBoxes(
-                    "Mobility",
-                    [
-                      "Accessible Washroom",
-                      "Alternative Entrance",
-                      "Handrails",
-                      "Elevator",
-                      "Lowered Counter",
-                      "Handicap Parking",
-                    ],
-                  ),
-                  _buildBoldedWordRowWithBoxes(
-                    "Stimuli",
-                    [
-                      "Outdoor Access Only",
-                      "Reduced Crowd",
-                      "Scent Free",
-                      "Digital Menu",
-                      "Low Lights",
-                      "Reduced Noise",
-                      "Spaced Seating",
-                    ],
-                  ),
-                  _buildBoldedWordRowWithBoxes(
-                    "Communication",
-                    [
-                      "Braille",
-                      "Customer Service",
-                      "Service Animal Friendly",
-                      "Sign Language ASL", //removed /because not allowed in DB
-                      "Attendants to Assist Disabled Customers",
-                    ],
-                  ),
-                  _buildBoldedWordRowWithBoxes(
-                    "Safety & Environment",
-                    [
-                      "Fenced/Gated",
-                      "Indoor Play Area",
-                    ],
-                  ),
+                  // Render accommodation categories from shared constants
+                  ...kAccommodationCategories.entries.map((entry) {
+                    return _buildBoldedWordRowWithBoxes(entry.key, entry.value);
+                  }).toList(),
+                  // Customer Reviews section (separate from accommodations)
                   _buildBoldedWordRowWithBoxes(
                     "Customer Reviews",
                     [

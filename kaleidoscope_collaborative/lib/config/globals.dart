@@ -2,6 +2,10 @@ library globals;
 
 String userEmail = '';
 
+// User location data
+double? userLatitude;
+double? userLongitude;
+
 // API Configuration
 // For iOS Simulator: use 'http://localhost:8000'
 // For Android Emulator: use 'http://10.0.2.2:8000'

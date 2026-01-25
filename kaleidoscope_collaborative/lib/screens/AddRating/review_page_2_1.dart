@@ -6,6 +6,7 @@ import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_3_1_paramterRatingPage.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/text_review_4_1.dart';
 import 'package:kaleidoscope_collaborative/screens/AddRating/Components/ReviewOrgDetails.dart';
+import 'package:kaleidoscope_collaborative/models/accommodations_constants.dart';
 
 // Implementing Add a Review 2.1 : Choosing Accommodations for Rating Page
 //
@@ -38,18 +39,19 @@ class _ChooseRatingParametersPageState
     extends State<ChooseRatingParametersPage> {
   final Map<String, int> parameterRatings = {};
 
-  // Map to keep track of each category and its items
-
+  // Use shared accommodation categories from constants
+  // Create a deep copy so we can modify the lists when selecting/deselecting
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Map<String, List<String>> categoryItems = {
-    'Mobility accommodation': ['Accessible Washroom', 'Alternative Entrance', 'Handrails', 'Elevator', 'Lowered Counter', 'Ramp'],
-    'Stimuli accommodation': ['Outdoor Access Only', 'Reduced Crowd', 'Scent Free', 'Digital Menu'],
-    'Communication accommodation': ['Braille', 'Customer Service', 'Service Animal Friendly', 'Sign Language'],
-  };
+  late Map<String, List<String>> categoryItems;
 
   @override
   void initState() {
     super.initState();
+    // Create a deep copy of kAccommodationCategories so we can modify the lists
+    categoryItems = {};
+    kAccommodationCategories.forEach((key, value) {
+      categoryItems[key] = List<String>.from(value);
+    });
     //Currently unneeded as there's no way to add in new accommodation options,
     //so the following function is commented out to save on Firestore reads
     //fetchAccommodations();

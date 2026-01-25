@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,9 @@ import 'package:kaleidoscope_collaborative/screens/Category/category_results_pag
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
 import 'package:kaleidoscope_collaborative/screens/cloud_firestore_service.dart';
 import 'package:kaleidoscope_collaborative/services/unsplash_service.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -48,6 +52,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     getCurrentUser();
     _tabController = TabController(length: 2, vsync: this);
     _firestoreService = CloudFirestoreService(_firestore);
+    
+    // Request location permission on app start
+    _requestLocationPermission();
 
     // Listen to auth state changes
     _auth.authStateChanges().listen((User? user) {
@@ -102,6 +109,46 @@ class _DashboardScreenState extends State<DashboardScreen>
     return first_name;
   }
 
+  /// Request location permission and store user's location in globals
+  Future<void> _requestLocationPermission() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        print('Location services are disabled.');
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          print('Location permissions are denied');
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        print('Location permissions are permanently denied');
+        return;
+      }
+
+      // Get current position and store in globals
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      
+      globals.userLatitude = position.latitude;
+      globals.userLongitude = position.longitude;
+      
+      print('Location obtained: ${position.latitude}, ${position.longitude}');
+    } catch (e) {
+      print('Error getting location: $e');
+      // Use default location (Boston) as fallback
+      globals.userLatitude = 42.3601;
+      globals.userLongitude = -71.0589;
+    }
+  }
+
   @override
   void dispose() {
     _tabController?.dispose();
@@ -114,65 +161,58 @@ class _DashboardScreenState extends State<DashboardScreen>
       return Container();
     }
 
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: _selectedIndex == 1 ? _buildExploreAppBar() : null,
-      body: _buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorite',
+    // Use AdaptiveScaffold which properly supports AdaptiveBottomNavigationBar
+    // We need to handle the AppBar differently since AdaptiveScaffold uses AdaptiveAppBar
+    return AdaptiveScaffold(
+      body: SafeArea(
+        bottom: false,
+        child: Material(
+          color: AppTheme.backgroundColor,
+          child: Column(
+            children: [
+              // Custom app bar for Explore tab
+              if (_selectedIndex == 1) _buildExploreAppBar(),
+              // Wrap in NotificationListener to absorb scroll events
+              // and prevent the bottom nav from minimizing on scroll
+              Expanded(
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (notification) => true, // Absorb all scroll notifications
+                  child: _buildBody(),
+                ),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: 'Explore',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppTheme.primaryColor,
-        onTap: _handleNavigation,
+        ),
       ),
+      bottomNavigationBar: _buildAdaptiveBottomNavigationBar(),
     );
   }
 
-  PreferredSizeWidget _buildExploreAppBar() {
-    return AppBar(
-      backgroundColor: AppTheme.backgroundColor,
-      automaticallyImplyLeading: false,
-      elevation: 0,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: TabBar(
-          controller: _tabController,
-          labelColor: AppTheme.primaryColorDark,
-          unselectedLabelColor: Colors.grey,
-          labelStyle: GoogleFonts.openSans(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-          unselectedLabelStyle: GoogleFonts.openSans(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-          indicatorSize: TabBarIndicatorSize.label,
-          indicator: const UnderlineTabIndicator(
-            borderSide: BorderSide(
-              color: AppTheme.primaryColorDark,
-              width: 3.0,
-            ),
-            insets: EdgeInsets.symmetric(horizontal: 4.0),
-          ),
-          tabs: const [
-            Tab(text: 'Explore'),
-            Tab(text: 'Review'),
-          ],
-        ),
+  Widget _buildExploreAppBar() {
+    return TabBar(
+      controller: _tabController,
+      labelColor: AppTheme.primaryColorDark,
+      unselectedLabelColor: Colors.grey,
+      labelStyle: GoogleFonts.openSans(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
       ),
+      unselectedLabelStyle: GoogleFonts.openSans(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+      ),
+      indicatorSize: TabBarIndicatorSize.label,
+      indicator: const UnderlineTabIndicator(
+        borderSide: BorderSide(
+          color: AppTheme.primaryColorDark,
+          width: 3.0,
+        ),
+        insets: EdgeInsets.symmetric(horizontal: 4.0),
+      ),
+      tabs: const [
+        Tab(text: 'Explore'),
+        Tab(text: 'Review'),
+      ],
     );
   }
 
@@ -221,6 +261,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       child: Column(
         children: [
           Padding(
+            // padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 16.0),
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               onTap: () {
@@ -323,8 +364,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                 // Group types by category groups
                 final categoryGroups = _groupTypesByCategoryGroup(snapshot.data!);
                 
+                // Add extra bottom padding for iOS 26+ floating tab bar
+                final isIOS26 = PlatformInfo.isIOS26OrHigher();
+                final bottomPadding = isIOS26
+                    ? 60.0 + MediaQuery.of(context).padding.bottom // Extra space for floating tab bar
+                    : 8.0 + MediaQuery.of(context).padding.bottom;
+
                 return GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: EdgeInsets.fromLTRB(
+                    16.0,
+                    8.0,
+                    16.0,
+                    bottomPadding,
+                  ),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8,
@@ -563,6 +615,90 @@ class _DashboardScreenState extends State<DashboardScreen>
           ],
         ),
       ),
+    );
+  }
+  /// Builds the adaptive bottom navigation bar with iOS 26 liquid glass design
+  dynamic _buildAdaptiveBottomNavigationBar() {
+    final isIOS26Plus = PlatformInfo.isIOS26OrHigher();
+
+    // Build navigation items based on platform
+    List<AdaptiveNavigationDestination> items;
+
+    if (isIOS26Plus) {
+      // Use SF Symbols for iOS 26+
+      items = [
+        AdaptiveNavigationDestination(
+          icon: 'heart.fill',
+          label: 'Favorite',
+        ),
+        AdaptiveNavigationDestination(
+          icon: 'magnifyingglass',
+          label: 'Explore',
+        ),
+        AdaptiveNavigationDestination(
+          icon: 'person.fill',
+          label: 'Profile',
+        ),
+      ];
+    } else {
+      // Use IconData (not Icon widgets) for Android and older iOS
+      items = [
+        AdaptiveNavigationDestination(
+          icon: Icons.favorite,
+          label: 'Favorite',
+        ),
+        AdaptiveNavigationDestination(
+          icon: Icons.explore,
+          label: 'Explore',
+        ),
+        AdaptiveNavigationDestination(
+          icon: Icons.person,
+          label: 'Profile',
+        ),
+      ];
+    }
+
+    // For non-iOS 26, provide a custom CupertinoTabBar with adjusted padding
+    CupertinoTabBar? customCupertinoTabBar;
+    if (!isIOS26Plus) {
+      customCupertinoTabBar = CupertinoTabBar(
+        currentIndex: _selectedIndex,
+        onTap: _handleNavigation,
+        activeColor: AppTheme.primaryColor,
+        height: 56, // Slightly taller to accommodate better padding
+        items: const [
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Icon(Icons.favorite),
+            ),
+            label: 'Favorite',
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Icon(Icons.explore),
+            ),
+            label: 'Explore',
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Icon(Icons.person),
+            ),
+            label: 'Profile',
+          ),
+        ],
+      );
+    }
+
+    return AdaptiveBottomNavigationBar(
+      // Enable native iOS 26 liquid glass design
+      useNativeBottomBar: true,
+      selectedIndex: _selectedIndex,
+      onTap: _handleNavigation,
+      items: items,
+      cupertinoTabBar: customCupertinoTabBar,
     );
   }
 

@@ -470,28 +470,55 @@ class SearchPage1_2 extends StatelessWidget {
   Future<bool> _filterResult(String placeID, List<String> filters) async {
     if (filters.isEmpty) return true;
 
-    var ratings = [1, 2, 3, 4, 5];
-
-    var query = _firestore
+    // Get all reviews for this place
+    var querySnapshot = await _firestore
         .collection('UserReview')
-        .where('placeID', isEqualTo: placeID);
+        .where('placeID', isEqualTo: placeID)
+        .get();
 
+    if (querySnapshot.docs.isEmpty) {
+      return false;
+    }
+
+    // Check each filter
     for (var rawFilter in filters) {
       var filter = rawFilter.replaceAll(' ', '');
+      
       if (filter.contains('Stars')) {
-        query = query.where('overallRating',
-            whereIn: ratings.getRange(int.parse(filter[0]), 5));
+        // Handle star rating filters
+        int minRating = int.parse(filter[0]);
+        bool hasMatchingRating = querySnapshot.docs.any((doc) {
+          var data = doc.data();
+          int overallRating = data['overallRating'] ?? 0;
+          return overallRating >= minRating;
+        });
+        
+        if (!hasMatchingRating) {
+          return false;
+        }
       } else {
-        query = query.where('accommodations.$filter', isEqualTo: 5);
+        // Handle accommodation filters
+        // Normalize filter by removing spaces (e.g., "AccessibleWashroom")
+        bool hasAccommodation = querySnapshot.docs.any((doc) {
+          var data = doc.data();
+          if (data.containsKey('accommodations')) {
+            var accommodationsData = data['accommodations'];
+            
+            if (accommodationsData is Map) {
+              // Check if the accommodation exists in the map (regardless of rating)
+              // Accommodations are stored without spaces (e.g., "AccessibleWashroom")
+              return accommodationsData.containsKey(filter);
+            }
+          }
+          return false;
+        });
+        
+        if (!hasAccommodation) {
+          return false;
+        }
       }
     }
 
-    var querySnapshot = await query.limit(1).get();
-
-    // Check if the query returned any documents
-    if (querySnapshot.docs.isNotEmpty) {
-      return true;
-    }
-    return false;
+    return true;
   }
 }

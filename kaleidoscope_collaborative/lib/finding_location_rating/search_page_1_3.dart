@@ -7,6 +7,7 @@ import 'package:kaleidoscope_collaborative/screens/AddRating/review_page_1_1_ove
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kaleidoscope_collaborative/utils/place_type_helper.dart';
 import 'package:kaleidoscope_collaborative/utils/photo_url_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //TO DO: Add profile photos to review cards
 //Hi next semester's team if there is one
@@ -153,6 +154,12 @@ class _SearchPage1_3State extends State<SearchPage1_3> {
                       _buildBusinessHours(
                         widget.placeDetails['current_opening_hours']['weekday_text'],
                       ),
+                      const SizedBox(height: 12),
+                    ],
+                    // Directions section
+                    if (widget.placeDetails['formatted_address'] != null ||
+                        widget.placeDetails['place_id'] != null) ...[
+                      _buildDirectionsSection(),
                     ],
                   ],
                 ],
@@ -365,6 +372,140 @@ class _SearchPage1_3State extends State<SearchPage1_3> {
         ),
       ],
     );
+  }
+
+  Widget _buildDirectionsSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.primaryColor.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.primaryColor.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: InkWell(
+        onTap: _openGoogleMapsDirections,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.directions,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Get Directions",
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Open in Google Maps",
+                      style: GoogleFonts.openSans(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 18,
+                color: AppTheme.primaryColor,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Opens Google Maps with directions to the place
+  Future<void> _openGoogleMapsDirections() async {
+    try {
+      String? url;
+      
+      // Prefer place_id if available (most reliable)
+      if (widget.placeDetails['place_id'] != null) {
+        final placeId = widget.placeDetails['place_id'] as String;
+        url = 'https://www.google.com/maps/dir/?api=1&destination_place_id=$placeId';
+      } 
+      // Fallback to formatted address
+      else if (widget.placeDetails['formatted_address'] != null) {
+        final address = widget.placeDetails['formatted_address'] as String;
+        final encodedAddress = Uri.encodeComponent(address);
+        url = 'https://www.google.com/maps/dir/?api=1&destination=$encodedAddress';
+      }
+      // Last resort: use place name
+      else if (widget.result['name'] != null) {
+        final name = widget.result['name'] as String;
+        final encodedName = Uri.encodeComponent(name);
+        url = 'https://www.google.com/maps/search/?api=1&query=$encodedName';
+      }
+
+      if (url != null) {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Could not open Google Maps',
+                  style: GoogleFonts.openSans(),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Location information not available',
+                style: GoogleFonts.openSans(),
+              ),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error opening Google Maps: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error opening directions',
+              style: GoogleFonts.openSans(),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   getReviewsFor(String? placeID) async {

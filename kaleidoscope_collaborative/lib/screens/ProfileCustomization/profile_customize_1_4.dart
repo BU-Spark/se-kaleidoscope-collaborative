@@ -4,6 +4,7 @@ import 'package:kaleidoscope_collaborative/config/app_theme.dart';
 import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 import 'package:kaleidoscope_collaborative/widgets/profile_setup_widgets.dart';
 import 'package:kaleidoscope_collaborative/models/profile.dart';
+import 'package:kaleidoscope_collaborative/models/accommodations_constants.dart';
 import 'package:kaleidoscope_collaborative/screens/ProfileCustomization/profile_customize_1_5.dart';
 
 class CustomizeProfilePage_1_4 extends StatefulWidget {
@@ -18,17 +19,9 @@ class CustomizeProfilePage_1_4 extends StatefulWidget {
 }
 
 class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
-  Map<String, bool> accommodation = {
-    'Accessible Parking': false,
-    'Elevator': false,
-    'Braille': false,
-    'Automated Doors': false,
-    'Accessible Washroom': false,
-    'Bright Lighting': false,
-    'Customer Service': false,
-    'Digital Menu': false,
-    'Gender Neutral Washroom': false,
-    'Alternative Entrance': false,
+  // Build accommodation map from shared constants + "Others" option
+  late Map<String, bool> accommodation = {
+    for (final acc in kAllAccommodations) acc: false,
     'Others': false,
   };
 
@@ -112,22 +105,49 @@ class _CustomizeProfilePage_1_4State extends State<CustomizeProfilePage_1_4> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    ...accommodation.keys.map((String key) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Column(
-                          children: [
-                            _buildCheckboxTile(key, accommodation[key]!),
-                            // Show text field if "Others" is selected
-                            if (key == 'Others' && accommodation[key]!)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: _buildOthersTextField(),
+                    // Render accommodations organized by categories
+                    ...kAccommodationCategories.entries.map((categoryEntry) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Category header
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Text(
+                              categoryEntry.key,
+                              style: GoogleFonts.openSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
                               ),
-                          ],
-                        ),
+                            ),
+                          ),
+                          // Accommodations in this category
+                          ...categoryEntry.value.map((acc) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: _buildCheckboxTile(acc, accommodation[acc] ?? false),
+                            );
+                          }).toList(),
+                          const SizedBox(height: 8),
+                        ],
                       );
                     }).toList(),
+                    // "Others" option at the end
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Column(
+                        children: [
+                          _buildCheckboxTile('Others', accommodation['Others'] ?? false),
+                          // Show text field if "Others" is selected
+                          if (accommodation['Others'] == true)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: _buildOthersTextField(),
+                            ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 16),
                   ],
                 ),

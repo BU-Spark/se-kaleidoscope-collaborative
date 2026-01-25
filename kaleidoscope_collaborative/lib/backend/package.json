@@ -4,7 +4,7 @@
   "description": "Express.js backend for Kaleidoscope Collaborative - Google Places API proxy",
   "main": "dist/address.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r public dist/",
     "start": "node dist/address.js",
     "dev": "ts-node address.ts",
     "type-check": "tsc --noEmit"
