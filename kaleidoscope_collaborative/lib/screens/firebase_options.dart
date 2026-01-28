@@ -66,7 +66,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '181675201017',
     projectId: 'se-kaleidoscope-collaborative',
     storageBucket: 'se-kaleidoscope-collaborative.appspot.com',
-    iosBundleId: 'com.example.kaleidoscopeCollaborative',
+    iosBundleId: 'com.thekaleidoscopecollab.kaleidoscope',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

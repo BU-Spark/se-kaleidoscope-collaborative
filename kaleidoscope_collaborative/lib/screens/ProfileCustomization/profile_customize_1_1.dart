@@ -69,6 +69,13 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         toolbarHeight: 48,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red),
+            onPressed: () => ProfileSetupWidgets.handleLogout(context),
+            tooltip: 'Log out',
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -186,7 +193,6 @@ class _CustomizeProfilePage_1_1State extends State<CustomizeProfilePage_1_1> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),

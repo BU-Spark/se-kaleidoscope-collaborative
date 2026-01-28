@@ -26,7 +26,7 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: ProfileSetupWidgets.buildAppBar('Profile Setup'),
+      appBar: ProfileSetupWidgets.buildAppBar(context, 'Profile Setup'),
       body: SafeArea(
         child: Column(
           children: [
@@ -280,7 +280,6 @@ class CustomizeProfilePage_1_7 extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),

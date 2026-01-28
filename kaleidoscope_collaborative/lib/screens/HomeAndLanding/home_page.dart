@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,6 +47,9 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // Categories will be loaded dynamically from reviews
   late CloudFirestoreService _firestoreService;
+  
+  // Stream subscription for auth state changes
+  StreamSubscription<User?>? _authStateSubscription;
 
   @override
   void initState() {
@@ -57,24 +62,26 @@ class _DashboardScreenState extends State<DashboardScreen>
     _requestLocationPermission();
 
     // Listen to auth state changes
-    _auth.authStateChanges().listen((User? user) {
-      setState(() {
-        loggedInUser = user;
-        // Reset profile data when user logs out
-        if (user == null) {
-          _profileData = null;
-          _isLoadingProfile = false;
-          _showProfileCustomization = false;
-          _selectedIndex = 1; // Reset to Explore tab
-        }
-      });
+    _authStateSubscription = _auth.authStateChanges().listen((User? user) {
+      if (mounted) {
+        setState(() {
+          loggedInUser = user;
+          // Reset profile data when user logs out
+          if (user == null) {
+            _profileData = null;
+            _isLoadingProfile = false;
+            _showProfileCustomization = false;
+            _selectedIndex = 1; // Reset to Explore tab
+          }
+        });
+      }
     });
   }
 
   void getCurrentUser() async {
     try {
       final user = _auth.currentUser;
-      if (user != null) {
+      if (user != null && mounted) {
         setState(() {
           loggedInUser = user; // This will only be set if there is a current user
         });
@@ -151,6 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void dispose() {
+    _authStateSubscription?.cancel();
     _tabController?.dispose();
     super.dispose();
   }
@@ -706,10 +714,12 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (index == 2 && loggedInUser != null) {
       // Special handling for Profile tab when logged in
       // Load profile data before showing the profile screen
-      setState(() {
-        _selectedIndex = index;
-        _isLoadingProfile = true;
-      });
+      if (mounted) {
+        setState(() {
+          _selectedIndex = index;
+          _isLoadingProfile = true;
+        });
+      }
 
       try {
         // Check if profile exists using email directly
@@ -717,6 +727,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             .collection('ProfileData')
             .doc(loggedInUser!.email)
             .get();
+
+        if (!mounted) return;
 
         if (profileSnapshot.exists) {
           ProfileData profileData = ProfileData.fromFirestore(
@@ -736,16 +748,20 @@ class _DashboardScreenState extends State<DashboardScreen>
         }
       } catch (e) {
         print("Error loading profile: $e");
-        setState(() {
-          _isLoadingProfile = false;
-          _showProfileCustomization = true;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoadingProfile = false;
+            _showProfileCustomization = true;
+          });
+        }
       }
     } else {
       // For Favorite and Explore tabs, just switch
-      setState(() {
-        _selectedIndex = index;
-      });
+      if (mounted) {
+        setState(() {
+          _selectedIndex = index;
+        });
+      }
     }
   }
 }

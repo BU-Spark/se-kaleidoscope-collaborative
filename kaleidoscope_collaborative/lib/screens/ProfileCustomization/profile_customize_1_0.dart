@@ -43,6 +43,13 @@ class CustomizeProfilePage extends StatelessWidget {
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         toolbarHeight: 48,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red),
+            onPressed: () => ProfileSetupWidgets.handleLogout(context),
+            tooltip: 'Log out',
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -106,9 +113,9 @@ class CustomizeProfilePage extends StatelessWidget {
               ),
             ),
 
-            // Action Buttons - Fixed at bottom
+            // Action Buttons - Fixed at bottom, with extra padding for bottom navbar
             Padding(
-              padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+              padding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 80.0),
               child: Column(
                 children: [
                   Row(
@@ -132,8 +139,19 @@ class CustomizeProfilePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  ProfileSetupWidgets.buildLogoutButton(context),
+                  const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () => ProfileSetupWidgets.handleDeleteAccount(context),
+                    child: Text(
+                      'Delete Account',
+                      style: GoogleFonts.openSans(
+                        fontSize: 14,
+                        color: Colors.red,
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.red,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

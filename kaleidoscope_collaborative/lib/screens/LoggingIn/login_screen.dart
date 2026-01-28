@@ -1,19 +1,16 @@
-// This is the Login Screen for user authentication with email and password, and options for social media login.
+// This is the Login Screen for user authentication with email and password, and options for social login.
+import 'dart:io' show Platform;
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kaleidoscope_collaborative/config/app_theme.dart';
-import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
-import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
+import 'package:kaleidoscope_collaborative/config/globals.dart' as globals;
 import 'package:kaleidoscope_collaborative/screens/LoggingIn/forgot_password.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:kaleidoscope_collaborative/config/globals.dart'
-    as globals; // Import the globals
-
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kaleidoscope_collaborative/screens/LoggingIn/login_complete.dart';
 import 'package:kaleidoscope_collaborative/screens/SignUp/signupLandingPage.dart';
-import 'package:kaleidoscope_collaborative/screens/firebase_options.dart';
+import 'package:kaleidoscope_collaborative/screens/auth/social_auth.dart';
+import 'package:kaleidoscope_collaborative/widgets/glassmorphic_button.dart';
 
 // StatefulWidget for the Login Screen.
 class LoginScreen extends StatefulWidget {
@@ -40,6 +37,56 @@ class _LoginScreenState extends State<LoginScreen> {
   // Function to clear text in a text field.
   void clearText(TextEditingController controller) {
     controller.clear();
+  }
+
+  // Helper function to get user-friendly error messages
+  String _getErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'wrong-password':
+        return 'Incorrect password. Please try again or use "Forgot password?" to reset it.';
+      case 'user-not-found':
+        return 'No account found with this email. Please sign up or check your email address.';
+      case 'invalid-email':
+        return 'Invalid email address. Please check and try again.';
+      case 'user-disabled':
+        return 'This account has been disabled. Please contact support.';
+      case 'too-many-requests':
+        return 'Too many failed login attempts. Please try again later.';
+      case 'operation-not-allowed':
+        return 'Email/password sign-in is not enabled. Please contact support.';
+      case 'account-exists-with-different-credential':
+        return 'An account already exists with the same email but different sign-in method. Please sign in with Google or Apple instead.';
+      case 'invalid-credential':
+        return 'Invalid credentials. Please check your email and password.';
+      case 'network-request-failed':
+        return 'Network error. Please check your internet connection and try again.';
+      default:
+        return 'Login failed: ${e.message ?? 'Unknown error occurred'}. Please try again.';
+    }
+  }
+
+  // Show error dialog to user
+  void _showErrorDialog(String message) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Login Error',
+          style: GoogleFonts.openSans(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          message,
+          style: GoogleFonts.openSans(fontSize: 14),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK', style: GoogleFonts.openSans()),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 
   // Dispose focus nodes and controllers when the widget is disposed.
@@ -181,16 +228,36 @@ class _LoginScreenState extends State<LoginScreen> {
               GlassmorphicButton(
                 text: 'Log In',
                 onPressed: () async {
+                  // Basic validation
+                  if (email.trim().isEmpty) {
+                    _showErrorDialog('Please enter your email address.');
+                    return;
+                  }
+                  if (password.isEmpty) {
+                    _showErrorDialog('Please enter your password.');
+                    return;
+                  }
+
                   try {
                     await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
-                    globals.userEmail = _emailTextController.text;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginCompletePage()));
+                        email: email.trim(), password: password);
+                    if (mounted) {
+                      globals.userEmail = _emailTextController.text;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginCompletePage()));
+                    }
+                  } on FirebaseAuthException catch (e) {
+                    print('Login error: ${e.code} - ${e.message}');
+                    if (mounted) {
+                      _showErrorDialog(_getErrorMessage(e));
+                    }
                   } catch (e) {
-                    print(e);
+                    print('Unexpected login error: $e');
+                    if (mounted) {
+                      _showErrorDialog('An unexpected error occurred. Please try again.');
+                    }
                   }
                 },
               ),
@@ -226,49 +293,75 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
 
-              GlassmorphicButton(
-                text: 'Log In with Facebook',
-                onPressed: () async {
-                  try {
-                    final UserCredential? userCredential =
-                        await signInWithFacebook();
-                    if (userCredential != null && context.mounted) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginCompletePage()));
-                    } else {}
-                  } catch (e) {
-                    // If an error occurs, log the error and show a dialog or a toast to the user.
-                    print('Facebook login error: $e');
-                    if (context.mounted) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Login Error'),
-                          content: const Text(
-                              'Failed to sign in with Facebook. Please try again.'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                          ],
-                        ),
-                      );
+              // Log In with Apple (iOS only) – shown first on iOS per Guideline 4.8
+              if (Platform.isIOS) ...[
+                GlassmorphicButton(
+                  text: 'Log In with Apple',
+                  onPressed: () async {
+                    try {
+                      await signInWithApple(context);
+                    } on FirebaseAuthException catch (e) {
+                      print('Apple sign-in error: ${e.code} - ${e.message}');
+                      if (mounted) {
+                        String message;
+                        switch (e.code) {
+                          case 'account-exists-with-different-credential':
+                            message = 'An account already exists with the same email but was created with email/password or Google. Please sign in with that method instead.';
+                            break;
+                          case 'invalid-credential':
+                            message = 'Invalid Apple credentials. Please try again.';
+                            break;
+                          case 'operation-not-allowed':
+                            message = 'Apple sign-in is not enabled. Please contact support.';
+                            break;
+                          default:
+                            message = 'Failed to sign in with Apple: ${e.message ?? 'Unknown error'}. Please try again.';
+                        }
+                        _showErrorDialog(message);
+                      }
+                    } catch (e) {
+                      print('Apple sign-in error: $e');
+                      if (mounted) {
+                        _showErrorDialog('Failed to sign in with Apple. Please try again.');
+                      }
                     }
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              // TODO: Implement login using google:
-              //  Login to firebase -> Go to authentication tab -> Click on Sign-in method -> Add new provider -> choose Google and follow the steps given to integrate it with the onPressed method of the button
+                  },
+                ),
+                const SizedBox(height: 16),
+              ],
               GlassmorphicButton(
                 text: 'Log In with Google',
-                onPressed: () {
-                  signInWithGoogle(context).catchError((error) {
-                    print('Google sign-in failed: $error');
-                  });
+                onPressed: () async {
+                  try {
+                    await signInWithGoogle(context);
+                  } on FirebaseAuthException catch (e) {
+                    print('Google sign-in error: ${e.code} - ${e.message}');
+                    if (mounted) {
+                      String message;
+                      switch (e.code) {
+                        case 'account-exists-with-different-credential':
+                          message = 'An account already exists with the same email but was created with email/password or Apple. Please sign in with that method instead.';
+                          break;
+                        case 'invalid-credential':
+                          message = 'Invalid Google credentials. Please try again.';
+                          break;
+                        case 'operation-not-allowed':
+                          message = 'Google sign-in is not enabled. Please contact support.';
+                          break;
+                        case 'network-request-failed':
+                          message = 'Network error. Please check your internet connection and try again.';
+                          break;
+                        default:
+                          message = 'Failed to sign in with Google: ${e.message ?? 'Unknown error'}. Please try again.';
+                      }
+                      _showErrorDialog(message);
+                    }
+                  } catch (e) {
+                    print('Google sign-in error: $e');
+                    if (mounted) {
+                      _showErrorDialog('Failed to sign in with Google. Please try again.');
+                    }
+                  }
                 },
               ),
               const SizedBox(height: 32),
@@ -289,56 +382,5 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       ),
     );
-  }
-}
-
-Future<UserCredential?> signInWithFacebook() async {
-  final LoginResult loginResult = await FacebookAuth.instance.login();
-  if (loginResult.status == LoginStatus.success) {
-    final AccessToken accessToken = loginResult.accessToken!;
-    // Create a credential to sign in with Firebase
-    final OAuthCredential facebookAuthCredential =
-        FacebookAuthProvider.credential(accessToken.token);
-    // Use the credential to sign in with Firebase and return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  } else if (loginResult.status == LoginStatus.cancelled) {
-    print('Facebook login was cancelled by the user.');
-    return null;
-  } else {
-    final errorMessage = loginResult.message ?? 'Unknown error occurred.';
-    print('Facebook login failed: $errorMessage');
-    throw FirebaseAuthException(
-      code: 'ERROR_FACEBOOK_LOGIN_FAILED',
-      message: errorMessage,
-    );
-  }
-}
-
-Future<void> signInWithGoogle(BuildContext context) async {
-  final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: DefaultFirebaseOptions.currentPlatform.iosClientId ??
-        '181675201017-kva2g5btcr9n70itatmtffa27h4sss3u.apps.googleusercontent.com',
-  );
-
-  try {
-    final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    if (googleUser != null) {
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      if (userCredential.user != null) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const LoginCompletePage()));
-      }
-    }
-  } catch (error) {
-    print('Google sign-in failed: $error');
-    // Handle the error e.g., show a dialog or a snackbar
   }
 }

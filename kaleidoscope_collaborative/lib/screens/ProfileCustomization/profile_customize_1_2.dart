@@ -75,7 +75,7 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: ProfileSetupWidgets.buildAppBar('Profile Setup'),
+      appBar: ProfileSetupWidgets.buildAppBar(context, 'Profile Setup'),
       body: SafeArea(
         child: Column(
           children: [
@@ -198,7 +198,6 @@ class _CustomizeProfilePage_1_2State extends State<CustomizeProfilePage_1_2> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  ProfileSetupWidgets.buildLogoutButton(context),
                 ],
               ),
             ),
