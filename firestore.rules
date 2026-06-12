@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /User/{userId} {
+      allow list: if false;
+      allow read, create, update, delete: if request.auth != null;
+    }
+
+    match /ProfileData/{profileId} {
+      allow list: if false;
+      allow read, write: if request.auth != null
+        && request.auth.token.email == profileId;
+    }
+
+    match /UserRating/{ratingId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /UserReview/{reviewId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /Accommodation/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

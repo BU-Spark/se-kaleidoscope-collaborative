@@ -590,7 +590,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               Map<String, dynamic> userData = {
                                 'first_name': _fnameTextController.text,
                                 'last_name': _lnameTextController.text,
-                                'password': _passwordTextController.text,
                                 'email': _emailTextController.text,
                                 'phone_number': _phoneNumberTextController.text,
                               };
@@ -654,7 +653,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                   Map<String, dynamic> userData = {
                                     'first_name': _fnameTextController.text,
                                     'last_name': _lnameTextController.text,
-                                    'password': _passwordTextController.text,
                                     'email': _emailTextController.text,
                                     'phone_number':
                                         _phoneNumberTextController.text,
@@ -706,8 +704,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                               _fnameTextController.text,
                                           'last_name':
                                               _lnameTextController.text,
-                                          'password':
-                                              _passwordTextController.text,
                                           'email': _emailTextController.text,
                                           'phone_number':
                                               _phoneNumberTextController.text,
