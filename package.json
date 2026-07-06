@@ -1,0 +1,13 @@
+{
+  "name": "se-kaleidoscope-collaborative-firebase",
+  "private": true,
+  "scripts": {
+    "test:firestore-rules": "node scripts/test-firestore-rules.mjs",
+    "purge:passwords": "node scripts/delete-plaintext-passwords.mjs"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^3.0.4",
+    "firebase-admin": "^13.0.2",
+    "firebase-tools": "^13.29.1"
+  }
+}

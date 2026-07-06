@@ -85,20 +85,18 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Future<String?> getUserNameByEmail(String? email) async {
-    if (loggedInUser?.email == null) {
+    if (loggedInUser == null) {
       return null;
     }
-    
-    try {
-      QuerySnapshot querySnapshot = await _firestore
-          .collection('User')
-          .where('email', isEqualTo: loggedInUser!.email)
-          .limit(1)
-          .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>; // Cast to Map<String, dynamic>
-        first_name = userData['first_name']; // Now you can use the '[]' operator
+    try {
+      final userData = await _firestoreService.getUserDataForCurrentAuthUser(
+        uid: loggedInUser!.uid,
+        email: loggedInUser!.email,
+      );
+
+      if (userData != null) {
+        first_name = userData['first_name'];
         last_name = userData['last_name'];
         full_name = '$first_name $last_name';
       }
